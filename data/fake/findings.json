@@ -1,0 +1,582 @@
+[
+  {
+    "id": "finding_t2m_iberia",
+    "kind": "regional_trend",
+    "variable": "t2m",
+    "region": "iberia",
+    "slope_dec": 0.483806064772936,
+    "ci95": [
+      0.37582516002040595,
+      0.589373592407296
+    ],
+    "p": 1.9361005798579356e-07,
+    "direction": "up",
+    "period": [
+      "2001-01",
+      "2024-12"
+    ],
+    "datasets": [
+      "SIMULATED"
+    ],
+    "run_id": "2026-11-14T19:05Z-simulated"
+  },
+  {
+    "id": "finding_t2m_maghreb",
+    "kind": "regional_trend",
+    "variable": "t2m",
+    "region": "maghreb",
+    "slope_dec": 0.4849469353314884,
+    "ci95": [
+      0.38958443339079324,
+      0.5784894746192772
+    ],
+    "p": 6.215519876562325e-09,
+    "direction": "up",
+    "period": [
+      "2001-01",
+      "2024-12"
+    ],
+    "datasets": [
+      "SIMULATED"
+    ],
+    "run_id": "2026-11-14T19:05Z-simulated"
+  },
+  {
+    "id": "finding_t2m_sahara",
+    "kind": "regional_trend",
+    "variable": "t2m",
+    "region": "sahara",
+    "slope_dec": 0.63134684176676,
+    "ci95": [
+      0.5559142132859841,
+      0.7037533252066686
+    ],
+    "p": 3.774758283725532e-15,
+    "direction": "up",
+    "period": [
+      "2001-01",
+      "2024-12"
+    ],
+    "datasets": [
+      "SIMULATED"
+    ],
+    "run_id": "2026-11-14T19:05Z-simulated"
+  },
+  {
+    "id": "finding_t2m_levant",
+    "kind": "regional_trend",
+    "variable": "t2m",
+    "region": "levant",
+    "slope_dec": 0.44146861313250785,
+    "ci95": [
+      0.3113552319904928,
+      0.570259786565718
+    ],
+    "p": 2.9033006665457606e-08,
+    "direction": "up",
+    "period": [
+      "2001-01",
+      "2024-12"
+    ],
+    "datasets": [
+      "SIMULATED"
+    ],
+    "run_id": "2026-11-14T19:05Z-simulated"
+  },
+  {
+    "id": "finding_t2m_anatolia",
+    "kind": "regional_trend",
+    "variable": "t2m",
+    "region": "anatolia",
+    "slope_dec": 0.38092685662080394,
+    "ci95": [
+      0.24803844954313808,
+      0.5043684843825986
+    ],
+    "p": 8.062567647648677e-05,
+    "direction": "up",
+    "period": [
+      "2001-01",
+      "2024-12"
+    ],
+    "datasets": [
+      "SIMULATED"
+    ],
+    "run_id": "2026-11-14T19:05Z-simulated"
+  },
+  {
+    "id": "finding_t2m_italy_balkans",
+    "kind": "regional_trend",
+    "variable": "t2m",
+    "region": "italy_balkans",
+    "slope_dec": 0.2267491061845743,
+    "ci95": [
+      0.14136378003261277,
+      0.31569454110996215
+    ],
+    "p": 0.00014531507349135886,
+    "direction": "up",
+    "period": [
+      "2001-01",
+      "2024-12"
+    ],
+    "datasets": [
+      "SIMULATED"
+    ],
+    "run_id": "2026-11-14T19:05Z-simulated"
+  },
+  {
+    "id": "finding_precip_maghreb",
+    "kind": "regional_trend",
+    "variable": "precip",
+    "region": "maghreb",
+    "slope_dec": -2.605115479496191,
+    "ci95": [
+      -3.4051931930416752,
+      -1.8715631111654563
+    ],
+    "p": 0.0,
+    "direction": "down",
+    "period": [
+      "2001-01",
+      "2024-12"
+    ],
+    "datasets": [
+      "SIMULATED"
+    ],
+    "run_id": "2026-11-14T19:05Z-simulated"
+  },
+  {
+    "id": "finding_precip_sahara",
+    "kind": "regional_trend",
+    "variable": "precip",
+    "region": "sahara",
+    "slope_dec": -0.14851731523523015,
+    "ci95": [
+      -0.2852975882677292,
+      -0.025222327024016875
+    ],
+    "p": 0.013847785620753505,
+    "direction": "down",
+    "period": [
+      "2001-01",
+      "2024-12"
+    ],
+    "datasets": [
+      "SIMULATED"
+    ],
+    "run_id": "2026-11-14T19:05Z-simulated"
+  },
+  {
+    "id": "finding_precip_levant",
+    "kind": "regional_trend",
+    "variable": "precip",
+    "region": "levant",
+    "slope_dec": -1.5978106339019411,
+    "ci95": [
+      -2.5992905591027107,
+      -0.5762986066850097
+    ],
+    "p": 0.007146228085185724,
+    "direction": "down",
+    "period": [
+      "2001-01",
+      "2024-12"
+    ],
+    "datasets": [
+      "SIMULATED"
+    ],
+    "run_id": "2026-11-14T19:05Z-simulated"
+  },
+  {
+    "id": "finding_precip_italy_balkans",
+    "kind": "regional_trend",
+    "variable": "precip",
+    "region": "italy_balkans",
+    "slope_dec": 2.7008300686072806,
+    "ci95": [
+      -0.056454439059337926,
+      5.55769155561838
+    ],
+    "p": 0.029761294773644087,
+    "direction": "up",
+    "period": [
+      "2001-01",
+      "2024-12"
+    ],
+    "datasets": [
+      "SIMULATED"
+    ],
+    "run_id": "2026-11-14T19:05Z-simulated"
+  },
+  {
+    "id": "finding_soil_moisture_iberia",
+    "kind": "regional_trend",
+    "variable": "soil_moisture",
+    "region": "iberia",
+    "slope_dec": -0.254476000292519,
+    "ci95": [
+      -0.4259761649249488,
+      -0.08261068734125082
+    ],
+    "p": 0.015610856908607085,
+    "direction": "down",
+    "period": [
+      "2001-01",
+      "2024-12"
+    ],
+    "datasets": [
+      "SIMULATED"
+    ],
+    "run_id": "2026-11-14T19:05Z-simulated"
+  },
+  {
+    "id": "finding_soil_moisture_maghreb",
+    "kind": "regional_trend",
+    "variable": "soil_moisture",
+    "region": "maghreb",
+    "slope_dec": -0.8034747192656839,
+    "ci95": [
+      -0.930121699278341,
+      -0.6740340117289684
+    ],
+    "p": 9.103436671153986e-09,
+    "direction": "down",
+    "period": [
+      "2001-01",
+      "2024-12"
+    ],
+    "datasets": [
+      "SIMULATED"
+    ],
+    "run_id": "2026-11-14T19:05Z-simulated"
+  },
+  {
+    "id": "finding_soil_moisture_sahara",
+    "kind": "regional_trend",
+    "variable": "soil_moisture",
+    "region": "sahara",
+    "slope_dec": -0.20636144318828334,
+    "ci95": [
+      -0.2724986445278523,
+      -0.1399467529998327
+    ],
+    "p": 3.34571912707915e-05,
+    "direction": "down",
+    "period": [
+      "2001-01",
+      "2024-12"
+    ],
+    "datasets": [
+      "SIMULATED"
+    ],
+    "run_id": "2026-11-14T19:05Z-simulated"
+  },
+  {
+    "id": "finding_soil_moisture_levant",
+    "kind": "regional_trend",
+    "variable": "soil_moisture",
+    "region": "levant",
+    "slope_dec": -0.48259451856082225,
+    "ci95": [
+      -0.6160317092491479,
+      -0.3415301924615511
+    ],
+    "p": 1.5548770896378628e-05,
+    "direction": "down",
+    "period": [
+      "2001-01",
+      "2024-12"
+    ],
+    "datasets": [
+      "SIMULATED"
+    ],
+    "run_id": "2026-11-14T19:05Z-simulated"
+  },
+  {
+    "id": "finding_soil_moisture_anatolia",
+    "kind": "regional_trend",
+    "variable": "soil_moisture",
+    "region": "anatolia",
+    "slope_dec": -0.32439531092181784,
+    "ci95": [
+      -0.49449885982030567,
+      -0.15695341725211026
+    ],
+    "p": 0.04758746724540086,
+    "direction": "down",
+    "period": [
+      "2001-01",
+      "2024-12"
+    ],
+    "datasets": [
+      "SIMULATED"
+    ],
+    "run_id": "2026-11-14T19:05Z-simulated"
+  },
+  {
+    "id": "finding_et_iberia",
+    "kind": "regional_trend",
+    "variable": "et",
+    "region": "iberia",
+    "slope_dec": 0.027603244220113593,
+    "ci95": [
+      0.014471340817371963,
+      0.04102809593858416
+    ],
+    "p": 0.001540248876763295,
+    "direction": "up",
+    "period": [
+      "2001-01",
+      "2024-12"
+    ],
+    "datasets": [
+      "SIMULATED"
+    ],
+    "run_id": "2026-11-14T19:05Z-simulated"
+  },
+  {
+    "id": "finding_et_maghreb",
+    "kind": "regional_trend",
+    "variable": "et",
+    "region": "maghreb",
+    "slope_dec": -0.0207535938853506,
+    "ci95": [
+      -0.032474306813507145,
+      -0.009462797262519149
+    ],
+    "p": 0.018014562101110076,
+    "direction": "down",
+    "period": [
+      "2001-01",
+      "2024-12"
+    ],
+    "datasets": [
+      "SIMULATED"
+    ],
+    "run_id": "2026-11-14T19:05Z-simulated"
+  },
+  {
+    "id": "finding_et_anatolia",
+    "kind": "regional_trend",
+    "variable": "et",
+    "region": "anatolia",
+    "slope_dec": 0.026054018398606774,
+    "ci95": [
+      0.011191999553347456,
+      0.04041303305263786
+    ],
+    "p": 0.00949615130550363,
+    "direction": "up",
+    "period": [
+      "2001-01",
+      "2024-12"
+    ],
+    "datasets": [
+      "SIMULATED"
+    ],
+    "run_id": "2026-11-14T19:05Z-simulated"
+  },
+  {
+    "id": "finding_et_italy_balkans",
+    "kind": "regional_trend",
+    "variable": "et",
+    "region": "italy_balkans",
+    "slope_dec": 0.02326044690458459,
+    "ci95": [
+      0.012165220461419643,
+      0.034477850550586525
+    ],
+    "p": 1.7549937059158083e-08,
+    "direction": "up",
+    "period": [
+      "2001-01",
+      "2024-12"
+    ],
+    "datasets": [
+      "SIMULATED"
+    ],
+    "run_id": "2026-11-14T19:05Z-simulated"
+  },
+  {
+    "id": "finding_ndvi_iberia",
+    "kind": "regional_trend",
+    "variable": "ndvi",
+    "region": "iberia",
+    "slope_dec": -0.0027695979404045125,
+    "ci95": [
+      -0.004546817805952748,
+      -0.0009607877450081199
+    ],
+    "p": 0.00034598628653936814,
+    "direction": "down",
+    "period": [
+      "2001-01",
+      "2024-12"
+    ],
+    "datasets": [
+      "SIMULATED"
+    ],
+    "run_id": "2026-11-14T19:05Z-simulated"
+  },
+  {
+    "id": "finding_ndvi_maghreb",
+    "kind": "regional_trend",
+    "variable": "ndvi",
+    "region": "maghreb",
+    "slope_dec": -0.008821084099577436,
+    "ci95": [
+      -0.010257760931259997,
+      -0.007384457057625187
+    ],
+    "p": 0.0,
+    "direction": "down",
+    "period": [
+      "2001-01",
+      "2024-12"
+    ],
+    "datasets": [
+      "SIMULATED"
+    ],
+    "run_id": "2026-11-14T19:05Z-simulated"
+  },
+  {
+    "id": "finding_ndvi_sahara",
+    "kind": "regional_trend",
+    "variable": "ndvi",
+    "region": "sahara",
+    "slope_dec": -0.0025939951802839457,
+    "ci95": [
+      -0.00397046787057281,
+      -0.0012552006149462742
+    ],
+    "p": 0.018629604900785246,
+    "direction": "down",
+    "period": [
+      "2001-01",
+      "2024-12"
+    ],
+    "datasets": [
+      "SIMULATED"
+    ],
+    "run_id": "2026-11-14T19:05Z-simulated"
+  },
+  {
+    "id": "finding_ndvi_nile_delta",
+    "kind": "regional_trend",
+    "variable": "ndvi",
+    "region": "nile_delta",
+    "slope_dec": 0.04494164902783853,
+    "ci95": [
+      0.04259124873454163,
+      0.047273795623536084
+    ],
+    "p": 0.0,
+    "direction": "up",
+    "period": [
+      "2001-01",
+      "2024-12"
+    ],
+    "datasets": [
+      "SIMULATED"
+    ],
+    "run_id": "2026-11-14T19:05Z-simulated"
+  },
+  {
+    "id": "finding_ndvi_levant",
+    "kind": "regional_trend",
+    "variable": "ndvi",
+    "region": "levant",
+    "slope_dec": -0.004965517102269404,
+    "ci95": [
+      -0.0069204827118628,
+      -0.0029585583245490257
+    ],
+    "p": 0.006872023309379083,
+    "direction": "down",
+    "period": [
+      "2001-01",
+      "2024-12"
+    ],
+    "datasets": [
+      "SIMULATED"
+    ],
+    "run_id": "2026-11-14T19:05Z-simulated"
+  },
+  {
+    "id": "finding_cluster_0",
+    "kind": "cluster",
+    "cluster": 0,
+    "cluster_name": "less evaporation + drying soils",
+    "signature": {
+      "t2m": 0.1752286026329054,
+      "precip": -0.7781715897680312,
+      "soil_moisture": -1.0905509107144238,
+      "et": -1.1058901492943967,
+      "ndvi": -0.816580516195926
+    },
+    "n_cells": 245,
+    "period": [
+      "2001-01",
+      "2024-12"
+    ],
+    "run_id": "2026-11-14T19:05Z-simulated"
+  },
+  {
+    "id": "finding_cluster_1",
+    "kind": "cluster",
+    "cluster": 1,
+    "cluster_name": "warming",
+    "signature": {
+      "t2m": 0.8285311180020993,
+      "precip": -0.2459738510486945,
+      "soil_moisture": 1.3243345466721846e-05,
+      "et": 0.25029545445862494,
+      "ndvi": -0.0681586272133511
+    },
+    "n_cells": 209,
+    "period": [
+      "2001-01",
+      "2024-12"
+    ],
+    "run_id": "2026-11-14T19:05Z-simulated"
+  },
+  {
+    "id": "finding_cluster_2",
+    "kind": "cluster",
+    "cluster": 2,
+    "cluster_name": "greening + weaker warming",
+    "signature": {
+      "t2m": -0.8504127878984158,
+      "precip": -0.057117725641809856,
+      "soil_moisture": 0.2203321216295982,
+      "et": 0.30827874709146275,
+      "ndvi": 6.978036413533346
+    },
+    "n_cells": 8,
+    "period": [
+      "2001-01",
+      "2024-12"
+    ],
+    "run_id": "2026-11-14T19:05Z-simulated"
+  },
+  {
+    "id": "finding_cluster_3",
+    "kind": "cluster",
+    "cluster": 3,
+    "cluster_name": "moister soils + wetter",
+    "signature": {
+      "t2m": -0.7555621263693585,
+      "precip": 0.8755144987995639,
+      "soil_moisture": 0.958193315136442,
+      "et": 0.7803794462763269,
+      "ndvi": 0.5721411128062288
+    },
+    "n_cells": 277,
+    "period": [
+      "2001-01",
+      "2024-12"
+    ],
+    "run_id": "2026-11-14T19:05Z-simulated"
+  }
+]

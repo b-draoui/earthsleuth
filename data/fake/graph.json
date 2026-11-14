@@ -1,0 +1,909 @@
+{
+  "directed": true,
+  "multigraph": true,
+  "graph": {
+    "simulated": true
+  },
+  "nodes": [
+    {
+      "id": "src_merra2",
+      "type": "Mission",
+      "label": "MERRA-2 reanalysis (NASA GMAO)"
+    },
+    {
+      "id": "src_gpm",
+      "type": "Mission",
+      "label": "GPM constellation"
+    },
+    {
+      "id": "src_gldas",
+      "type": "Mission",
+      "label": "GLDAS land model"
+    },
+    {
+      "id": "src_terra",
+      "type": "Mission",
+      "label": "Terra satellite"
+    },
+    {
+      "id": "inst_modis",
+      "type": "Instrument",
+      "label": "MODIS"
+    },
+    {
+      "id": "dataset_m2tmnxslv",
+      "type": "Dataset",
+      "label": "M2TMNXSLV v5.12.4"
+    },
+    {
+      "id": "var_t2m",
+      "type": "Variable",
+      "label": "Air temperature (2 m)",
+      "var_id": "t2m",
+      "unit": "\u00b0C"
+    },
+    {
+      "id": "dataset_gpm_3imergm",
+      "type": "Dataset",
+      "label": "GPM_3IMERGM v07"
+    },
+    {
+      "id": "var_precip",
+      "type": "Variable",
+      "label": "Precipitation",
+      "var_id": "precip",
+      "unit": "mm/month"
+    },
+    {
+      "id": "dataset_gldas_noah025_m",
+      "type": "Dataset",
+      "label": "GLDAS_NOAH025_M v2.1"
+    },
+    {
+      "id": "var_soil_moisture",
+      "type": "Variable",
+      "label": "Soil moisture (0\u201310 cm)",
+      "var_id": "soil_moisture",
+      "unit": "kg/m\u00b2"
+    },
+    {
+      "id": "var_et",
+      "type": "Variable",
+      "label": "Evapotranspiration",
+      "var_id": "et",
+      "unit": "mm/day"
+    },
+    {
+      "id": "dataset_mod13c2",
+      "type": "Dataset",
+      "label": "MOD13C2 v061"
+    },
+    {
+      "id": "var_ndvi",
+      "type": "Variable",
+      "label": "Vegetation (NDVI)",
+      "var_id": "ndvi",
+      "unit": "index (\u22121 to 1)"
+    },
+    {
+      "id": "concept_heat",
+      "type": "Concept",
+      "label": "Surface heating"
+    },
+    {
+      "id": "concept_water",
+      "type": "Concept",
+      "label": "Water availability"
+    },
+    {
+      "id": "concept_vegetation",
+      "type": "Concept",
+      "label": "Vegetation health"
+    },
+    {
+      "id": "concept_water_cycle",
+      "type": "Concept",
+      "label": "Water cycle"
+    },
+    {
+      "id": "region_mediterranean_north_africa",
+      "type": "Region",
+      "label": "Mediterranean & North Africa"
+    },
+    {
+      "id": "region_iberia",
+      "type": "Region",
+      "label": "Iberian Peninsula"
+    },
+    {
+      "id": "region_maghreb",
+      "type": "Region",
+      "label": "Maghreb"
+    },
+    {
+      "id": "region_sahara",
+      "type": "Region",
+      "label": "Northern Sahara"
+    },
+    {
+      "id": "region_nile_delta",
+      "type": "Region",
+      "label": "Nile Delta"
+    },
+    {
+      "id": "region_levant",
+      "type": "Region",
+      "label": "Levant"
+    },
+    {
+      "id": "region_anatolia",
+      "type": "Region",
+      "label": "Anatolia"
+    },
+    {
+      "id": "region_italy_balkans",
+      "type": "Region",
+      "label": "Italy & Balkans"
+    },
+    {
+      "id": "finding_t2m_iberia",
+      "type": "Finding",
+      "label": "Air temperature (2 m) rising in Iberian Peninsula",
+      "slope_dec": 0.483806064772936,
+      "p": 1.9361005798579356e-07,
+      "simulated": true
+    },
+    {
+      "id": "finding_t2m_maghreb",
+      "type": "Finding",
+      "label": "Air temperature (2 m) rising in Maghreb",
+      "slope_dec": 0.4849469353314884,
+      "p": 6.215519876562325e-09,
+      "simulated": true
+    },
+    {
+      "id": "finding_t2m_sahara",
+      "type": "Finding",
+      "label": "Air temperature (2 m) rising in Northern Sahara",
+      "slope_dec": 0.63134684176676,
+      "p": 3.774758283725532e-15,
+      "simulated": true
+    },
+    {
+      "id": "finding_t2m_levant",
+      "type": "Finding",
+      "label": "Air temperature (2 m) rising in Levant",
+      "slope_dec": 0.44146861313250785,
+      "p": 2.9033006665457606e-08,
+      "simulated": true
+    },
+    {
+      "id": "finding_t2m_anatolia",
+      "type": "Finding",
+      "label": "Air temperature (2 m) rising in Anatolia",
+      "slope_dec": 0.38092685662080394,
+      "p": 8.062567647648677e-05,
+      "simulated": true
+    },
+    {
+      "id": "finding_t2m_italy_balkans",
+      "type": "Finding",
+      "label": "Air temperature (2 m) rising in Italy & Balkans",
+      "slope_dec": 0.2267491061845743,
+      "p": 0.00014531507349135886,
+      "simulated": true
+    },
+    {
+      "id": "finding_precip_maghreb",
+      "type": "Finding",
+      "label": "Precipitation falling in Maghreb",
+      "slope_dec": -2.605115479496191,
+      "p": 0.0,
+      "simulated": true
+    },
+    {
+      "id": "finding_precip_sahara",
+      "type": "Finding",
+      "label": "Precipitation falling in Northern Sahara",
+      "slope_dec": -0.14851731523523015,
+      "p": 0.013847785620753505,
+      "simulated": true
+    },
+    {
+      "id": "finding_precip_levant",
+      "type": "Finding",
+      "label": "Precipitation falling in Levant",
+      "slope_dec": -1.5978106339019411,
+      "p": 0.007146228085185724,
+      "simulated": true
+    },
+    {
+      "id": "finding_precip_italy_balkans",
+      "type": "Finding",
+      "label": "Precipitation rising in Italy & Balkans",
+      "slope_dec": 2.7008300686072806,
+      "p": 0.029761294773644087,
+      "simulated": true
+    },
+    {
+      "id": "finding_soil_moisture_iberia",
+      "type": "Finding",
+      "label": "Soil moisture (0\u201310 cm) falling in Iberian Peninsula",
+      "slope_dec": -0.254476000292519,
+      "p": 0.015610856908607085,
+      "simulated": true
+    },
+    {
+      "id": "finding_soil_moisture_maghreb",
+      "type": "Finding",
+      "label": "Soil moisture (0\u201310 cm) falling in Maghreb",
+      "slope_dec": -0.8034747192656839,
+      "p": 9.103436671153986e-09,
+      "simulated": true
+    },
+    {
+      "id": "finding_soil_moisture_sahara",
+      "type": "Finding",
+      "label": "Soil moisture (0\u201310 cm) falling in Northern Sahara",
+      "slope_dec": -0.20636144318828334,
+      "p": 3.34571912707915e-05,
+      "simulated": true
+    },
+    {
+      "id": "finding_soil_moisture_levant",
+      "type": "Finding",
+      "label": "Soil moisture (0\u201310 cm) falling in Levant",
+      "slope_dec": -0.48259451856082225,
+      "p": 1.5548770896378628e-05,
+      "simulated": true
+    },
+    {
+      "id": "finding_soil_moisture_anatolia",
+      "type": "Finding",
+      "label": "Soil moisture (0\u201310 cm) falling in Anatolia",
+      "slope_dec": -0.32439531092181784,
+      "p": 0.04758746724540086,
+      "simulated": true
+    },
+    {
+      "id": "finding_et_iberia",
+      "type": "Finding",
+      "label": "Evapotranspiration rising in Iberian Peninsula",
+      "slope_dec": 0.027603244220113593,
+      "p": 0.001540248876763295,
+      "simulated": true
+    },
+    {
+      "id": "finding_et_maghreb",
+      "type": "Finding",
+      "label": "Evapotranspiration falling in Maghreb",
+      "slope_dec": -0.0207535938853506,
+      "p": 0.018014562101110076,
+      "simulated": true
+    },
+    {
+      "id": "finding_et_anatolia",
+      "type": "Finding",
+      "label": "Evapotranspiration rising in Anatolia",
+      "slope_dec": 0.026054018398606774,
+      "p": 0.00949615130550363,
+      "simulated": true
+    },
+    {
+      "id": "finding_et_italy_balkans",
+      "type": "Finding",
+      "label": "Evapotranspiration rising in Italy & Balkans",
+      "slope_dec": 0.02326044690458459,
+      "p": 1.7549937059158083e-08,
+      "simulated": true
+    },
+    {
+      "id": "finding_ndvi_iberia",
+      "type": "Finding",
+      "label": "Vegetation (NDVI) falling in Iberian Peninsula",
+      "slope_dec": -0.0027695979404045125,
+      "p": 0.00034598628653936814,
+      "simulated": true
+    },
+    {
+      "id": "finding_ndvi_maghreb",
+      "type": "Finding",
+      "label": "Vegetation (NDVI) falling in Maghreb",
+      "slope_dec": -0.008821084099577436,
+      "p": 0.0,
+      "simulated": true
+    },
+    {
+      "id": "finding_ndvi_sahara",
+      "type": "Finding",
+      "label": "Vegetation (NDVI) falling in Northern Sahara",
+      "slope_dec": -0.0025939951802839457,
+      "p": 0.018629604900785246,
+      "simulated": true
+    },
+    {
+      "id": "finding_ndvi_nile_delta",
+      "type": "Finding",
+      "label": "Vegetation (NDVI) rising in Nile Delta",
+      "slope_dec": 0.04494164902783853,
+      "p": 0.0,
+      "simulated": true
+    },
+    {
+      "id": "finding_ndvi_levant",
+      "type": "Finding",
+      "label": "Vegetation (NDVI) falling in Levant",
+      "slope_dec": -0.004965517102269404,
+      "p": 0.006872023309379083,
+      "simulated": true
+    },
+    {
+      "id": "finding_cluster_0",
+      "type": "Finding",
+      "label": "Cluster: less evaporation + drying soils",
+      "n_cells": 245,
+      "simulated": true
+    },
+    {
+      "id": "finding_cluster_1",
+      "type": "Finding",
+      "label": "Cluster: warming",
+      "n_cells": 209,
+      "simulated": true
+    },
+    {
+      "id": "finding_cluster_2",
+      "type": "Finding",
+      "label": "Cluster: greening + weaker warming",
+      "n_cells": 8,
+      "simulated": true
+    },
+    {
+      "id": "finding_cluster_3",
+      "type": "Finding",
+      "label": "Cluster: moister soils + wetter",
+      "n_cells": 277,
+      "simulated": true
+    }
+  ],
+  "edges": [
+    {
+      "source": "src_terra",
+      "target": "inst_modis",
+      "type": "CARRIES",
+      "key": 0
+    },
+    {
+      "source": "dataset_m2tmnxslv",
+      "target": "var_t2m",
+      "type": "HAS_VARIABLE",
+      "key": 0
+    },
+    {
+      "source": "dataset_gpm_3imergm",
+      "target": "var_precip",
+      "type": "HAS_VARIABLE",
+      "key": 0
+    },
+    {
+      "source": "dataset_gldas_noah025_m",
+      "target": "var_soil_moisture",
+      "type": "HAS_VARIABLE",
+      "key": 0
+    },
+    {
+      "source": "dataset_gldas_noah025_m",
+      "target": "var_et",
+      "type": "HAS_VARIABLE",
+      "key": 0
+    },
+    {
+      "source": "dataset_mod13c2",
+      "target": "var_ndvi",
+      "type": "HAS_VARIABLE",
+      "key": 0
+    },
+    {
+      "source": "src_merra2",
+      "target": "dataset_m2tmnxslv",
+      "type": "PROVIDES",
+      "key": 0
+    },
+    {
+      "source": "src_gpm",
+      "target": "dataset_gpm_3imergm",
+      "type": "PROVIDES",
+      "key": 0
+    },
+    {
+      "source": "src_gldas",
+      "target": "dataset_gldas_noah025_m",
+      "type": "PROVIDES",
+      "key": 0
+    },
+    {
+      "source": "inst_modis",
+      "target": "dataset_mod13c2",
+      "type": "MEASURES",
+      "key": 0
+    },
+    {
+      "source": "var_t2m",
+      "target": "concept_heat",
+      "type": "INDICATOR_OF",
+      "key": 0
+    },
+    {
+      "source": "var_precip",
+      "target": "concept_water",
+      "type": "INDICATOR_OF",
+      "key": 0
+    },
+    {
+      "source": "var_soil_moisture",
+      "target": "concept_water",
+      "type": "INDICATOR_OF",
+      "key": 0
+    },
+    {
+      "source": "var_et",
+      "target": "concept_water_cycle",
+      "type": "INDICATOR_OF",
+      "key": 0
+    },
+    {
+      "source": "var_precip",
+      "target": "concept_water_cycle",
+      "type": "INDICATOR_OF",
+      "key": 0
+    },
+    {
+      "source": "var_ndvi",
+      "target": "concept_vegetation",
+      "type": "INDICATOR_OF",
+      "key": 0
+    },
+    {
+      "source": "var_precip",
+      "target": "var_soil_moisture",
+      "type": "INFLUENCES",
+      "key": 0,
+      "sign": "+",
+      "basis": "general physical relationship, not tested by EarthSleuth"
+    },
+    {
+      "source": "var_soil_moisture",
+      "target": "var_et",
+      "type": "INFLUENCES",
+      "key": 0,
+      "sign": "+",
+      "basis": "general physical relationship, not tested by EarthSleuth"
+    },
+    {
+      "source": "var_t2m",
+      "target": "var_et",
+      "type": "INFLUENCES",
+      "key": 0,
+      "sign": "+",
+      "basis": "general physical relationship, not tested by EarthSleuth"
+    },
+    {
+      "source": "var_t2m",
+      "target": "var_soil_moisture",
+      "type": "INFLUENCES",
+      "key": 0,
+      "sign": "-",
+      "basis": "general physical relationship, not tested by EarthSleuth"
+    },
+    {
+      "source": "var_soil_moisture",
+      "target": "var_ndvi",
+      "type": "INFLUENCES",
+      "key": 0,
+      "sign": "+",
+      "basis": "general physical relationship, not tested by EarthSleuth"
+    },
+    {
+      "source": "region_iberia",
+      "target": "region_mediterranean_north_africa",
+      "type": "PART_OF",
+      "key": 0
+    },
+    {
+      "source": "region_maghreb",
+      "target": "region_mediterranean_north_africa",
+      "type": "PART_OF",
+      "key": 0
+    },
+    {
+      "source": "region_sahara",
+      "target": "region_mediterranean_north_africa",
+      "type": "PART_OF",
+      "key": 0
+    },
+    {
+      "source": "region_nile_delta",
+      "target": "region_mediterranean_north_africa",
+      "type": "PART_OF",
+      "key": 0
+    },
+    {
+      "source": "region_levant",
+      "target": "region_mediterranean_north_africa",
+      "type": "PART_OF",
+      "key": 0
+    },
+    {
+      "source": "region_anatolia",
+      "target": "region_mediterranean_north_africa",
+      "type": "PART_OF",
+      "key": 0
+    },
+    {
+      "source": "region_italy_balkans",
+      "target": "region_mediterranean_north_africa",
+      "type": "PART_OF",
+      "key": 0
+    },
+    {
+      "source": "finding_t2m_iberia",
+      "target": "var_t2m",
+      "type": "ABOUT",
+      "key": 0
+    },
+    {
+      "source": "finding_t2m_iberia",
+      "target": "region_iberia",
+      "type": "IN_REGION",
+      "key": 0
+    },
+    {
+      "source": "finding_t2m_maghreb",
+      "target": "var_t2m",
+      "type": "ABOUT",
+      "key": 0
+    },
+    {
+      "source": "finding_t2m_maghreb",
+      "target": "region_maghreb",
+      "type": "IN_REGION",
+      "key": 0
+    },
+    {
+      "source": "finding_t2m_sahara",
+      "target": "var_t2m",
+      "type": "ABOUT",
+      "key": 0
+    },
+    {
+      "source": "finding_t2m_sahara",
+      "target": "region_sahara",
+      "type": "IN_REGION",
+      "key": 0
+    },
+    {
+      "source": "finding_t2m_levant",
+      "target": "var_t2m",
+      "type": "ABOUT",
+      "key": 0
+    },
+    {
+      "source": "finding_t2m_levant",
+      "target": "region_levant",
+      "type": "IN_REGION",
+      "key": 0
+    },
+    {
+      "source": "finding_t2m_anatolia",
+      "target": "var_t2m",
+      "type": "ABOUT",
+      "key": 0
+    },
+    {
+      "source": "finding_t2m_anatolia",
+      "target": "region_anatolia",
+      "type": "IN_REGION",
+      "key": 0
+    },
+    {
+      "source": "finding_t2m_italy_balkans",
+      "target": "var_t2m",
+      "type": "ABOUT",
+      "key": 0
+    },
+    {
+      "source": "finding_t2m_italy_balkans",
+      "target": "region_italy_balkans",
+      "type": "IN_REGION",
+      "key": 0
+    },
+    {
+      "source": "finding_precip_maghreb",
+      "target": "var_precip",
+      "type": "ABOUT",
+      "key": 0
+    },
+    {
+      "source": "finding_precip_maghreb",
+      "target": "region_maghreb",
+      "type": "IN_REGION",
+      "key": 0
+    },
+    {
+      "source": "finding_precip_sahara",
+      "target": "var_precip",
+      "type": "ABOUT",
+      "key": 0
+    },
+    {
+      "source": "finding_precip_sahara",
+      "target": "region_sahara",
+      "type": "IN_REGION",
+      "key": 0
+    },
+    {
+      "source": "finding_precip_levant",
+      "target": "var_precip",
+      "type": "ABOUT",
+      "key": 0
+    },
+    {
+      "source": "finding_precip_levant",
+      "target": "region_levant",
+      "type": "IN_REGION",
+      "key": 0
+    },
+    {
+      "source": "finding_precip_italy_balkans",
+      "target": "var_precip",
+      "type": "ABOUT",
+      "key": 0
+    },
+    {
+      "source": "finding_precip_italy_balkans",
+      "target": "region_italy_balkans",
+      "type": "IN_REGION",
+      "key": 0
+    },
+    {
+      "source": "finding_soil_moisture_iberia",
+      "target": "var_soil_moisture",
+      "type": "ABOUT",
+      "key": 0
+    },
+    {
+      "source": "finding_soil_moisture_iberia",
+      "target": "region_iberia",
+      "type": "IN_REGION",
+      "key": 0
+    },
+    {
+      "source": "finding_soil_moisture_maghreb",
+      "target": "var_soil_moisture",
+      "type": "ABOUT",
+      "key": 0
+    },
+    {
+      "source": "finding_soil_moisture_maghreb",
+      "target": "region_maghreb",
+      "type": "IN_REGION",
+      "key": 0
+    },
+    {
+      "source": "finding_soil_moisture_sahara",
+      "target": "var_soil_moisture",
+      "type": "ABOUT",
+      "key": 0
+    },
+    {
+      "source": "finding_soil_moisture_sahara",
+      "target": "region_sahara",
+      "type": "IN_REGION",
+      "key": 0
+    },
+    {
+      "source": "finding_soil_moisture_levant",
+      "target": "var_soil_moisture",
+      "type": "ABOUT",
+      "key": 0
+    },
+    {
+      "source": "finding_soil_moisture_levant",
+      "target": "region_levant",
+      "type": "IN_REGION",
+      "key": 0
+    },
+    {
+      "source": "finding_soil_moisture_anatolia",
+      "target": "var_soil_moisture",
+      "type": "ABOUT",
+      "key": 0
+    },
+    {
+      "source": "finding_soil_moisture_anatolia",
+      "target": "region_anatolia",
+      "type": "IN_REGION",
+      "key": 0
+    },
+    {
+      "source": "finding_et_iberia",
+      "target": "var_et",
+      "type": "ABOUT",
+      "key": 0
+    },
+    {
+      "source": "finding_et_iberia",
+      "target": "region_iberia",
+      "type": "IN_REGION",
+      "key": 0
+    },
+    {
+      "source": "finding_et_maghreb",
+      "target": "var_et",
+      "type": "ABOUT",
+      "key": 0
+    },
+    {
+      "source": "finding_et_maghreb",
+      "target": "region_maghreb",
+      "type": "IN_REGION",
+      "key": 0
+    },
+    {
+      "source": "finding_et_anatolia",
+      "target": "var_et",
+      "type": "ABOUT",
+      "key": 0
+    },
+    {
+      "source": "finding_et_anatolia",
+      "target": "region_anatolia",
+      "type": "IN_REGION",
+      "key": 0
+    },
+    {
+      "source": "finding_et_italy_balkans",
+      "target": "var_et",
+      "type": "ABOUT",
+      "key": 0
+    },
+    {
+      "source": "finding_et_italy_balkans",
+      "target": "region_italy_balkans",
+      "type": "IN_REGION",
+      "key": 0
+    },
+    {
+      "source": "finding_ndvi_iberia",
+      "target": "var_ndvi",
+      "type": "ABOUT",
+      "key": 0
+    },
+    {
+      "source": "finding_ndvi_iberia",
+      "target": "region_iberia",
+      "type": "IN_REGION",
+      "key": 0
+    },
+    {
+      "source": "finding_ndvi_maghreb",
+      "target": "var_ndvi",
+      "type": "ABOUT",
+      "key": 0
+    },
+    {
+      "source": "finding_ndvi_maghreb",
+      "target": "region_maghreb",
+      "type": "IN_REGION",
+      "key": 0
+    },
+    {
+      "source": "finding_ndvi_sahara",
+      "target": "var_ndvi",
+      "type": "ABOUT",
+      "key": 0
+    },
+    {
+      "source": "finding_ndvi_sahara",
+      "target": "region_sahara",
+      "type": "IN_REGION",
+      "key": 0
+    },
+    {
+      "source": "finding_ndvi_nile_delta",
+      "target": "var_ndvi",
+      "type": "ABOUT",
+      "key": 0
+    },
+    {
+      "source": "finding_ndvi_nile_delta",
+      "target": "region_nile_delta",
+      "type": "IN_REGION",
+      "key": 0
+    },
+    {
+      "source": "finding_ndvi_levant",
+      "target": "var_ndvi",
+      "type": "ABOUT",
+      "key": 0
+    },
+    {
+      "source": "finding_ndvi_levant",
+      "target": "region_levant",
+      "type": "IN_REGION",
+      "key": 0
+    },
+    {
+      "source": "finding_cluster_0",
+      "target": "var_precip",
+      "type": "ABOUT",
+      "key": 0
+    },
+    {
+      "source": "finding_cluster_0",
+      "target": "var_soil_moisture",
+      "type": "ABOUT",
+      "key": 0
+    },
+    {
+      "source": "finding_cluster_0",
+      "target": "var_et",
+      "type": "ABOUT",
+      "key": 0
+    },
+    {
+      "source": "finding_cluster_0",
+      "target": "var_ndvi",
+      "type": "ABOUT",
+      "key": 0
+    },
+    {
+      "source": "finding_cluster_1",
+      "target": "var_t2m",
+      "type": "ABOUT",
+      "key": 0
+    },
+    {
+      "source": "finding_cluster_2",
+      "target": "var_t2m",
+      "type": "ABOUT",
+      "key": 0
+    },
+    {
+      "source": "finding_cluster_2",
+      "target": "var_ndvi",
+      "type": "ABOUT",
+      "key": 0
+    },
+    {
+      "source": "finding_cluster_3",
+      "target": "var_t2m",
+      "type": "ABOUT",
+      "key": 0
+    },
+    {
+      "source": "finding_cluster_3",
+      "target": "var_precip",
+      "type": "ABOUT",
+      "key": 0
+    },
+    {
+      "source": "finding_cluster_3",
+      "target": "var_soil_moisture",
+      "type": "ABOUT",
+      "key": 0
+    },
+    {
+      "source": "finding_cluster_3",
+      "target": "var_et",
+      "type": "ABOUT",
+      "key": 0
+    },
+    {
+      "source": "finding_cluster_3",
+      "target": "var_ndvi",
+      "type": "ABOUT",
+      "key": 0
+    }
+  ]
+}

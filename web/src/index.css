@@ -1,0 +1,220 @@
+@import 'tailwindcss';
+
+/* Design tokens: every colour and font of the app lives here.
+   Tailwind classes: bg-space, bg-abyss, bg-panel, border-line, text-ink, text-muted, text-faint,
+   text-accent, text-sand, font-display ... Variable colours: text-v-t2m, bg-v-precip, ... */
+@theme {
+  --color-space: #03060d; /* deepest background, space */
+  --color-abyss: #060b16; /* page background */
+  --color-panel: #0c1424; /* cards, panels */
+  --color-line: #1b2740; /* thin borders */
+  --color-ink: #e9eef7; /* main text */
+  --color-muted: #94a1ba; /* secondary text */
+  --color-faint: #5d6a83; /* labels, ticks */
+  --color-accent: #a99bff; /* UI accent (never a data colour) */
+  --color-glow: #8fe6ff; /* atmosphere */
+  --color-sand: #e7c48f; /* warm desert light */
+
+  /* The five variables: one identity each */
+  --color-v-t2m: #ff8a65;
+  --color-v-precip: #63b6ff;
+  --color-v-soil_moisture: #d2a46a;
+  --color-v-et: #8ee8de;
+  --color-v-ndvi: #8edc7c;
+
+  --font-sans: 'Inter Variable', system-ui, sans-serif;
+  --font-display: 'Space Grotesk Variable', system-ui, sans-serif;
+}
+
+html,
+body,
+#root {
+  min-height: 100%;
+}
+
+html {
+  scroll-behavior: smooth;
+  color-scheme: dark;
+}
+
+body {
+  @apply bg-abyss font-sans text-ink antialiased;
+  font-feature-settings: 'cv11', 'ss01';
+}
+
+h1,
+h2,
+h3,
+h4 {
+  @apply font-display tracking-tight;
+}
+
+::selection {
+  background: color-mix(in oklab, var(--color-accent) 45%, transparent);
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 3px;
+  border-radius: 6px;
+}
+
+/* ---------------------------------------------------------------- building blocks */
+.num {
+  font-variant-numeric: tabular-nums;
+}
+
+.eyebrow {
+  @apply font-display text-[11px] font-medium uppercase tracking-[0.28em] text-faint;
+}
+
+.glass {
+  background: linear-gradient(160deg, rgb(16 25 44 / 0.9), rgb(8 13 25 / 0.86));
+  border: 1px solid rgb(120 150 200 / 0.14);
+  box-shadow:
+    0 1px 0 rgb(255 255 255 / 0.04) inset,
+    0 24px 60px -20px rgb(0 0 0 / 0.7);
+  backdrop-filter: blur(18px) saturate(1.2);
+  -webkit-backdrop-filter: blur(18px) saturate(1.2);
+}
+
+.text-gradient {
+  background: linear-gradient(100deg, #f2e2c4 0%, #e7c48f 30%, #a99bff 70%, #8fe6ff 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.hairline {
+  background: linear-gradient(90deg, transparent, rgb(143 230 255 / 0.35), transparent);
+  height: 1px;
+}
+
+/* Film grain over everything: a faint texture that keeps flat colours alive */
+.grain::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 60;
+  opacity: 0.05;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+}
+
+.scroll-thin {
+  scrollbar-width: thin;
+  scrollbar-color: #2a3a5c transparent;
+}
+
+/* Glowing call-to-action border */
+.cta {
+  position: relative;
+  isolation: isolate;
+}
+.cta::before {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  padding: 1px;
+  background: conic-gradient(from var(--angle, 0deg), #e7c48f, #a99bff, #8fe6ff, #e7c48f);
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  animation: spin-angle 6s linear infinite;
+  z-index: -1;
+}
+@property --angle {
+  syntax: '<angle>';
+  initial-value: 0deg;
+  inherits: false;
+}
+@keyframes spin-angle {
+  to {
+    --angle: 360deg;
+  }
+}
+
+@keyframes pulse-ring {
+  0% {
+    transform: scale(0.8);
+    opacity: 0.7;
+  }
+  100% {
+    transform: scale(2.4);
+    opacity: 0;
+  }
+}
+.pulse-ring {
+  animation: pulse-ring 1.8s cubic-bezier(0.2, 0.7, 0.3, 1) infinite;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+.skeleton {
+  background: linear-gradient(90deg, rgb(255 255 255 / 0.03), rgb(255 255 255 / 0.08), rgb(255 255 255 / 0.03));
+  background-size: 200% 100%;
+  animation: shimmer 1.6s ease-in-out infinite;
+}
+
+/* MapLibre controls in the app's style */
+.maplibregl-ctrl-attrib {
+  background: rgb(6 11 22 / 0.6) !important;
+  color: var(--color-faint) !important;
+  font-size: 10px;
+}
+.maplibregl-ctrl-attrib a {
+  color: var(--color-muted) !important;
+}
+.maplibregl-ctrl-attrib-button {
+  filter: invert(1) opacity(0.5);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Printing the report: everything visible, no chrome, light paper */
+@media print {
+  header,
+  footer,
+  button,
+  .grain::after {
+    display: none !important;
+  }
+  * {
+    opacity: 1 !important;
+    transform: none !important;
+    filter: none !important;
+    animation: none !important;
+  }
+  body {
+    background: #fff !important;
+    color: #111 !important;
+  }
+  .glass {
+    background: none !important;
+    border-color: #ccc !important;
+    box-shadow: none !important;
+  }
+  .text-muted,
+  .text-ink,
+  .text-faint {
+    color: #222 !important;
+  }
+}

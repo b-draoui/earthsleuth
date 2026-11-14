@@ -35,10 +35,27 @@ LAT_MIN, LAT_MAX = 25.0, 47.0
 PERIOD = ("2001-01", "2024-12")  # 288 months
 GRID_DEG = 1.0  # 50 x 22 = 1,100 cells, about 600 on land
 
-# Sub-regions as boxes (lon_min, lon_max, lat_min, lat_max).
-# TODO(AI engineer + ML engineer): agree on the boxes, keep the same ids in graph/seed.yaml.
+# Sub-regions as boxes (lon_min, lon_max, lat_min, lat_max). Boxes may overlap.
+# Proposal from the app layer: team to confirm, keep the same ids in graph/seed.yaml.
 SUBREGIONS: dict[str, tuple[float, float, float, float]] = {
-    # "tunisia": (7.0, 12.0, 30.0, 38.0),
+    "iberia": (-10.0, 3.5, 36.0, 44.0),
+    "maghreb": (-10.0, 11.5, 28.0, 37.5),
+    "sahara": (-10.0, 33.0, 25.0, 29.0),
+    "nile_delta": (29.0, 33.0, 29.5, 31.6),
+    "levant": (33.0, 40.0, 29.0, 37.5),
+    "anatolia": (26.0, 40.0, 36.0, 42.5),
+    "italy_balkans": (6.5, 26.0, 37.5, 47.0),
+}
+
+REGION_LABELS = {
+    REGION_ID: "Mediterranean & North Africa",
+    "iberia": "Iberian Peninsula",
+    "maghreb": "Maghreb",
+    "sahara": "Northern Sahara",
+    "nile_delta": "Nile Delta",
+    "levant": "Levant",
+    "anatolia": "Anatolia",
+    "italy_balkans": "Italy & Balkans",
 }
 
 # ---------------------------------------------------------------- variables (Doc 2, 5.2)
