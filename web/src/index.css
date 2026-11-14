@@ -1,0 +1,32 @@
+@import 'tailwindcss';
+
+/* Design tokens: every colour and font of the app lives here.
+   Use them as Tailwind classes: bg-space, bg-panel, border-line, text-ink, text-muted,
+   text-accent, font-display... */
+@theme {
+  --color-space: #060a14; /* page background, night side of the Earth */
+  --color-panel: #0f1729; /* cards, panels, inputs */
+  --color-line: #1e2a44; /* thin borders */
+  --color-ink: #e6ecf5; /* main text */
+  --color-muted: #8a96ad; /* secondary text */
+  --color-accent: #8b7cf6; /* buttons, links, focus (never used for data) */
+
+  --font-sans: 'Inter Variable', system-ui, sans-serif;
+  --font-display: 'Space Grotesk Variable', system-ui, sans-serif;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  @apply bg-space font-sans text-ink antialiased;
+}
+
+h1,
+h2,
+h3 {
+  @apply font-display tracking-tight;
+}

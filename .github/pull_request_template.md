@@ -1,8 +1,8 @@
 **What changed**
 
 
-**Folder(s)**: pipeline / engine / graph / agent / app / common / contracts
+**Folder(s)**: pipeline / engine / graph / agent / api / web / common / contracts
 
-- [ ] Runs locally (`pytest`, and `streamlit run app/Home.py` if it touches the app)
-- [ ] If a contract changed: `contracts/` + examples updated and the team told
+- [ ] Runs locally (`pytest`; `npm run build` in `web/` if it touches the front end)
+- [ ] If a contract changed: `contracts/`, `api/schemas.py` and `web/src/lib/types.ts` updated, team told
 - [ ] No raw data, no secrets

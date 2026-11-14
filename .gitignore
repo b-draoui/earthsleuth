@@ -7,9 +7,13 @@ venv/
 .ruff_cache/
 .ipynb_checkpoints/
 
+# Front end
+node_modules/
+web/dist/
+
 # Secrets
 .env
-.streamlit/secrets.toml
+web/.env
 .netrc
 
 # Raw NASA downloads: big, never committed
