@@ -1,0 +1,10 @@
+{
+  "variable": "precip",
+  "unit": "mm/month",
+  "region": "mediterranean_north_africa",
+  "regional": {"slope_per_decade": -1.9, "ci95": [-3.4, -0.3], "p": 0.02, "significant": true},
+  "cells": {"n": 610, "sig_up": 41, "sig_down": 128, "pct_sig_area": 27.7},
+  "method": "anomalies; Theil-Sen; MK Hamed-Rao; BH-FDR q=0.10; cos-lat weights",
+  "datasets": ["GPM_3IMERGM v07"],
+  "run_id": "2026-11-15T03:12Z-ab12cd3"
+}

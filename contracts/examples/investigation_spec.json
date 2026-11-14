@@ -1,0 +1,8 @@
+{
+  "question": "Where is it getting hotter while water becomes scarcer?",
+  "concepts": ["surface heating", "water availability"],
+  "variables": ["t2m", "precip", "soil_moisture", "et"],
+  "region": "mediterranean_north_africa",
+  "period": ["2001-01", "2024-12"],
+  "outputs": ["trend_maps", "opposite_map", "clusters", "regional_series", "explanation"]
+}

@@ -1,0 +1,26 @@
+[
+  {
+    "id": "finding_precip_maghreb",
+    "kind": "regional_trend",
+    "variable": "precip",
+    "region": "maghreb",
+    "slope_dec": -1.9,
+    "ci95": [-3.4, -0.3],
+    "p": 0.02,
+    "q": 0.04,
+    "direction": "down",
+    "period": ["2001-01", "2024-12"],
+    "datasets": ["GPM_3IMERGM v07"],
+    "run_id": "2026-11-15T03:12Z-ab12cd3"
+  },
+  {
+    "id": "finding_cluster_0",
+    "kind": "cluster",
+    "cluster": 0,
+    "cluster_name": "warming + drying",
+    "signature": {"t2m": 1.2, "precip": -0.8, "soil_moisture": -1.1, "et": -0.4, "ndvi": -0.6},
+    "n_cells": 143,
+    "period": ["2001-01", "2024-12"],
+    "run_id": "2026-11-15T03:12Z-ab12cd3"
+  }
+]

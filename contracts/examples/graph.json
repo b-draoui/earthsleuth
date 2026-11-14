@@ -1,0 +1,18 @@
+{
+  "directed": true,
+  "multigraph": true,
+  "graph": {},
+  "nodes": [
+    {"id": "dataset_gpm_3imergm", "type": "Dataset", "label": "GPM_3IMERGM v07"},
+    {"id": "var_precip", "type": "Variable", "label": "Precipitation", "unit": "mm/month", "definition": "…"},
+    {"id": "concept_water_availability", "type": "Concept", "label": "Water availability"},
+    {"id": "finding_precip_maghreb", "type": "Finding", "label": "Rain decreasing in the Maghreb", "slope_dec": -1.9, "q": 0.04},
+    {"id": "hyp_1", "type": "Hypothesis", "label": "…", "status": "unverified"}
+  ],
+  "edges": [
+    {"source": "dataset_gpm_3imergm", "target": "var_precip", "type": "HAS_VARIABLE", "key": 0},
+    {"source": "var_precip", "target": "concept_water_availability", "type": "INDICATOR_OF", "key": 0},
+    {"source": "finding_precip_maghreb", "target": "var_precip", "type": "ABOUT", "key": 0},
+    {"source": "hyp_1", "target": "finding_precip_maghreb", "type": "BASED_ON", "key": 0}
+  ]
+}
