@@ -1,30 +1,58 @@
 import { AnimatePresence } from 'motion/react'
-import { Route, Routes, useLocation } from 'react-router'
+import { Suspense, lazy, useEffect } from 'react'
+import { Navigate, Route, Routes, useLocation } from 'react-router'
 import NavBar from './components/NavBar.tsx'
-import Explore from './pages/Explore.tsx'
-import Graph from './pages/Graph.tsx'
 import Home from './pages/Home.tsx'
-import Investigate from './pages/Investigate.tsx'
-import Radar from './pages/Radar.tsx'
-import Report from './pages/Report.tsx'
+
+// Heavier pages load on demand, so the opening appears fast.
+const Explore = lazy(() => import('./pages/Explore.tsx'))
+const Investigate = lazy(() => import('./pages/Investigate.tsx'))
+const Understand = lazy(() => import('./pages/Understand.tsx'))
+const Conclude = lazy(() => import('./pages/Conclude.tsx'))
 
 export default function App() {
   const location = useLocation()
 
+  useEffect(() => {
+    if (!location.hash) window.scrollTo({ top: 0 })
+  }, [location.pathname, location.hash])
+
   return (
     <>
+      <a href="#main" className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-[100] focus:rounded focus:bg-panel focus:px-3 focus:py-2">
+        Skip to content
+      </a>
       <NavBar />
-      {/* mode="wait": the old page fades out before the new one fades in */}
-      <AnimatePresence mode="wait">
-        <Routes location={location} key={location.pathname}>
-          <Route path="/" element={<Home />} />
-          <Route path="/investigate" element={<Investigate />} />
-          <Route path="/explore" element={<Explore />} />
-          <Route path="/radar" element={<Radar />} />
-          <Route path="/graph" element={<Graph />} />
-          <Route path="/report" element={<Report />} />
-        </Routes>
-      </AnimatePresence>
+      <div id="main">
+        <Suspense fallback={<PageLoading />}>
+          {/* mode="wait": the old page fades out before the new one fades in */}
+          <AnimatePresence mode="wait">
+            <Routes location={location} key={location.pathname}>
+              <Route path="/" element={<Home />} />
+              <Route path="/explore" element={<Explore />} />
+              <Route path="/investigate" element={<Investigate />} />
+              <Route path="/understand" element={<Understand />} />
+              <Route path="/conclude" element={<Conclude />} />
+              {/* older links */}
+              <Route path="/radar" element={<Navigate to="/understand" replace />} />
+              <Route path="/graph" element={<Navigate to="/understand#connections" replace />} />
+              <Route path="/report" element={<Navigate to="/conclude" replace />} />
+              <Route path="*" element={<Navigate to="/" replace />} />
+            </Routes>
+          </AnimatePresence>
+        </Suspense>
+      </div>
     </>
+  )
+}
+
+function PageLoading() {
+  return (
+    <div className="grid min-h-screen place-items-center">
+      <div className="relative size-10">
+        <span className="pulse-ring absolute inset-0 rounded-full border border-accent/60" />
+        <span className="absolute inset-3 rounded-full bg-accent/70" />
+      </div>
+    </div>
   )
 }

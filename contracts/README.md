@@ -31,10 +31,10 @@ xarray Dataset. Coordinates `time` (288), `lat` (22), `lon` (50), cell centres. 
 | `run_id`, `datasets` | str, str | provenance |
 
 ### `regional.parquet` (engine → agent, app). Proposal, one row per variable × region
-`variable, region, slope_dec, ci_lo, ci_hi, p, significant, n_cells, sig_up, sig_down, pct_sig_area, run_id`. Regional series = cos-latitude weighted mean of the land cells. The `regional` and `cells` blocks of Contract 2 are built from this file.
+`variable, region, slope_dec, ci_lo, ci_hi, p, significant, n_cells, sig_up, sig_down, pct_sig_area, unit, run_id`. Regional series = cos-latitude weighted mean of the land cells. The `regional` and `cells` blocks of Contract 2 are built from this file.
 
 ### `clusters.parquet` (engine/radar → agent, app). Proposal
-`cell_id, lat, lon, cluster` (int), `cluster_name` (e.g. "warming + drying"), plus one standardised slope column per variable id.
+`cell_id, lat, lon, cluster` (int), `cluster_name` (e.g. "warming + drying"), plus one standardised slope column per variable id, named by the id (`t2m`, `precip`, ...). Name groups from the sign of the real mean slope: a group that warms less than average is "weaker warming", never "cooling".
 
 ### `findings.json` (engine → graph). Proposal
 List of findings (one per variable × sub-region with a significant regional trend, one per cluster). See `examples/findings.json`.
@@ -51,4 +51,4 @@ networkx node-link format (`networkx.node_link_data`). Every node has `id`, `typ
 ## Open questions
 
 - "Years needed" on the Time series screen (how many more years before a non-significant trend could become significant): engine column or computed in the app?
-- Sub-region boxes (`SUBREGIONS`).
+- Sub-region boxes (`SUBREGIONS`): the app layer proposed 7 boxes in `common/config.py`. Confirm or change them.
