@@ -1,0 +1,26 @@
+# Layer A of the knowledge graph, filled by hand (Doc 2, section 8.1). About 100 nodes.
+# Only add papers someone on the team has actually opened.
+#
+# Node types: Mission, Instrument, Dataset, Variable, Concept, Region, Paper
+# Edge types: CARRIES, MEASURES, PROVIDES, HAS_VARIABLE, INDICATOR_OF, INFLUENCES, PART_OF
+# Variable and region ids must match common/config.py.
+
+nodes:
+  - {id: model_merra2, type: Mission, label: MERRA-2}
+  - {id: dataset_m2tmnxslv, type: Dataset, label: M2TMNXSLV v5.12.4}
+  - id: var_t2m
+    type: Variable
+    var_id: t2m
+    label: Air temperature (2 m)
+    unit: °C
+    cf_standard_name: TODO
+    definition: TODO one sentence for a high-school student
+  - {id: concept_surface_heating, type: Concept, label: Surface heating}
+  - {id: region_mediterranean_north_africa, type: Region, label: Mediterranean + North Africa}
+  # TODO(AI engineer): the rest of the missions, datasets, variables, concepts, sub-regions, papers
+
+edges:
+  - {source: model_merra2, target: dataset_m2tmnxslv, type: PROVIDES}
+  - {source: dataset_m2tmnxslv, target: var_t2m, type: HAS_VARIABLE}
+  - {source: var_t2m, target: concept_surface_heating, type: INDICATOR_OF}
+  # INFLUENCES edges need a paper: {source: ..., target: ..., type: INFLUENCES, paper: paper_id}

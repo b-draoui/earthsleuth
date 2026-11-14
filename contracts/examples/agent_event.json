@@ -1,0 +1,7 @@
+[
+  {"stage": "understand", "status": "done", "message": "Question is about heat and water availability", "data": {}},
+  {"stage": "plan", "status": "done", "message": "Plan ready", "data": {"spec": {"variables": ["t2m", "precip", "soil_moisture", "et"], "region": "mediterranean_north_africa", "period": ["2001-01", "2024-12"]}}},
+  {"stage": "analyse", "status": "running", "message": "Reading GLDAS soil moisture trends 2001–2024…", "data": {}},
+  {"stage": "check", "status": "done", "message": "Every number in the answer matches a tool output", "data": {}},
+  {"stage": "explain", "status": "done", "message": "Answer ready", "data": {"answer_md": "…", "evidence": [{"label": "observed", "source": "get_trend(precip, mediterranean_north_africa)"}]}}
+]

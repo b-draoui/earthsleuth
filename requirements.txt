@@ -1,0 +1,19 @@
+# What the deployed app needs. Streamlit Community Cloud installs this file.
+# Keep it light: download / Neo4j tools go in requirements-pipeline.txt.
+streamlit==1.67.0
+plotly==7.1.0
+pandas==3.1.1
+pyarrow==26.0.1
+numpy==2.5.4
+xarray==2026.9.0
+h5netcdf==1.8.3
+scipy==1.18.1
+pymannkendall==1.4.3
+statsmodels==0.15.0
+scikit-learn==1.9.1
+networkx==3.7
+pyvis==0.3.2
+pyyaml==6.0.3
+python-dotenv==1.2.4
+
+# LLM SDK: the AI engineer adds the one we use (pinned), e.g. anthropic==x.y.z
