@@ -11,7 +11,7 @@ export default defineConfig({
   optimizeDeps: {
     // Pre-bundle the map libraries at start-up, otherwise the first page load can fail
     // with "Outdated Optimize Dep" while Vite discovers them.
-    include: ['maplibre-gl', 'react-map-gl/maplibre'],
+    include: ['maplibre-gl', 'react-map-gl/maplibre', 'recharts', 'react-force-graph-2d', 'motion/react'],
   },
   server: {
     // In development, calls to /api go to FastAPI (uvicorn on port 8000).

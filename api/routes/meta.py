@@ -1,21 +1,27 @@
-"""Health check and the list of variables (ids, labels, units)."""
+"""Health check, variables (with plain definitions) and named regions."""
 
 from fastapi import APIRouter
 
-from api.schemas import Variable
-from common.config import USE_FAKE, VARIABLES
+from api import data_access as da
+from common.config import PERIOD, USE_FAKE
 
 router = APIRouter(tags=["meta"])
 
 
 @router.get("/health")
 def health() -> dict:
-    return {"status": "ok", "fake_data": USE_FAKE}
+    try:
+        run = da.run_id()
+    except FileNotFoundError:
+        run = None
+    return {"status": "ok", "fake_data": USE_FAKE, "simulated": USE_FAKE, "run_id": run, "period": list(PERIOD)}
 
 
 @router.get("/variables")
-def variables() -> list[Variable]:
-    return [
-        Variable(id=vid, label=v["label"], unit=v["unit"], dataset=v["dataset"], version=v["version"])
-        for vid, v in VARIABLES.items()
-    ]
+def variables() -> list[dict]:
+    return da.variables()
+
+
+@router.get("/regions")
+def regions() -> list[dict]:
+    return da.regions()
