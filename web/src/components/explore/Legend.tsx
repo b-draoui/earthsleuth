@@ -23,7 +23,7 @@ export default function Legend({
     const items = [
       { direction: 'down' as const, color: colors[1], label: `Significant: ${words[0]}` },
       { direction: 'up' as const, color: colors[5], label: `Significant: ${words[1]}` },
-      { direction: 'none' as const, color: '#1a2335', label: 'No significant change' },
+      { direction: 'none' as const, color: '#222325', label: 'No significant change' },
     ]
     return (
       <ul className="space-y-1.5" onMouseLeave={() => onHover(null)}>

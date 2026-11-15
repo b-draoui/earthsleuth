@@ -16,7 +16,7 @@ export default function TopoLines({ className = '', lines = 14, seed = 1 }: { cl
   return (
     <svg aria-hidden viewBox="0 0 1200 600" preserveAspectRatio="none" className={`pointer-events-none absolute inset-0 h-full w-full ${className}`}>
       {paths.map((d, i) => (
-        <path key={i} d={d} fill="none" stroke="#8fe6ff" strokeOpacity={i % 4 === 0 ? 0.09 : 0.045} strokeWidth={i % 4 === 0 ? 1.1 : 0.8} />
+        <path key={i} d={d} fill="none" stroke="#c8c2b4" strokeOpacity={i % 4 === 0 ? 0.09 : 0.045} strokeWidth={i % 4 === 0 ? 1.1 : 0.8} />
       ))}
     </svg>
   )

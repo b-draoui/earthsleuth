@@ -93,7 +93,7 @@ export default function CompareMaps({
             'fill-outline-color': 'rgba(12,13,14,0.18)',
           }}
         />
-        <Layer id={`cmp-${id}-sel`} type="line" filter={['==', ['get', 'cell_id'], selected ?? '']} paint={{ 'line-color': '#a99bff', 'line-width': 2.6 }} />
+        <Layer id={`cmp-${id}-sel`} type="line" filter={['==', ['get', 'cell_id'], selected ?? '']} paint={{ 'line-color': '#ece8e1', 'line-width': 2.6 }} />
       </Source>
       <CityLabels zoom={view.zoom} />
     </Map>

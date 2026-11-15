@@ -245,7 +245,7 @@ export default function Explore() {
                 id="cells-selected"
                 type="line"
                 filter={['==', ['get', 'cell_id'], cell ?? '']}
-                paint={{ 'line-color': '#a99bff', 'line-width': 2.6 }}
+                paint={{ 'line-color': '#ece8e1', 'line-width': 2.6 }}
               />
             </Source>
           )}

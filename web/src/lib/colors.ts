@@ -16,7 +16,7 @@ export const SCALE_OF: Record<VariableId, ScaleName> = {
   ndvi: 'water',
 }
 
-export const QUIET = '#1a2335'
+export const QUIET = '#222325'
 
 export const CATEGORICAL = ['#E69F00', '#56B4E9', '#009E73', '#F0E442', '#0072B2', '#D55E00', '#CC79A7', '#999999']
 

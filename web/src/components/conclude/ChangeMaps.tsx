@@ -9,7 +9,7 @@ import { VARS } from '../../lib/variables.ts'
 import MiniMap, { divergingColor } from '../MiniMap.tsx'
 import VarIcon from '../VarIcon.tsx'
 
-const QUIET = '#1a2335'
+const QUIET = '#222325'
 const cap = (s: string) => s.charAt(0).toUpperCase() + s.slice(1)
 
 export function headline(v: SummaryVariable): string {
@@ -95,7 +95,7 @@ export function TogetherMap({ s }: { s: Summary }) {
       if (!m) return null
       const a = sigDirection(m, 't2m', i) > 0
       const b = sigDirection(m, 'soil_moisture', i) < 0
-      return a && b ? '#c9b8ff' : a || b ? '#4b4470' : QUIET
+      return a && b ? '#e7c48f' : a || b ? '#5a4a33' : QUIET
     },
     [m],
   )
@@ -105,13 +105,13 @@ export function TogetherMap({ s }: { s: Summary }) {
       <MiniMap m={m} color={color} cities label="Cells where the air warmed and the soil dried, both significantly" />
       <figcaption className="flex flex-wrap gap-x-5 gap-y-2 px-5 py-4 text-xs text-muted">
         <span className="num flex items-center gap-2">
-          <span className="size-3 rounded-sm bg-[#c9b8ff]" /> warming and drying soils: {s.warming_drying.n_cells} cells
+          <span className="size-3 rounded-sm bg-[#e7c48f]" /> warming and drying soils: {s.warming_drying.n_cells} cells
         </span>
         <span className="flex items-center gap-2">
-          <span className="size-3 rounded-sm bg-[#4b4470]" /> only one of the two
+          <span className="size-3 rounded-sm bg-[#5a4a33]" /> only one of the two
         </span>
         <span className="flex items-center gap-2">
-          <span className="size-3 rounded-sm bg-[#1a2335]" /> neither, or could be chance
+          <span className="size-3 rounded-sm bg-[#222325]" /> neither, or could be chance
         </span>
       </figcaption>
     </figure>

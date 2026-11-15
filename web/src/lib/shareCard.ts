@@ -15,7 +15,7 @@ const H = 1350
 function resolve(color: string): string {
   const m = color.match(/var\((--[^)]+)\)/)
   if (!m) return color
-  return getComputedStyle(document.documentElement).getPropertyValue(m[1]).trim() || '#a99bff'
+  return getComputedStyle(document.documentElement).getPropertyValue(m[1]).trim() || '#d9a35b'
 }
 
 function roundRect(ctx: CanvasRenderingContext2D, x: number, y: number, w: number, h: number, r: number) {

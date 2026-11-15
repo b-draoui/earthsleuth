@@ -9,9 +9,9 @@ import type { Region, VariableId, VariableResult } from '../../lib/types.ts'
 import { VARS } from '../../lib/variables.ts'
 import MiniMap, { STUDY_VIEW } from '../MiniMap.tsx'
 
-const MATCH = '#c9b8ff'
-const PARTIAL = '#4b4470'
-const QUIET = '#1a2335'
+const MATCH = '#e7c48f'
+const PARTIAL = '#5a4a33'
+const QUIET = '#222325'
 
 interface Condition {
   v: VariableId
