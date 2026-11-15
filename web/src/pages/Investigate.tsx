@@ -133,7 +133,7 @@ export default function Investigate() {
             e.preventDefault()
             ask(question)
           }}
-          className="glass mt-8 flex items-center gap-2 rounded-full p-1.5 pl-6"
+          className="glass mt-8 flex items-center gap-2 rounded-[3px] p-1.5 pl-6"
         >
           <label htmlFor="q" className="sr-only">
             Your question
@@ -149,7 +149,7 @@ export default function Investigate() {
           <button
             type="submit"
             disabled={!question.trim() || status === 'running'}
-            className="cta shrink-0 rounded-full bg-space/80 px-6 py-3 font-display text-xs font-semibold tracking-[0.2em] uppercase transition-opacity disabled:opacity-40"
+            className="cta shrink-0 rounded-[3px] bg-space/80 px-6 py-3 font-display text-xs font-semibold tracking-[0.2em] uppercase transition-opacity disabled:opacity-40"
           >
             {status === 'running' ? 'Investigating…' : 'Investigate'}
           </button>
@@ -234,14 +234,14 @@ export default function Investigate() {
                           setQuestion('')
                           setParams({}, { replace: true })
                         }}
-                        className="rounded-full border border-line px-5 py-2.5 text-sm text-muted transition-colors hover:border-accent/50 hover:text-ink"
+                        className="rounded-[3px] border border-line px-5 py-2.5 text-sm text-muted transition-colors hover:border-accent/50 hover:text-ink"
                       >
                         New question
                       </button>
-                      <Link to="/understand" className="rounded-full border border-line px-5 py-2.5 text-sm text-muted transition-colors hover:border-accent/50 hover:text-ink">
+                      <Link to="/understand" className="rounded-[3px] border border-line px-5 py-2.5 text-sm text-muted transition-colors hover:border-accent/50 hover:text-ink">
                         04 · Understand the patterns →
                       </Link>
-                      <Link to="/conclude" className="rounded-full border border-line px-5 py-2.5 text-sm text-muted transition-colors hover:border-accent/50 hover:text-ink">
+                      <Link to="/conclude" className="rounded-[3px] border border-line px-5 py-2.5 text-sm text-muted transition-colors hover:border-accent/50 hover:text-ink">
                         05 · Read the report →
                       </Link>
                     </div>
@@ -354,7 +354,7 @@ function InsightCard({ r }: { r: VariableResult }) {
           <VarIcon id={r.variable} size={17} /> {id.short}
         </span>
         <span
-          className={`rounded-full border px-2.5 py-0.5 text-[10px] font-semibold tracking-wider uppercase ${
+          className={`rounded-[3px] border px-2.5 py-0.5 text-[10px] font-semibold tracking-wider uppercase ${
             sig ? 'border-accent/50 bg-accent/10 text-accent' : 'border-line text-faint'
           }`}
         >
@@ -371,7 +371,7 @@ function InsightCard({ r }: { r: VariableResult }) {
         95% range {signed(r.regional.ci95[0])} to {signed(r.regional.ci95[1])} · {pValue(r.regional.p)}
       </p>
       <div className="relative mt-5">
-        <div className="flex h-2 overflow-hidden rounded-full bg-white/5">
+        <div className="flex h-2 overflow-hidden rounded-[2px] bg-white/5">
           <motion.div initial={{ width: 0 }} animate={{ width: `${down}%` }} transition={{ duration: 1, delay: 0.2 }} style={{ background: scale[1] }} />
           <div className="flex-1" />
           <motion.div initial={{ width: 0 }} animate={{ width: `${up}%` }} transition={{ duration: 1, delay: 0.2 }} style={{ background: scale[5] }} />

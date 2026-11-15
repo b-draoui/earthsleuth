@@ -100,11 +100,11 @@ export default function Conclude() {
             <button
               onClick={download}
               disabled={!s || !vars}
-              className="cta rounded-full bg-space/80 px-7 py-3.5 font-display text-xs font-semibold tracking-[0.2em] uppercase disabled:opacity-40"
+              className="cta rounded-[3px] bg-space/80 px-7 py-3.5 font-display text-xs font-semibold tracking-[0.2em] uppercase disabled:opacity-40"
             >
               Download the report (.md)
             </button>
-            <button onClick={() => window.print()} className="rounded-full border border-line px-6 py-3 text-sm text-muted transition-colors hover:border-accent/50 hover:text-ink">
+            <button onClick={() => window.print()} className="rounded-[3px] border border-line px-6 py-3 text-sm text-muted transition-colors hover:border-accent/50 hover:text-ink">
               Print / save as PDF
             </button>
           </div>
@@ -193,10 +193,10 @@ export default function Conclude() {
           <Credits />
 
           <div className="mt-20 flex flex-wrap justify-center gap-4">
-            <Link to="/explore" className="rounded-full border border-line px-6 py-3 text-sm text-muted transition-colors hover:border-accent/50 hover:text-ink">
+            <Link to="/explore" className="rounded-[3px] border border-line px-6 py-3 text-sm text-muted transition-colors hover:border-accent/50 hover:text-ink">
               Back to the map
             </Link>
-            <Link to="/investigate" className="cta rounded-full bg-space/80 px-7 py-3 font-display text-xs font-semibold tracking-[0.2em] uppercase">
+            <Link to="/investigate" className="cta rounded-[3px] bg-space/80 px-7 py-3 font-display text-xs font-semibold tracking-[0.2em] uppercase">
               Ask another question
             </Link>
           </div>

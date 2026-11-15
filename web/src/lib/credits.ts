@@ -25,7 +25,7 @@ export const MAPS = [
 ]
 
 export const DESIGN = [
-  'Fonts: Inter (Rasmus Andersson) and Space Grotesk (Florian Karsten), SIL Open Font License 1.1, via Fontsource',
+  'Fonts: IBM Plex Sans and IBM Plex Mono (Mike Abbink, Bold Monday, for IBM), SIL Open Font License 1.1, via Fontsource',
   'Colours: ColorBrewer RdBu and BrBG diverging scales, Cynthia Brewer, colorbrewer2.org (Apache 2.0)',
   'Colours: Okabe–Ito colour-blind safe palette (Okabe & Ito, 2008)',
 ]

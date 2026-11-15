@@ -38,10 +38,10 @@ export default function Home() {
   return (
     <PageTransition className="grain">
       <section className="relative h-[100svh] min-h-[640px] overflow-hidden bg-space" aria-label="Introduction">
-        <div aria-hidden className="absolute inset-0 bg-[radial-gradient(ellipse_at_75%_85%,rgba(231,196,143,0.16),transparent_55%),radial-gradient(ellipse_at_15%_10%,rgba(80,120,220,0.18),transparent_50%)]" />
+        <div aria-hidden className="absolute inset-0 bg-[radial-gradient(ellipse_at_75%_85%,rgba(231,196,143,0.10),transparent_55%),radial-gradient(ellipse_at_15%_10%,rgba(200,194,180,0.05),transparent_50%)]" />
         <Starfield />
         <Globe onArrived={() => setArrived(true)} />
-        <div aria-hidden className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_35%,rgba(3,6,13,0.85)_100%)]" />
+        <div aria-hidden className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_35%,rgba(12,13,14,0.85)_100%)]" />
         <div aria-hidden className="pointer-events-none absolute inset-x-0 bottom-0 h-64 bg-gradient-to-t from-abyss to-transparent" />
 
         <motion.div
@@ -96,7 +96,7 @@ export default function Home() {
           >
             <a
               href="#flyover"
-              className="cta group inline-flex items-center gap-3 rounded-full bg-space/70 px-8 py-4 font-display text-sm font-semibold tracking-[0.22em] uppercase backdrop-blur transition-transform hover:scale-[1.03]"
+              className="cta group inline-flex items-center gap-3 rounded-[3px] bg-space/70 px-8 py-4 font-display text-sm font-semibold tracking-[0.22em] uppercase backdrop-blur transition-transform hover:scale-[1.03]"
             >
               Begin the investigation
               <span aria-hidden className="transition-transform group-hover:translate-y-0.5">↓</span>
@@ -212,7 +212,7 @@ export default function Home() {
           <Reveal delay={0.3} className="mt-16">
             <Link
               to="/explore"
-              className="cta inline-flex items-center gap-3 rounded-full bg-space/70 px-9 py-4 font-display text-sm font-semibold tracking-[0.22em] uppercase transition-transform hover:scale-[1.03]"
+              className="cta inline-flex items-center gap-3 rounded-[3px] bg-space/70 px-9 py-4 font-display text-sm font-semibold tracking-[0.22em] uppercase transition-transform hover:scale-[1.03]"
             >
               Enter the lab <span aria-hidden>→</span>
             </Link>

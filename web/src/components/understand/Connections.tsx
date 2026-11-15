@@ -105,7 +105,7 @@ export default function Connections({ graph }: { graph: KnowledgeGraph }) {
             const t = typeof link.target === 'object' ? link.target.id : link.target
             const lit = near && near.has(s) && near.has(t)
             if (link.type === 'INFLUENCES') return lit ? 'rgba(231,196,143,0.9)' : 'rgba(231,196,143,0.35)'
-            return lit ? 'rgba(169,155,255,0.8)' : near ? 'rgba(120,140,180,0.08)' : 'rgba(120,140,180,0.22)'
+            return lit ? 'rgba(217,163,91,0.85)' : near ? 'rgba(170,165,155,0.08)' : 'rgba(170,165,155,0.22)'
           }}
           linkWidth={(l) => ((l as L).type === 'INFLUENCES' ? 1.6 : 0.8)}
           linkDirectionalArrowLength={(l) => ((l as L).type === 'INFLUENCES' ? 5 : 0)}
@@ -136,8 +136,8 @@ export default function Connections({ graph }: { graph: KnowledgeGraph }) {
             const isNear = near?.has(node.id) && node.id !== focus?.id && near.size < 14
             if (LABELLED.has(node.type) || scale > 2.6 || node.id === focus?.id || isNear) {
               const size = Math.max(10 / scale, 2.5)
-              ctx.font = `${size}px Inter Variable, sans-serif`
-              ctx.fillStyle = dim ? 'rgba(233,238,247,0.2)' : 'rgba(233,238,247,0.85)'
+              ctx.font = `${size}px 'IBM Plex Sans Variable', sans-serif`
+              ctx.fillStyle = dim ? 'rgba(236,232,225,0.2)' : 'rgba(236,232,225,0.85)'
               ctx.textAlign = 'center'
               ctx.fillText(node.label.length > 34 ? `${node.label.slice(0, 32)}…` : node.label, node.x ?? 0, (node.y ?? 0) + r + size + 1)
             }

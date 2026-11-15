@@ -90,7 +90,7 @@ export default function CompareMaps({
             'fill-color': divergingExpression(meanExpr(years), max, scale),
             'fill-opacity': 0.9,
             'fill-color-transition': { duration: 700 },
-            'fill-outline-color': 'rgba(4,10,22,0.18)',
+            'fill-outline-color': 'rgba(12,13,14,0.18)',
           }}
         />
         <Layer id={`cmp-${id}-sel`} type="line" filter={['==', ['get', 'cell_id'], selected ?? '']} paint={{ 'line-color': '#a99bff', 'line-width': 2.6 }} />

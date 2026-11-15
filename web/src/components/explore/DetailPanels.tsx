@@ -31,7 +31,7 @@ function Shell({ title, kicker, onClose, children }: { title: string; kicker: st
           <p className="eyebrow">{kicker}</p>
           <h2 className="mt-1 text-xl font-semibold">{title}</h2>
         </div>
-        <button onClick={onClose} aria-label="Close" className="rounded-full p-2 text-muted transition-colors hover:bg-white/5 hover:text-ink">
+        <button onClick={onClose} aria-label="Close" className="rounded-[3px] p-2 text-muted transition-colors hover:bg-white/5 hover:text-ink">
           ✕
         </button>
       </div>
@@ -195,14 +195,14 @@ export function CellPanel({ variable, cellId, regions, onClose, onVariable, comp
           />
           <div className="mt-7 flex items-center justify-between">
             <p className="eyebrow">Monthly record</p>
-            <div role="tablist" className="flex rounded-full border border-line p-0.5 text-xs">
+            <div role="tablist" className="flex rounded-[3px] border border-line p-0.5 text-xs">
               {(['anomaly', 'raw'] as const).map((m) => (
                 <button
                   key={m}
                   role="tab"
                   aria-selected={mode === m}
                   onClick={() => setMode(m)}
-                  className={`rounded-full px-3 py-1 transition-colors ${mode === m ? 'bg-white/10 text-ink' : 'text-muted hover:text-ink'}`}
+                  className={`rounded-[3px] px-3 py-1 transition-colors ${mode === m ? 'bg-white/10 text-ink' : 'text-muted hover:text-ink'}`}
                 >
                   {m === 'anomaly' ? 'Without seasons' : 'As measured'}
                 </button>
@@ -225,7 +225,7 @@ export function CellPanel({ variable, cellId, regions, onClose, onVariable, comp
           <button
             onClick={toggleSound}
             aria-pressed={playing !== null}
-            className={`mt-3 flex w-full items-center justify-center gap-2 rounded-full border px-4 py-2 text-xs transition-colors ${
+            className={`mt-3 flex w-full items-center justify-center gap-2 rounded-[3px] border px-4 py-2 text-xs transition-colors ${
               playing !== null ? 'border-accent/60 bg-accent/10 text-ink' : 'border-line text-muted hover:border-accent/50 hover:text-ink'
             }`}
           >
@@ -290,7 +290,7 @@ export function RegionPanel({ variable, region, onClose, compare = false }: { va
           />
           <div className="mt-7">
             <p className="eyebrow">Local trends inside the region</p>
-            <div className="mt-3 flex h-3 overflow-hidden rounded-full bg-white/5">
+            <div className="mt-3 flex h-3 overflow-hidden rounded-[3px] bg-white/5">
               <div style={{ width: `${(stats.cells.sig_down / stats.cells.n) * 100}%`, background: SCALES[SCALE_OF[variable]][1] }} />
               <div className="flex-1" />
               <div style={{ width: `${(stats.cells.sig_up / stats.cells.n) * 100}%`, background: SCALES[SCALE_OF[variable]][5] }} />

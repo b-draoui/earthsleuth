@@ -1,15 +1,15 @@
 @import 'tailwindcss';
 
 @theme {
-  --color-space: #03060d;
-  --color-abyss: #060b16;
-  --color-panel: #0c1424;
-  --color-line: #1b2740;
-  --color-ink: #e9eef7;
-  --color-muted: #94a1ba;
-  --color-faint: #5d6a83;
-  --color-accent: #a99bff;
-  --color-glow: #8fe6ff;
+  --color-space: #0c0d0e;
+  --color-abyss: #121314;
+  --color-panel: #1a1b1d;
+  --color-line: #2d2e31;
+  --color-ink: #ece8e1;
+  --color-muted: #a8a49c;
+  --color-faint: #87837c;
+  --color-accent: #d9a35b;
+  --color-glow: #c8c2b4;
   --color-sand: #e7c48f;
 
   --color-v-t2m: #ff8a65;
@@ -18,8 +18,17 @@
   --color-v-et: #8ee8de;
   --color-v-ndvi: #8edc7c;
 
-  --font-sans: 'Inter Variable', system-ui, sans-serif;
-  --font-display: 'Space Grotesk Variable', system-ui, sans-serif;
+  --font-sans: 'IBM Plex Sans Variable', system-ui, sans-serif;
+  --font-display: 'IBM Plex Sans Variable', system-ui, sans-serif;
+  --font-mono: 'IBM Plex Mono', ui-monospace, monospace;
+
+  --radius-xs: 1px;
+  --radius-sm: 2px;
+  --radius-md: 3px;
+  --radius-lg: 3px;
+  --radius-xl: 4px;
+  --radius-2xl: 4px;
+  --radius-3xl: 5px;
 }
 
 html,
@@ -35,7 +44,7 @@ html {
 
 body {
   @apply bg-abyss font-sans text-ink antialiased;
-  font-feature-settings: 'cv11', 'ss01';
+  font-feature-settings: normal;
 }
 
 h1,
@@ -52,7 +61,7 @@ h4 {
 :focus-visible {
   outline: 2px solid var(--color-accent);
   outline-offset: 3px;
-  border-radius: 6px;
+  border-radius: 2px;
 }
 
 .num {
@@ -60,28 +69,21 @@ h4 {
 }
 
 .eyebrow {
-  @apply font-display text-[11px] font-medium uppercase tracking-[0.28em] text-faint;
+  @apply font-mono text-[11px] font-medium uppercase tracking-[0.08em] text-faint;
 }
 
 .glass {
-  background: linear-gradient(160deg, rgb(16 25 44 / 0.9), rgb(8 13 25 / 0.86));
-  border: 1px solid rgb(120 150 200 / 0.14);
-  box-shadow:
-    0 1px 0 rgb(255 255 255 / 0.04) inset,
-    0 24px 60px -20px rgb(0 0 0 / 0.7);
-  backdrop-filter: blur(18px) saturate(1.2);
-  -webkit-backdrop-filter: blur(18px) saturate(1.2);
+  background: rgb(26 27 29 / 0.97);
+  border: 1px solid var(--color-line);
+  box-shadow: 0 12px 28px -20px rgb(0 0 0 / 0.9);
 }
 
 .text-gradient {
-  background: linear-gradient(100deg, #f2e2c4 0%, #e7c48f 30%, #a99bff 70%, #8fe6ff 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
+  color: var(--color-sand);
 }
 
 .hairline {
-  background: linear-gradient(90deg, transparent, rgb(143 230 255 / 0.35), transparent);
+  background: var(--color-line);
   height: 1px;
 }
 
@@ -97,12 +99,17 @@ h4 {
 
 .scroll-thin {
   scrollbar-width: thin;
-  scrollbar-color: #2a3a5c transparent;
+  scrollbar-color: #3a3b3e transparent;
 }
 
 .cta {
   position: relative;
   isolation: isolate;
+  border: 1px solid color-mix(in oklab, var(--color-sand) 75%, transparent);
+  backdrop-filter: none !important;
+}
+.cta:hover {
+  background: color-mix(in oklab, var(--color-sand) 12%, transparent);
 }
 .cta::before {
   content: '';
@@ -118,6 +125,18 @@ h4 {
   mask-composite: exclude;
   animation: spin-angle 6s linear infinite;
   z-index: -1;
+  display: none;
+}
+
+[class*='tracking-[0.'] {
+  letter-spacing: 0.08em !important;
+}
+[class*='backdrop-blur'] {
+  -webkit-backdrop-filter: none !important;
+  backdrop-filter: none !important;
+}
+[class*='shadow-[0_0_'] {
+  box-shadow: none !important;
 }
 @property --angle {
   syntax: '<angle>';
@@ -159,7 +178,7 @@ h4 {
 }
 
 .maplibregl-ctrl-attrib {
-  background: rgb(6 11 22 / 0.6) !important;
+  background: rgb(18 19 20 / 0.7) !important;
   color: var(--color-faint) !important;
   font-size: 10px;
 }

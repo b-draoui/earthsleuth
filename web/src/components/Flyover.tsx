@@ -83,7 +83,7 @@ export default function Flyover() {
             </Source>
           )}
         </Map>
-        <div aria-hidden className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_40%,rgba(3,6,13,0.8)_100%)]" />
+        <div aria-hidden className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_40%,rgba(12,13,14,0.8)_100%)]" />
         <div aria-hidden className="pointer-events-none absolute inset-x-0 top-0 h-40 bg-gradient-to-b from-abyss to-transparent" />
         <div aria-hidden className="pointer-events-none absolute inset-x-0 bottom-0 h-48 bg-gradient-to-t from-abyss to-transparent" />
 
@@ -166,7 +166,7 @@ export default function Flyover() {
               })}
             </div>
             <div className="mt-3 w-56">
-              <div className="h-1.5 rounded-full" style={{ background: cssGradient('temperature') }} />
+              <div className="h-1.5 rounded-[3px]" style={{ background: cssGradient('temperature') }} />
               <p className="num mt-1 flex justify-between text-[10px] text-faint">
                 <span>−{plain(trends.meta.anomaly_max)} colder</span>
                 <span>warmer +{plain(trends.meta.anomaly_max)}</span>

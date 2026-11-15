@@ -54,14 +54,14 @@ export default function NavBar() {
                   <NavLink
                     to={s.to}
                     aria-label={`${s.n} ${s.label}`}
-                    className={`relative flex items-center gap-2 rounded-full px-3 py-1.5 text-[13px] transition-colors ${
+                    className={`relative flex items-center gap-2 rounded-[3px] px-3 py-1.5 text-[13px] transition-colors ${
                       isActive ? 'text-ink' : 'text-muted hover:text-ink'
                     }`}
                   >
                     {isActive && (
                       <motion.span
                         layoutId="nav-pill"
-                        className="absolute inset-0 rounded-full border border-accent/40 bg-accent/10 shadow-[0_0_24px_-6px_var(--color-accent)]"
+                        className="absolute inset-0 rounded-[3px] border border-accent/40 bg-accent/10"
                         transition={{ type: 'spring', stiffness: 380, damping: 32 }}
                       />
                     )}
@@ -96,7 +96,7 @@ function Logo() {
         <radialGradient id="logo-g" cx="35%" cy="35%" r="70%">
           <stop offset="0%" stopColor="#8fe6ff" stopOpacity="0.9" />
           <stop offset="60%" stopColor="#1b3a66" />
-          <stop offset="100%" stopColor="#081326" />
+          <stop offset="100%" stopColor="#17181a" />
         </radialGradient>
       </defs>
       <circle cx="16" cy="16" r="10" fill="url(#logo-g)" stroke="#a99bff" strokeOpacity="0.7" />

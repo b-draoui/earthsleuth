@@ -73,8 +73,8 @@ export default function Starfield({ density = 1, className = '' }: { density?: n
         const x = d.x * w - pointer.x * 30
         const y = d.y * h - pointer.y * 20
         const g = ctx.createRadialGradient(x, y, 0, x, y, d.r * 4)
-        g.addColorStop(0, 'rgba(143,230,255,0.9)')
-        g.addColorStop(1, 'rgba(143,230,255,0)')
+        g.addColorStop(0, 'rgba(236,232,225,0.75)')
+        g.addColorStop(1, 'rgba(236,232,225,0)')
         ctx.globalAlpha = d.a
         ctx.fillStyle = g
         ctx.beginPath()

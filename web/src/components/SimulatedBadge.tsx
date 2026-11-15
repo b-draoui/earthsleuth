@@ -12,7 +12,7 @@ export default function SimulatedBadge({ compact = false }: { compact?: boolean 
   return (
     <span
       title="The app is reading synthetic data made to build it. Numbers are real statistics on simulated series, not findings about the real Earth."
-      className="inline-flex items-center gap-1.5 rounded-full border border-sand/40 bg-sand/10 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-sand"
+      className="inline-flex items-center gap-1.5 rounded-[3px] border border-sand/40 bg-sand/10 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-sand"
     >
       <span className="size-1.5 rounded-full bg-sand" />
       {compact ? 'Simulated' : 'Simulated data'}

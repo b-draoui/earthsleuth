@@ -26,7 +26,7 @@ export default function CitySearch({
 
   return (
     <div className={`relative ${className}`}>
-      <div className={`flex items-center gap-2 rounded-full border border-line bg-abyss/70 backdrop-blur focus-within:border-accent/60 ${big ? 'px-5 py-3' : 'px-3.5 py-2'}`}>
+      <div className={`flex items-center gap-2 rounded-[3px] border border-line bg-abyss/70 backdrop-blur focus-within:border-accent/60 ${big ? 'px-5 py-3' : 'px-3.5 py-2'}`}>
         <svg width={big ? 18 : 14} height={big ? 18 : 14} viewBox="0 0 24 24" aria-hidden className="shrink-0 text-faint">
           <circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" strokeWidth="2" />
           <path d="m20 20-4-4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />

@@ -51,7 +51,7 @@ export default function Legend({
   })
   return (
     <div>
-      <div className="flex h-3.5 overflow-hidden rounded-full" onMouseLeave={() => onHover(null)}>
+      <div className="flex h-3.5 overflow-hidden rounded-[3px]" onMouseLeave={() => onHover(null)}>
         {bins.map((b, i) => (
           <button
             key={i}

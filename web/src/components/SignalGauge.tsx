@@ -9,7 +9,7 @@ export default function SignalGauge({ value, threshold = 0.1, label = 'q' }: { v
   const signal = value < threshold
   return (
     <div>
-      <div className="relative h-2.5 rounded-full bg-gradient-to-r from-accent/70 via-accent/25 to-white/5">
+      <div className="relative h-2.5 rounded-[3px] bg-gradient-to-r from-accent/70 via-accent/25 to-white/5">
         <div className="absolute inset-y-[-4px] w-px bg-sand/80" style={{ left: `${t * 100}%` }} />
         <motion.div
           className="absolute top-1/2 size-4 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-abyss"

@@ -232,7 +232,7 @@ export default function Explore() {
                   'fill-opacity': fillOpacity,
                   'fill-color-transition': { duration: 700 },
                   'fill-opacity-transition': { duration: 350 },
-                  'fill-outline-color': 'rgba(4,10,22,0.18)',
+                  'fill-outline-color': 'rgba(12,13,14,0.18)',
                 }}
               />
               <Layer
@@ -295,7 +295,7 @@ export default function Explore() {
                 <button
                   aria-pressed={r.id === regionId}
                   title={`Open ${r.label}`}
-                  className={`hidden rounded-full border px-2.5 py-1 md:inline-block font-display text-[10px] tracking-[0.25em] uppercase backdrop-blur-sm transition-all hover:scale-110 hover:border-sand hover:text-sand ${
+                  className={`hidden rounded-[3px] border px-2.5 py-1 md:inline-block font-display text-[10px] tracking-[0.25em] uppercase backdrop-blur-sm transition-all hover:scale-110 hover:border-sand hover:text-sand ${
                     r.id === regionId ? 'border-sand bg-sand/15 text-sand' : 'border-white/20 bg-abyss/50 text-white/70'
                   }`}
                 >
@@ -361,7 +361,7 @@ export default function Explore() {
                   on ? 'bg-white/[0.07] text-ink' : 'text-muted hover:bg-white/[0.04] hover:text-ink'
                 }`}
               >
-                {on && <motion.span layoutId="var-glow" className="absolute inset-x-3 bottom-0 h-[3px] rounded-full md:inset-x-auto md:inset-y-1.5 md:left-0 md:h-auto md:w-[3px]" style={{ background: VARS[v].color, boxShadow: `0 0 12px ${VARS[v].color}` }} />}
+                {on && <motion.span layoutId="var-glow" className="absolute inset-x-3 bottom-0 h-[3px] rounded-full md:inset-x-auto md:inset-y-1.5 md:left-0 md:h-auto md:w-[3px]" style={{ background: VARS[v].color, boxShadow: "none" }} />}
                 <span style={{ color: VARS[v].color }}>
                   <VarIcon id={v} size={18} />
                 </span>
@@ -372,7 +372,7 @@ export default function Explore() {
           })}
         </div>
 
-        <div className="mt-5 grid grid-cols-4 rounded-full border border-line p-0.5 text-[11px]" role="tablist" aria-label="View">
+        <div className="mt-5 grid grid-cols-4 rounded-[3px] border border-line p-0.5 text-[11px]" role="tablist" aria-label="View">
           {MODES.map((m) => (
             <button
               key={m.id}
@@ -382,9 +382,9 @@ export default function Explore() {
                 setPlaying(false)
                 set({ mode: m.id })
               }}
-              className={`relative rounded-full px-2 py-1.5 transition-colors ${mode === m.id ? 'text-ink' : 'text-muted hover:text-ink'}`}
+              className={`relative rounded-[3px] px-2 py-1.5 transition-colors ${mode === m.id ? 'text-ink' : 'text-muted hover:text-ink'}`}
             >
-              {mode === m.id && <motion.span layoutId="mode-pill" className="absolute inset-0 rounded-full bg-white/10" />}
+              {mode === m.id && <motion.span layoutId="mode-pill" className="absolute inset-0 rounded-[2px] bg-white/10" />}
               <span className="relative">{m.label}</span>
             </button>
           ))}
@@ -392,7 +392,7 @@ export default function Explore() {
         <button
           onClick={() => setMore(!more)}
           aria-expanded={more}
-          className="mt-3 w-full rounded-full border border-line py-1.5 text-xs text-muted md:hidden"
+          className="mt-3 w-full rounded-[3px] border border-line py-1.5 text-xs text-muted md:hidden"
         >
           {more ? 'Hide legend' : 'Legend and details'}
         </button>

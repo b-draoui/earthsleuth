@@ -57,7 +57,7 @@ export default function PlaceSignals({
         <button
           onClick={share}
           disabled={busy}
-          className="shrink-0 rounded-full border border-line px-3 py-1 text-[11px] whitespace-nowrap text-muted transition-colors hover:border-accent/50 hover:text-ink disabled:opacity-50"
+          className="shrink-0 rounded-[3px] border border-line px-3 py-1 text-[11px] whitespace-nowrap text-muted transition-colors hover:border-accent/50 hover:text-ink disabled:opacity-50"
         >
           {busy ? 'Making…' : 'Share card ↓'}
         </button>

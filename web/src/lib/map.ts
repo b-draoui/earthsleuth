@@ -81,13 +81,13 @@ export function regionStyle(): StyleSpecification {
       grid: { type: 'geojson', data: graticule(5) },
     },
     layers: [
-      { id: 'ocean', type: 'background', paint: { 'background-color': '#040a16' } },
-      { id: 'grid', type: 'line', source: 'grid', paint: { 'line-color': '#6d8cc0', 'line-opacity': 0.09, 'line-width': 0.6 } },
-      { id: 'land', type: 'fill', source: 'land', paint: { 'fill-color': '#0f192b' } },
-      { id: 'sea', type: 'fill', source: 'sea', paint: { 'fill-color': '#040a16' } },
-      { id: 'sea-grid', type: 'line', source: 'grid', paint: { 'line-color': '#6d8cc0', 'line-opacity': 0.08, 'line-width': 0.6 } },
-      { id: 'borders', type: 'line', source: 'borders', paint: { 'line-color': '#9fb3d6', 'line-opacity': 0.22, 'line-width': 0.6, 'line-dasharray': [3, 2] } },
-      { id: 'coast', type: 'line', source: 'land', paint: { 'line-color': '#a7dff2', 'line-opacity': 0.6, 'line-width': 0.8 } },
+      { id: 'ocean', type: 'background', paint: { 'background-color': '#0c0d0e' } },
+      { id: 'grid', type: 'line', source: 'grid', paint: { 'line-color': '#8f8a82', 'line-opacity': 0.08, 'line-width': 0.6 } },
+      { id: 'land', type: 'fill', source: 'land', paint: { 'fill-color': '#1a1b1d' } },
+      { id: 'sea', type: 'fill', source: 'sea', paint: { 'fill-color': '#0c0d0e' } },
+      { id: 'sea-grid', type: 'line', source: 'grid', paint: { 'line-color': '#8f8a82', 'line-opacity': 0.07, 'line-width': 0.6 } },
+      { id: 'borders', type: 'line', source: 'borders', paint: { 'line-color': '#a8a398', 'line-opacity': 0.22, 'line-width': 0.6, 'line-dasharray': [3, 2] } },
+      { id: 'coast', type: 'line', source: 'land', paint: { 'line-color': '#c4beb2', 'line-opacity': 0.6, 'line-width': 0.8 } },
     ],
   }
 }

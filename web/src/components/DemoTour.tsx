@@ -134,7 +134,7 @@ export function TourProvider({ children }: { children: ReactNode }) {
                   {STEPS[step].caption}
                 </motion.p>
               </AnimatePresence>
-              <button onClick={stop} className="shrink-0 rounded-full border border-line px-3 py-1 text-xs text-muted hover:text-ink" aria-label="Stop the tour">
+              <button onClick={stop} className="shrink-0 rounded-[3px] border border-line px-3 py-1 text-xs text-muted hover:text-ink" aria-label="Stop the tour">
                 Stop ✕
               </button>
             </div>

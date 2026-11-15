@@ -82,7 +82,7 @@ export default function Understand() {
           <Reveal className="mt-16 text-center">
             <Link
               to="/conclude"
-              className="cta inline-flex items-center gap-3 rounded-full bg-space/70 px-9 py-4 font-display text-sm font-semibold tracking-[0.22em] uppercase transition-transform hover:scale-[1.03]"
+              className="cta inline-flex items-center gap-3 rounded-[3px] bg-space/70 px-9 py-4 font-display text-sm font-semibold tracking-[0.22em] uppercase transition-transform hover:scale-[1.03]"
             >
               05 · Conclude <span aria-hidden>→</span>
             </Link>
@@ -116,7 +116,7 @@ function RadarRow({ r }: { r: RankingRow }) {
               whileInView={{ width: `${(r.pct_down / max) * 100}%` }}
               viewport={{ once: true }}
               transition={{ duration: 1.1, ease: [0.22, 1, 0.36, 1] }}
-              className="h-full rounded-l-full"
+              className="h-full rounded-l-[2px]"
               style={{ background: scale[1] }}
             />
           </div>
@@ -126,7 +126,7 @@ function RadarRow({ r }: { r: RankingRow }) {
               whileInView={{ width: `${(r.pct_up / max) * 100}%` }}
               viewport={{ once: true }}
               transition={{ duration: 1.1, ease: [0.22, 1, 0.36, 1] }}
-              className="h-full rounded-r-full"
+              className="h-full rounded-r-[2px]"
               style={{ background: scale[5] }}
             />
           </div>

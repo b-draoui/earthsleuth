@@ -77,7 +77,7 @@ export default function MiniMap({ m, color, opacity, view = STUDY_VIEW, cities =
             height={K}
             fill={fill}
             fillOpacity={opacity ? opacity(i) : 0.92}
-            stroke="#060a14"
+            stroke="#0c0d0e"
             strokeWidth={0.05}
             onMouseEnter={tooltip ? (e) => setHover({ i, x: e.clientX, y: e.clientY }) : undefined}
             onMouseMove={tooltip ? (e) => setHover({ i, x: e.clientX, y: e.clientY }) : undefined}
@@ -110,7 +110,7 @@ export default function MiniMap({ m, color, opacity, view = STUDY_VIEW, cities =
         {cities &&
           CITIES.filter((c) => c.tier === 1 && c.lon > lo0 && c.lon < lo1 && c.lat > la0 && c.lat < la1).map((c) => (
             <g key={c.name} pointerEvents="none">
-              <circle cx={px(c.lon)} cy={py(c.lat)} r={font * 0.28} fill="#fff" stroke="#060a14" strokeWidth={font * 0.08} />
+              <circle cx={px(c.lon)} cy={py(c.lat)} r={font * 0.28} fill="#fff" stroke="#0c0d0e" strokeWidth={font * 0.08} />
               <text
                 x={px(c.lon) + (c.side === 'l' ? -font * 0.5 : font * 0.5)}
                 y={py(c.lat)}
@@ -118,10 +118,10 @@ export default function MiniMap({ m, color, opacity, view = STUDY_VIEW, cities =
                 textAnchor={c.side === 'l' ? 'end' : 'start'}
                 fontSize={font}
                 fill="#fff"
-                stroke="#060a14"
+                stroke="#0c0d0e"
                 strokeWidth={font * 0.22}
                 paintOrder="stroke"
-                fontFamily="Inter Variable, system-ui, sans-serif"
+                fontFamily="IBM Plex Sans Variable, system-ui, sans-serif"
               >
                 {c.name}
               </text>

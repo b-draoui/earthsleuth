@@ -34,17 +34,17 @@ export async function drawPlaceCard(opts: { title: string; subtitle: string; row
   c.width = W
   c.height = H
   const ctx = c.getContext('2d')!
-  const display = "'Space Grotesk Variable', system-ui, sans-serif"
-  const sans = "'Inter Variable', system-ui, sans-serif"
+  const display = "'IBM Plex Sans Variable', system-ui, sans-serif"
+  const sans = "'IBM Plex Sans Variable', system-ui, sans-serif"
 
   const g = ctx.createLinearGradient(0, 0, 0, H)
-  g.addColorStop(0, '#070b16')
-  g.addColorStop(1, '#0c1428')
+  g.addColorStop(0, '#0e0f10')
+  g.addColorStop(1, '#1a1b1d')
   ctx.fillStyle = g
   ctx.fillRect(0, 0, W, H)
   const glow = ctx.createRadialGradient(W * 0.85, H * 0.08, 0, W * 0.85, H * 0.08, 700)
-  glow.addColorStop(0, 'rgba(169,155,255,0.22)')
-  glow.addColorStop(1, 'rgba(169,155,255,0)')
+  glow.addColorStop(0, 'rgba(231,196,143,0.14)')
+  glow.addColorStop(1, 'rgba(231,196,143,0)')
   ctx.fillStyle = glow
   ctx.fillRect(0, 0, W, H)
 
