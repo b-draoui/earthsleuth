@@ -1,0 +1,1 @@
+var e=[`t2m`,`precip`,`soil_moisture`,`et`,`ndvi`],t=[`understand`,`plan`,`analyse`,`check`,`explain`];export{e as n,t};
