@@ -4,6 +4,8 @@ import Map, { Layer, Source } from 'react-map-gl/maplibre'
 import { divergingExpression, type ScaleName } from '../../lib/colors.ts'
 import { latLon, signed } from '../../lib/format.ts'
 import { regionStyle } from '../../lib/map.ts'
+import { nearestCity } from '../../lib/cities.ts'
+import CityLabels from '../CityLabels.tsx'
 import type { TrendCell, TrendsGeoJSON } from '../../lib/types.ts'
 
 import { AFTER, BEFORE } from '../../lib/periods.ts'
@@ -99,6 +101,7 @@ export default function CompareMaps({
         />
         <Layer id={`cmp-${id}-sel`} type="line" filter={['==', ['get', 'cell_id'], selected ?? '']} paint={{ 'line-color': '#a99bff', 'line-width': 2.6 }} />
       </Source>
+      <CityLabels zoom={view.zoom} />
     </Map>
   )
 
@@ -156,7 +159,12 @@ export default function CompareMaps({
 
       {hover && (
         <div className="glass pointer-events-none absolute z-30 w-60 rounded-xl px-3 py-2.5 text-xs" style={{ left: hover.x + 16, top: hover.y + 16 }}>
-          <p className="num text-faint">{latLon(hover.props.lat, hover.props.lon)}</p>
+          <p className="num text-faint">
+            {nearestCity(hover.props.lat, hover.props.lon) && (
+              <span className="font-sans text-ink">{nearestCity(hover.props.lat, hover.props.lon)!.name} area · </span>
+            )}
+            {latLon(hover.props.lat, hover.props.lon)}
+          </p>
           <p className="num mt-1 text-sm text-ink">
             {signed(meanOf(hover.props, BEFORE))} → {signed(meanOf(hover.props, AFTER))} {unit}
           </p>

@@ -7,6 +7,7 @@ import type { Region, VariableId } from '../../lib/types.ts'
 import { useFetch } from '../../lib/useFetch.ts'
 import { VARS, directionWord } from '../../lib/variables.ts'
 import { SCALES, SCALE_OF } from '../../lib/colors.ts'
+import { nearestCity } from '../../lib/cities.ts'
 import { AFTER, AFTER_LABEL, BEFORE, BEFORE_LABEL, windowMean } from '../../lib/periods.ts'
 import SeriesChart from '../SeriesChart.tsx'
 import SignalGauge from '../SignalGauge.tsx'
@@ -135,9 +136,14 @@ export function CellPanel({ variable, cellId, regions, onClose, compare = false 
   const { data, error } = useFetch(`series:${variable}:${cellId}`, () => api.series(variable, cellId))
   const id = VARS[variable]
   const names = data?.regions.map((r) => regions.find((x) => x.id === r)?.label ?? r) ?? []
+  const city = data ? nearestCity(data.lat, data.lon) : null
 
   return (
-    <Shell title={data ? latLon(data.lat, data.lon) : 'Loading…'} kicker={`One 1° cell${names.length ? ` · ${names.join(', ')}` : ''}`} onClose={onClose}>
+    <Shell
+      title={data ? (city ? `${city.name} area` : latLon(data.lat, data.lon)) : 'Loading…'}
+      kicker={`One 1° cell${data && city ? ` · ${latLon(data.lat, data.lon)}` : ''}${names.length ? ` · ${names.join(', ')}` : ''}`}
+      onClose={onClose}
+    >
       {error && <p className="text-sm text-rose-300">{error.message}</p>}
       {!data && !error && <div className="skeleton h-80 rounded-2xl" />}
       {data && (

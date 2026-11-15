@@ -111,3 +111,20 @@ export const PLACE_LABELS = [
   { name: 'Atlas', lon: -4.5, lat: 32, kind: 'land' },
   { name: 'Alps', lon: 10, lat: 46.3, kind: 'land' },
 ] as const
+
+/**
+ * Where each region button sits on the lab map. The box centre would land on a capital
+ * (Madrid, Cairo, Ankara...), so these points sit in clear ground next to it.
+ * Regions not listed fall back to the centre of their box.
+ */
+export const REGION_CHIP_AT: Record<string, [number, number]> = {
+  iberia: [-3.6, 41.9],
+  italy_balkans: [15.5, 43.1],
+  nile_delta: [30.8, 32.1],
+  levant: [37.9, 34.7],
+  anatolia: [33.4, 38.3],
+}
+
+export function regionChipAt(id: string, bbox: [number, number, number, number] | number[]): [number, number] {
+  return REGION_CHIP_AT[id] ?? [(bbox[0] + bbox[1]) / 2, (bbox[2] + bbox[3]) / 2]
+}

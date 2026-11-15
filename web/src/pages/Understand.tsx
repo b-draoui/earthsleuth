@@ -13,6 +13,7 @@ import { api } from '../lib/api.ts'
 import { CATEGORICAL, SCALES, SCALE_OF } from '../lib/colors.ts'
 import { pct, pValue, signed } from '../lib/format.ts'
 import { regionStyle } from '../lib/map.ts'
+import CityLabels from '../components/CityLabels.tsx'
 import { VARIABLE_IDS, type ClusterSummary, type ClustersGeoJSON, type RankingRow } from '../lib/types.ts'
 import { useFetch } from '../lib/useFetch.ts'
 import { VARS } from '../lib/variables.ts'
@@ -171,6 +172,7 @@ function Clusters({ data, features }: { data: ClusterSummary[]; features: Cluste
           <Source id="clusters" type="geojson" data={features}>
             <Layer id="clusters-fill" type="fill" beforeId="sea" paint={{ 'fill-color': color, 'fill-opacity': opacity, 'fill-opacity-transition': { duration: 300 } }} />
           </Source>
+          <CityLabels zoom={3} maxTier={1} />
         </Map>
       </div>
       <ul className="space-y-3">

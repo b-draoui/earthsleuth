@@ -14,7 +14,9 @@ import VarIcon from '../components/VarIcon.tsx'
 import { api } from '../lib/api.ts'
 import { QUIET, SCALES, SCALE_OF, divergingExpression } from '../lib/colors.ts'
 import { latLon, pValue, signed } from '../lib/format.ts'
-import { PLACE_LABELS, regionStyle } from '../lib/map.ts'
+import { PLACE_LABELS, regionChipAt, regionStyle } from '../lib/map.ts'
+import { nearestCity } from '../lib/cities.ts'
+import CityLabels from '../components/CityLabels.tsx'
 import { VARIABLE_IDS, type Region, type TrendCell, type VariableId } from '../lib/types.ts'
 import { prefetch, useFetch } from '../lib/useFetch.ts'
 import { VARS } from '../lib/variables.ts'
@@ -44,6 +46,7 @@ export default function Explore() {
   const [playing, setPlaying] = useState(false)
   const [hover, setHover] = useState<{ x: number; y: number; props: TrendCell } | null>(null)
   const [legendHover, setLegendHover] = useState<LegendHover>(null)
+  const [zoom, setZoom] = useState(3.8)
   const [more, setMore] = useState(false) // phones: legend and details folded by default
   const map = useRef<MapRef>(null)
   const style = useMemo(() => regionStyle(), [])
@@ -180,7 +183,11 @@ export default function Explore() {
           onClick={onClick}
           cursor={hover ? 'pointer' : 'grab'}
           attributionControl={{ compact: true, customAttribution: 'Natural Earth' }}
-          onLoad={() => region && flyToRegion(region)}
+          onLoad={() => {
+            if (map.current) setZoom(map.current.getZoom())
+            if (region) flyToRegion(region)
+          }}
+          onZoomEnd={(e) => setZoom(e.viewState.zoom)}
           style={{ position: 'absolute', inset: 0 }}
         >
           {trends && (
@@ -230,6 +237,7 @@ export default function Explore() {
               <Layer id="region-box" type="line" paint={{ 'line-color': '#e7c48f', 'line-width': 1.6, 'line-dasharray': [3, 2] }} />
             </Source>
           )}
+          <CityLabels zoom={zoom} />
           {PLACE_LABELS.map((p) => (
             <Marker key={p.name} longitude={p.lon} latitude={p.lat} anchor="center" style={{ pointerEvents: 'none' }}>
               <span
@@ -245,8 +253,8 @@ export default function Explore() {
             .map((r) => (
               <Marker
                 key={r.id}
-                longitude={(r.bbox[0] + r.bbox[1]) / 2}
-                latitude={(r.bbox[2] + r.bbox[3]) / 2}
+                longitude={regionChipAt(r.id, r.bbox)[0]}
+                latitude={regionChipAt(r.id, r.bbox)[1]}
                 anchor="center"
                 onClick={(e) => {
                   e.originalEvent.stopPropagation()
@@ -273,7 +281,12 @@ export default function Explore() {
         {/* hover card */}
         {hover && mode !== 'compare' && (
           <div className="glass pointer-events-none absolute z-20 w-56 rounded-xl px-3 py-2.5 text-xs" style={{ left: hover.x + 16, top: hover.y + 16 }}>
-            <p className="num text-faint">{latLon(hover.props.lat, hover.props.lon)}</p>
+            <p className="num text-faint">
+              {nearestCity(hover.props.lat, hover.props.lon) && (
+                <span className="font-sans text-ink">{nearestCity(hover.props.lat, hover.props.lon)!.name} area · </span>
+              )}
+              {latLon(hover.props.lat, hover.props.lon)}
+            </p>
             {mode === 'year' ? (
               <p className="num mt-1 text-sm text-ink">
                 {year}: {signed(hover.props[`y${year}`] as number)} {meta?.unit} vs. usual
