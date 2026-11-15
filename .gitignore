@@ -23,3 +23,10 @@ Thumbs.db
 .idea/
 
 *.dump
+
+.streamlit/secrets.toml
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
