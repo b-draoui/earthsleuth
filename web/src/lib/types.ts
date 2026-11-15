@@ -177,6 +177,24 @@ export interface Summary {
   run_id: string
 }
 
+/** /api/cells: every land cell with the trend of all five variables, aligned by index. */
+export interface CellsVariable {
+  unit: string
+  slope_max: number
+  slope: (number | null)[]
+  ci_lo: (number | null)[]
+  ci_hi: (number | null)[]
+  q: (number | null)[]
+  sig: boolean[]
+}
+
+export interface CellsMatrix {
+  cells: { id: string; lat: number; lon: number }[]
+  variables: Record<VariableId, CellsVariable>
+  simulated: boolean
+  run_id: string
+}
+
 export interface GraphNode {
   id: string
   type: string

@@ -33,6 +33,7 @@ def _warm_up() -> None:
     try:
         da.summary()
         da.clusters_geojson()
+        da.cells_matrix()
         da.graph()
         for v in VARIABLES:
             da.trends_payload(v, gzipped=True)

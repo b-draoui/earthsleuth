@@ -17,6 +17,9 @@ import { latLon, pValue, signed } from '../lib/format.ts'
 import { PLACE_LABELS, regionChipAt, regionStyle } from '../lib/map.ts'
 import { nearestCity } from '../lib/cities.ts'
 import CityLabels from '../components/CityLabels.tsx'
+import CitySearch from '../components/CitySearch.tsx'
+import { nearestLandCell, useCells } from '../lib/cells.ts'
+import type { City } from '../lib/cities.ts'
 import { VARIABLE_IDS, type Region, type TrendCell, type VariableId } from '../lib/types.ts'
 import { prefetch, useFetch } from '../lib/useFetch.ts'
 import { VARS } from '../lib/variables.ts'
@@ -33,6 +36,7 @@ const HOME_BOUNDS: [[number, number], [number, number]] = [
   [41, 48.5],
 ]
 const BIG = 1e9
+const TINY: Record<VariableId, string> = { t2m: 'Temp.', precip: 'Rain', soil_moisture: 'Soil', et: 'Evap.', ndvi: 'Green' }
 
 /** 02 · Explore: the lab. A map of every land cell, five layers, three ways of looking. */
 export default function Explore() {
@@ -49,7 +53,9 @@ export default function Explore() {
   const [zoom, setZoom] = useState(3.8)
   const [more, setMore] = useState(false) // phones: legend and details folded by default
   const map = useRef<MapRef>(null)
+  const panel = useRef<HTMLElement>(null)
   const style = useMemo(() => regionStyle(), [])
+  const { data: cellsM } = useCells()
 
   const set = useCallback(
     (patch: Record<string, string | null>) => {
@@ -137,13 +143,45 @@ export default function Explore() {
     : null
 
   // ------------------------------------------------------------ interactions
-  const flyToRegion = (r: Region | null) => {
+  // phones: the layer panel sits on top of the map, so keep the map below it
+  const phoneTop = () => Math.max(20, (panel.current?.getBoundingClientRect().bottom ?? 300) - 64 + 8)
+  const flyToRegion = (r: Region | null, duration = 1200) => {
     const m = map.current
     if (!m) return
     const wide = window.innerWidth >= 768
-    const padding = wide ? { top: 90, bottom: mode === 'year' ? 150 : 90, left: 340, right: 460 } : 40
-    if (!r) m.fitBounds(HOME_BOUNDS, { padding: wide ? { top: 70, bottom: 110, left: 320, right: 40 } : 20, duration: 1200 })
-    else m.fitBounds([[r.bbox[0], r.bbox[2]], [r.bbox[1], r.bbox[3]]], { padding, maxZoom: 5, duration: 1400, essential: true })
+    const padding = wide ? { top: 90, bottom: mode === 'year' ? 150 : 90, left: 340, right: 460 } : { top: phoneTop(), bottom: 12, left: 8, right: 8 }
+    if (!r) m.fitBounds(HOME_BOUNDS, { padding: wide ? { top: 70, bottom: 110, left: 320, right: 40 } : { top: phoneTop(), bottom: 12, left: 4, right: 4 }, duration })
+    else m.fitBounds([[r.bbox[0], r.bbox[2]], [r.bbox[1], r.bbox[3]]], { padding, maxZoom: 5, duration: duration + 200, essential: true })
+  }
+  const flyToPoint = (lat: number, lon: number, duration = 1600) => {
+    const m = map.current
+    if (!m) return
+    const wide = window.innerWidth >= 768
+    m.flyTo({
+      center: [lon, lat],
+      zoom: Math.max(m.getZoom(), wide ? 5.4 : 4.6),
+      padding: wide ? { top: 60, bottom: 60, left: 320, right: 440 } : { top: 16, bottom: Math.round(window.innerHeight * 0.58), left: 0, right: 0 },
+      duration,
+      essential: true,
+    })
+  }
+  // a cell set from outside (a link, the tour): bring it into view if it is off screen
+  useEffect(() => {
+    const m = map.current
+    if (!cell || !m) return
+    const [la, lo] = cell.split('_').map(Number)
+    if (!Number.isFinite(la) || !Number.isFinite(lo)) return
+    if (!m.getBounds().contains([lo, la])) flyToPoint(la, lo)
+    // only when the selected cell changes
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [cell])
+
+  const pickCity = (c: City) => {
+    if (!cellsM) return
+    const i = nearestLandCell(cellsM, c.lat, c.lon)
+    if (i < 0) return
+    set({ cell: cellsM.cells[i].id, region: null })
+    flyToPoint(c.lat, c.lon)
   }
 
   const onMove = (e: MapLayerMouseEvent) => {
@@ -172,9 +210,9 @@ export default function Explore() {
           ref={map}
           initialViewState={{ bounds: HOME_BOUNDS, fitBoundsOptions: { padding: { top: 30, bottom: 80, left: window.innerWidth >= 768 ? 320 : 10, right: 30 } } }}
           mapStyle={style}
-          minZoom={2.4}
+          minZoom={1.8}
           maxZoom={7.5}
-          maxBounds={[-40, 5, 70, 62]}
+          maxBounds={window.innerWidth >= 768 ? [-40, 5, 70, 62] : [-70, -30, 100, 80]}
           dragRotate={false}
           pitchWithRotate={false}
           interactiveLayerIds={['cells-fill']}
@@ -184,8 +222,12 @@ export default function Explore() {
           cursor={hover ? 'pointer' : 'grab'}
           attributionControl={{ compact: true, customAttribution: 'Natural Earth' }}
           onLoad={() => {
-            if (map.current) setZoom(map.current.getZoom())
             if (region) flyToRegion(region)
+            else if (cell) {
+              const [la, lo] = cell.split('_').map(Number)
+              if (Number.isFinite(la) && Number.isFinite(lo)) flyToPoint(la, lo, 1800)
+            } else if (window.innerWidth < 768) flyToRegion(null, 0)
+            if (map.current) setZoom(map.current.getZoom())
           }}
           onZoomEnd={(e) => setZoom(e.viewState.zoom)}
           style={{ position: 'absolute', inset: 0 }}
@@ -264,7 +306,7 @@ export default function Explore() {
                 <button
                   aria-pressed={r.id === regionId}
                   title={`Open ${r.label}`}
-                  className={`rounded-full border px-2.5 py-1 font-display text-[10px] tracking-[0.25em] uppercase backdrop-blur-sm transition-all hover:scale-110 hover:border-sand hover:text-sand ${
+                  className={`hidden rounded-full border px-2.5 py-1 md:inline-block font-display text-[10px] tracking-[0.25em] uppercase backdrop-blur-sm transition-all hover:scale-110 hover:border-sand hover:text-sand ${
                     r.id === regionId ? 'border-sand bg-sand/15 text-sand' : 'border-white/20 bg-abyss/50 text-white/70'
                   }`}
                 >
@@ -310,14 +352,16 @@ export default function Explore() {
         animate={{ opacity: 1, x: 0 }}
         transition={{ delay: 0.2, duration: 0.6 }}
         aria-label="Layers"
-        className="glass scroll-thin absolute top-20 left-3 z-30 max-h-[calc(100svh-6rem)] w-[calc(100%-1.5rem)] overflow-y-auto rounded-3xl p-4 md:left-5 md:w-[290px] md:p-5"
+        ref={panel}
+        className={`glass scroll-thin absolute top-20 left-3 z-30 ${cell || region ? 'max-md:hidden' : ''} max-h-[calc(100svh-6rem)] w-[calc(100%-1.5rem)] overflow-y-auto rounded-3xl p-4 md:left-5 md:w-[290px] md:p-5`}
       >
         <div className="flex items-center justify-between">
           <p className="eyebrow">02 · The lab</p>
           <SimulatedBadge compact />
         </div>
+        <CitySearch onPick={pickCity} className="mt-3" />
 
-        <div role="radiogroup" aria-label="Variable" className="mt-4 flex gap-1.5 overflow-x-auto md:grid md:grid-cols-1 md:gap-1">
+        <div role="radiogroup" aria-label="Variable" className="mt-3 grid grid-cols-5 gap-1 md:mt-4 md:grid-cols-1">
           {VARIABLE_IDS.map((v) => {
             const on = v === variable
             return (
@@ -326,15 +370,16 @@ export default function Explore() {
                 role="radio"
                 aria-checked={on}
                 onClick={() => set({ v })}
-                className={`group relative flex shrink-0 items-center gap-3 rounded-xl px-3 py-2 text-left text-sm transition-all ${
+                className={`group relative flex flex-col items-center gap-1 rounded-xl px-1 py-2 text-center text-[10px] transition-all md:flex-row md:gap-3 md:px-3 md:text-left md:text-sm ${
                   on ? 'bg-white/[0.07] text-ink' : 'text-muted hover:bg-white/[0.04] hover:text-ink'
                 }`}
               >
-                {on && <motion.span layoutId="var-glow" className="absolute inset-y-1.5 left-0 w-[3px] rounded-full" style={{ background: VARS[v].color, boxShadow: `0 0 12px ${VARS[v].color}` }} />}
+                {on && <motion.span layoutId="var-glow" className="absolute inset-x-3 bottom-0 h-[3px] rounded-full md:inset-x-auto md:inset-y-1.5 md:left-0 md:h-auto md:w-[3px]" style={{ background: VARS[v].color, boxShadow: `0 0 12px ${VARS[v].color}` }} />}
                 <span style={{ color: VARS[v].color }}>
                   <VarIcon id={v} size={18} />
                 </span>
-                <span className="whitespace-nowrap">{VARS[v].short}</span>
+                <span className="whitespace-nowrap md:hidden">{TINY[v]}</span>
+                <span className="hidden whitespace-nowrap md:inline">{VARS[v].short}</span>
               </button>
             )
           })}
@@ -433,10 +478,10 @@ export default function Explore() {
       </motion.section>
 
       {/* ------------------------------------------------------------ right: details */}
-      <div className="pointer-events-none absolute right-3 bottom-3 z-30 flex max-h-[calc(100svh-6rem)] md:top-20 md:right-5 md:bottom-auto">
+      <div className="pointer-events-none absolute right-3 bottom-3 left-3 z-30 flex max-h-[58svh] md:top-20 md:right-5 md:bottom-auto md:left-auto md:max-h-[calc(100svh-6rem)]">
         <AnimatePresence mode="wait">
           {cell ? (
-            <CellPanel key={`c-${cell}-${variable}`} variable={variable} cellId={cell} regions={regions} compare={mode === 'compare'} onClose={() => set({ cell: null })} />
+            <CellPanel key={`c-${cell}-${variable}`} variable={variable} cellId={cell} regions={regions} compare={mode === 'compare'} onVariable={(v) => set({ v })} onClose={() => set({ cell: null })} />
           ) : region ? (
             <RegionPanel
               key={`r-${region.id}-${variable}`}

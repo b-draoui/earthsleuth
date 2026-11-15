@@ -113,3 +113,19 @@ def test_prebuilt_map_layers_match_computed(tmp_path):
         assert "fake" in da.cache_name(v, gzipped=False)
         assert raw == da.trends_payload(v, gzipped=False)
         assert gzip.decompress((tmp_path / da.cache_name(v, gzipped=True)).read_bytes()) == raw
+
+
+def test_cells_matrix_matches_the_trends():
+    """/api/cells (small maps, place card) must say exactly what the map layers say."""
+    m = client.get("/api/cells").json()
+    assert set(m["variables"]) == set(VARIABLES)
+    n = len(m["cells"])
+    for v, x in m["variables"].items():
+        assert len(x["slope"]) == len(x["sig"]) == len(x["q"]) == n
+        fc = client.get(f"/api/trends/{v}").json()
+        by_id = {f["properties"]["cell_id"]: f["properties"] for f in fc["features"]}
+        assert sum(x["sig"]) == fc["meta"]["n_significant"]
+        for i in (0, n // 2, n - 1):
+            p = by_id[m["cells"][i]["id"]]
+            assert p["significant"] == x["sig"][i]
+            assert abs(p["slope_dec"] - x["slope"][i]) < 1e-3

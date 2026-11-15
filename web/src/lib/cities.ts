@@ -64,6 +64,24 @@ export const CITIES: City[] = [
 
 /** Zoom from which tier-2 cities appear. */
 export const TIER2_ZOOM = 4.4
+/** Below this zoom (phones, small maps) only the MAJOR cities are named. */
+export const TIER1_ZOOM = 3.0
+export const MAJOR = new Set(['Madrid', 'Rome', 'Athens', 'Istanbul', 'Cairo', 'Tunis', 'Algiers', 'Tripoli', 'Beirut', 'Rabat'])
+
+/** Cities to name at a zoom level. */
+export function citiesAt(zoom: number, maxTier: 1 | 2 = 2): City[] {
+  return CITIES.filter((c) => (c.tier === 2 ? maxTier === 2 && zoom >= TIER2_ZOOM : zoom >= TIER1_ZOOM || MAJOR.has(c.name)))
+}
+
+/** Search by name, accents and case ignored: names starting with the text first. */
+export function searchCities(text: string, limit = 6): City[] {
+  const norm = (s: string) => s.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase()
+  const q = norm(text.trim())
+  if (!q) return []
+  const starts = CITIES.filter((c) => norm(c.name).startsWith(q))
+  const inside = CITIES.filter((c) => !starts.includes(c) && norm(c.name).includes(q))
+  return [...starts, ...inside].slice(0, limit)
+}
 
 /** Closest city within ~1.5° of a point (distance corrected for latitude), or null. */
 export function nearestCity(lat: number, lon: number, maxDeg = 1.5): City | null {

@@ -1,5 +1,5 @@
 import { Marker } from 'react-map-gl/maplibre'
-import { CITIES, TIER2_ZOOM } from '../lib/cities.ts'
+import { citiesAt } from '../lib/cities.ts'
 
 /**
  * City dots and names as HTML markers (the basemap has no font server).
@@ -8,7 +8,7 @@ import { CITIES, TIER2_ZOOM } from '../lib/cities.ts'
 export default function CityLabels({ zoom, maxTier = 2 }: { zoom: number; maxTier?: 1 | 2 }) {
   return (
     <>
-      {CITIES.filter((c) => c.tier === 1 || (maxTier === 2 && zoom >= TIER2_ZOOM)).map((c) => (
+      {citiesAt(zoom, maxTier).map((c) => (
         <Marker key={c.name} longitude={c.lon} latitude={c.lat} anchor="center" style={{ pointerEvents: 'none' }}>
           <span className="relative block size-0">
             <span className="absolute -top-[3px] -left-[3px] size-[6px] rounded-full border border-abyss bg-white/90 shadow-[0_0_6px_rgba(255,255,255,0.6)]" />

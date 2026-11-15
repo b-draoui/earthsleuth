@@ -37,7 +37,7 @@ export default function NavBar() {
       <div className="mx-auto flex h-16 max-w-[1600px] items-center gap-6 px-5 md:px-8">
         <NavLink to="/" className="group flex shrink-0 items-center gap-2.5" aria-label="EarthSleuth home">
           <Logo />
-          <span className="font-display text-[17px] font-semibold tracking-tight">EarthSleuth</span>
+          <span className="hidden font-display text-[17px] font-semibold tracking-tight sm:inline">EarthSleuth</span>
         </NavLink>
 
         <nav aria-label="Investigation steps" className="scroll-thin -mx-2 flex flex-1 justify-start overflow-x-auto px-2 md:justify-center">
@@ -54,6 +54,7 @@ export default function NavBar() {
                   )}
                   <NavLink
                     to={s.to}
+                    aria-label={`${s.n} ${s.label}`}
                     className={`relative flex items-center gap-2 rounded-full px-3 py-1.5 text-[13px] transition-colors ${
                       isActive ? 'text-ink' : 'text-muted hover:text-ink'
                     }`}
@@ -66,7 +67,7 @@ export default function NavBar() {
                       />
                     )}
                     <span className={`relative num text-[10px] ${isActive ? 'text-accent' : 'text-faint'}`}>{s.n}</span>
-                    <span className="relative whitespace-nowrap">{s.label}</span>
+                    <span className={`relative whitespace-nowrap ${isActive ? '' : 'hidden md:inline'}`}>{s.label}</span>
                   </NavLink>
                 </li>
               )

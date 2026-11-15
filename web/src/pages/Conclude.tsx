@@ -1,14 +1,16 @@
-import { Link } from 'react-router'
+import { useEffect } from 'react'
+import { Link, useLocation } from 'react-router'
 import Footer from '../components/Footer.tsx'
 import PageTransition from '../components/PageTransition.tsx'
 import Reveal from '../components/Reveal.tsx'
 import SimulatedBadge from '../components/SimulatedBadge.tsx'
 import TopoLines from '../components/TopoLines.tsx'
-import VarIcon from '../components/VarIcon.tsx'
+import { ChangeMaps, TogetherMap } from '../components/conclude/ChangeMaps.tsx'
 import { api } from '../lib/api.ts'
 import { bigNumber, pValue, pct, signed } from '../lib/format.ts'
 import type { Summary, Variable } from '../lib/types.ts'
 import { useFetch } from '../lib/useFetch.ts'
+import { AI_USE, CHALLENGE, DATA, DESIGN, MAPS, METHODS, SOFTWARE, creditsMarkdown } from '../lib/credits.ts'
 import { VARS, directionWord } from '../lib/variables.ts'
 
 function sentence(v: Summary['variables'][number]): string {
@@ -48,6 +50,8 @@ function toMarkdown(s: Summary, vars: Variable[]): string {
     ...vars.map((v) => `- ${v.label}: ${v.dataset} v${v.version} (${v.unit})`),
     `- Study area: ${s.region_label}, ${s.n_land_cells} land cells of 1°, ${bigNumber(s.land_area_km2)} km².`,
     `- Run: ${s.run_id}`,
+    '',
+    ...creditsMarkdown(),
   ]
   return lines.filter((l, i, a) => !(l === '' && a[i - 1] === '')).join('\n')
 }
@@ -56,6 +60,14 @@ function toMarkdown(s: Summary, vars: Variable[]): string {
 export default function Conclude() {
   const { data: s } = useFetch('summary', api.summary)
   const { data: vars } = useFetch('variables', api.variables)
+  const { hash } = useLocation()
+
+  // links to /conclude#credits (footer) land on the credits
+  useEffect(() => {
+    if (hash !== '#credits') return
+    const t = window.setTimeout(() => document.getElementById('credits')?.scrollIntoView({ behavior: 'smooth' }), 700)
+    return () => window.clearTimeout(t)
+  }, [hash, s])
 
   const download = () => {
     if (!s || !vars) return
@@ -113,22 +125,12 @@ export default function Conclude() {
           )}
 
           <Section n="I" title="What changed">
-            <div className="space-y-4">
-              {s.variables.map((v, i) => (
-                <Reveal key={v.variable} delay={i * 0.05}>
-                  <div className="glass flex gap-4 rounded-2xl p-5">
-                    <span className="mt-0.5 shrink-0" style={{ color: VARS[v.variable].color }}>
-                      <VarIcon id={v.variable} size={22} />
-                    </span>
-                    <p className="text-sm leading-relaxed text-muted">{sentence(v)}</p>
-                  </div>
-                </Reveal>
-              ))}
-            </div>
+            <ChangeMaps s={s} sentence={sentence} />
           </Section>
 
           <Section n="II" title="Where things change together">
-            <p className="leading-relaxed text-muted">
+            <TogetherMap s={s} />
+            <p className="mt-5 leading-relaxed text-muted">
               In <strong className="text-ink">{s.warming_drying.n_cells} cells</strong> ({s.warming_drying.pct_cells}% of the
               land), the air warmed and the soil dried, both significantly, at the same place.{' '}
               <Link to="/understand" className="text-accent underline-offset-4 hover:underline">
@@ -190,6 +192,8 @@ export default function Conclude() {
             <p className="mt-4 text-xs text-faint">Method string: {s.method}</p>
           </Section>
 
+          <Credits />
+
           <div className="mt-20 flex flex-wrap justify-center gap-4">
             <Link to="/explore" className="rounded-full border border-line px-6 py-3 text-sm text-muted transition-colors hover:border-accent/50 hover:text-ink">
               Back to the map
@@ -205,9 +209,49 @@ export default function Conclude() {
   )
 }
 
-function Section({ n, title, children }: { n: string; title: string; children: React.ReactNode }) {
+function Credits() {
+  const h = 'mt-6 mb-2 text-xs font-semibold tracking-[0.18em] text-faint uppercase'
   return (
-    <section className="mt-16 first:mt-0">
+    <Section n="VI" title="Credits and use of AI" id="credits">
+      <div className="text-sm leading-relaxed text-muted">
+        <p>
+          Built for the {CHALLENGE.event}, challenge <strong className="text-ink">“{CHALLENGE.title}”</strong>.
+        </p>
+        <p className={h}>Data (NASA)</p>
+        <ul className="space-y-1.5">
+          {DATA.map((d) => (
+            <li key={d.doi}>
+              {d.name}. {d.by}.{' '}
+              <a href={`https://doi.org/${d.doi}`} target="_blank" rel="noreferrer" className="num text-accent underline-offset-4 hover:underline">
+                doi:{d.doi}
+              </a>
+            </li>
+          ))}
+        </ul>
+        <p className={h}>Maps and imagery</p>
+        <ul className="space-y-1.5">{MAPS.map((m) => <li key={m}>{m}</li>)}</ul>
+        <p className={h}>Methods</p>
+        <ul className="space-y-1.5">{METHODS.map((m) => <li key={m}>{m}</li>)}</ul>
+        <p className={h}>Fonts and colours</p>
+        <ul className="space-y-1.5">{DESIGN.map((m) => <li key={m}>{m}</li>)}</ul>
+        <p className={h}>Open-source software</p>
+        <ul className="space-y-1.5">
+          {SOFTWARE.map((g) => (
+            <li key={g.group}>
+              <span className="text-ink">{g.group}:</span> {g.items.map(([n, l]) => `${n} (${l})`).join(', ')}
+            </li>
+          ))}
+        </ul>
+        <p className={h}>Use of AI</p>
+        <p>{AI_USE}</p>
+      </div>
+    </Section>
+  )
+}
+
+function Section({ n, title, children, id }: { n: string; title: string; children: React.ReactNode; id?: string }) {
+  return (
+    <section id={id} className="mt-16 scroll-mt-24 first:mt-0">
       <Reveal>
         <div className="mb-6 flex items-baseline gap-4">
           <span className="num font-display text-sm text-accent">{n}</span>

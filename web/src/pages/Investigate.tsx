@@ -6,6 +6,7 @@ import PageTransition from '../components/PageTransition.tsx'
 import SimulatedBadge from '../components/SimulatedBadge.tsx'
 import TopoLines from '../components/TopoLines.tsx'
 import VarIcon from '../components/VarIcon.tsx'
+import AnswerMap from '../components/investigate/AnswerMap.tsx'
 import { api, streamAgent } from '../lib/api.ts'
 import { pValue, pct, signed } from '../lib/format.ts'
 import { STAGES, type AgentEvent, type Evidence, type Stage, type VariableResult } from '../lib/types.ts'
@@ -32,6 +33,7 @@ export default function Investigate() {
   const [asked, setAsked] = useState('')
   const stop = useRef<(() => void) | null>(null)
   const { data: demos } = useFetch('demos', api.demos)
+  const { data: regions = [] } = useFetch('regions', api.regions)
 
   const run = (path: string, label: string) => {
     stop.current?.()
@@ -58,6 +60,17 @@ export default function Investigate() {
     // run once with the question from the URL
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
+
+  // ?case=<demo id> opens a case file directly (used by the guided tour)
+  const caseId = params.get('case')
+  useEffect(() => {
+    if (!caseId || !demos) return
+    const d = demos.find((x) => x.id === caseId)
+    if (!d) return
+    setQuestion(d.question)
+    run(`/demos/${d.id}`, d.question)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [caseId, demos])
 
   const derived = useMemo(() => {
     const stage: Record<Stage, { state: 'pending' | 'running' | 'done' | 'error'; messages: string[] }> = {
@@ -182,6 +195,7 @@ export default function Investigate() {
                 </p>
               )}
               <EvidenceBoard results={derived.results} />
+              {derived.answer && derived.results.length > 0 && <AnswerMap results={derived.results} regions={regions} />}
               <AnimatePresence>
                 {derived.answer && (
                   <motion.section

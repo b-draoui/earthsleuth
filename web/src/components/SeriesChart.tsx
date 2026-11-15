@@ -19,6 +19,7 @@ export default function SeriesChart({
   mode,
   height = 220,
   windows,
+  cursor,
 }: {
   time: string[]
   value: (number | null)[]
@@ -30,6 +31,8 @@ export default function SeriesChart({
   height?: number
   /** periods to highlight, e.g. [['2001-01', '2005-12', 'before']] */
   windows?: [string, string, string][]
+  /** a month to mark, e.g. the one playing */
+  cursor?: string | null
 }) {
   const data = useMemo(
     () =>
@@ -77,6 +80,7 @@ export default function SeriesChart({
             />
           ))}
           {mode === 'anomaly' && <ReferenceLine y={0} stroke="#3a4a6b" />}
+          {cursor && <ReferenceLine x={cursor} stroke="#ffffff" strokeOpacity={0.85} strokeWidth={1.5} ifOverflow="extendDomain" />}
           {mode === 'anomaly' && (
             <Area dataKey="band" stroke="none" fill="#ffe2b8" fillOpacity={0.14} isAnimationActive animationDuration={900} />
           )}

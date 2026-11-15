@@ -392,6 +392,36 @@ def clusters_geojson() -> dict:
     return {"type": "FeatureCollection", "features": features, "meta": {"clusters": summary, "simulated": USE_FAKE}}
 
 
+@lru_cache
+def cells_matrix() -> dict:
+    """All land cells x all variables in one light table (no yearly values).
+    Used by the answer map, the small maps of the report and the place card."""
+    t = load_trends()
+    cells = (
+        t[["cell_id", "lat", "lon"]].drop_duplicates("cell_id").sort_values(["lat", "lon"], ascending=[False, True])
+    )
+    ids = cells.cell_id.tolist()
+    out: dict = {
+        "cells": [{"id": c, "lat": _f(la, 2), "lon": _f(lo, 2)} for c, la, lo in zip(ids, cells.lat, cells.lon)],
+        "variables": {},
+    }
+    for v in VARIABLES:
+        sub = t[t.variable == v].set_index("cell_id").reindex(ids)
+        slopes = sub.slope_dec.astype(float)
+        out["variables"][v] = {
+            "unit": str(sub.unit.dropna().iloc[0]) if sub.unit.notna().any() else "",
+            "slope_max": _f(_robust_max(slopes.abs().dropna())),
+            "slope": [None if pd.isna(x) else _f(x, 5) for x in slopes],
+            "ci_lo": [None if pd.isna(x) else _f(x, 5) for x in sub.ci_lo.astype(float)],
+            "ci_hi": [None if pd.isna(x) else _f(x, 5) for x in sub.ci_hi.astype(float)],
+            "q": [None if pd.isna(x) else _f(x, 4) for x in sub.q.astype(float)],
+            "sig": [bool(x) if not pd.isna(x) else False for x in sub.significant],
+        }
+    out["simulated"] = USE_FAKE
+    out["run_id"] = run_id()
+    return out
+
+
 def co_occurrence(var_a: str, dir_a: str, var_b: str, dir_b: str) -> dict:
     """Cells where both variables have a significant trend in the given directions."""
     t = load_trends()

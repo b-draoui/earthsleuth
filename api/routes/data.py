@@ -66,6 +66,14 @@ def clusters() -> dict:
     return da.clusters_geojson()
 
 
+@router.get("/cells")
+def cells(response: Response) -> dict:
+    """Every land cell with the trend of all five variables (slope, 95% range, q, significant).
+    Light enough for small maps and the place card; the map layers stay in /trends/{variable}."""
+    response.headers["Cache-Control"] = "public, max-age=600"
+    return da.cells_matrix()
+
+
 @router.get("/summary")
 def summary() -> dict:
     return da.summary()

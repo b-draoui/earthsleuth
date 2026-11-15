@@ -1,5 +1,6 @@
 import { Link } from 'react-router'
 import { SimulatedNote } from './SimulatedBadge.tsx'
+import { CHALLENGE } from '../lib/credits.ts'
 
 export default function Footer() {
   return (
@@ -9,7 +10,7 @@ export default function Footer() {
           <p className="font-display text-lg font-semibold">EarthSleuth</p>
           <p className="mt-2 text-sm leading-relaxed text-muted">
             An investigation into 24 years of environmental change across the Mediterranean and North Africa. Built for the
-            NASA Space Apps Challenge 2026.
+            {' '}{CHALLENGE.event}, challenge “{CHALLENGE.title}”.
           </p>
           <SimulatedNote className="mt-4" />
         </div>
@@ -29,10 +30,11 @@ export default function Footer() {
           <p className="leading-relaxed">
             Trends: monthly anomalies, Theil–Sen slope, Mann–Kendall test with Hamed–Rao correction, false discovery rate
             controlled at 10%. AI is used to plan investigations and write explanations; every number it quotes comes from
-            the statistics engine.
+            the statistics engine. The app was built with the help of AI tools (Claude and ChatGPT).
           </p>
           <p className="mt-3 text-xs text-faint">
-            Not affiliated with or endorsed by NASA. <Link to="/conclude" className="underline-offset-4 hover:underline">Method and provenance</Link>
+            Not affiliated with or endorsed by NASA. <Link to="/conclude" className="underline-offset-4 hover:underline">Method and provenance</Link> ·{' '}
+            <Link to="/conclude#credits" className="underline-offset-4 hover:underline">Credits and use of AI</Link>
           </p>
         </div>
       </div>

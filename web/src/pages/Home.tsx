@@ -2,6 +2,8 @@ import { motion } from 'motion/react'
 import { useState } from 'react'
 import { Link } from 'react-router'
 import Footer from '../components/Footer.tsx'
+import Flyover from '../components/Flyover.tsx'
+import { TourButton } from '../components/DemoTour.tsx'
 import Globe from '../components/Globe.tsx'
 import PageTransition from '../components/PageTransition.tsx'
 import Reveal, { Chapter } from '../components/Reveal.tsx'
@@ -15,6 +17,15 @@ import { bigNumber, pct, signed } from '../lib/format.ts'
 import type { Summary, Variable } from '../lib/types.ts'
 import { useFetch } from '../lib/useFetch.ts'
 import { VARS, directionWord } from '../lib/variables.ts'
+import { CHALLENGE } from '../lib/credits.ts'
+
+const CHALLENGE_PARTS = [
+  { q: 'What is changing?', a: 'Five NASA variables: MERRA-2, GPM IMERG, GLDAS and MODIS.', where: 'Understand', to: '/understand' },
+  { q: 'Where?', a: 'Every 1° land cell on the map, and seven sub-regions.', where: 'Explore', to: '/explore' },
+  { q: 'How much?', a: 'Change per decade (Theil–Sen slope), with its 95% range.', where: 'Explore', to: '/explore?mode=trend' },
+  { q: 'Is it significant?', a: 'Mann–Kendall test with Hamed–Rao correction, false discovery rate 10%.', where: 'The report', to: '/conclude' },
+  { q: 'Opposite ways?', a: 'The same variable rising in one region and falling in another.', where: 'Opposites view', to: '/explore?v=precip&mode=opposite' },
+]
 
 const LINE_1 = ['The', 'Earth', 'is', 'changing.']
 const LINE_2 = ['Can', 'you', 'see', 'the', 'signal?']
@@ -86,7 +97,7 @@ export default function Home() {
             className="mt-9 flex flex-col items-center gap-4 sm:flex-row"
           >
             <a
-              href="#question"
+              href="#flyover"
               className="cta group inline-flex items-center gap-3 rounded-full bg-space/70 px-8 py-4 font-display text-sm font-semibold tracking-[0.22em] uppercase backdrop-blur transition-transform hover:scale-[1.03]"
             >
               Begin the investigation
@@ -96,11 +107,17 @@ export default function Home() {
               or go straight to the map →
             </Link>
           </motion.div>
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 3.1, duration: 1 }} className="mt-5">
+            <TourButton />
+          </motion.div>
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 3.4 }} className="mt-10 sm:hidden">
             <SimulatedBadge />
           </motion.div>
         </div>
       </section>
+
+      {/* ------------------------------------------------------------ the flight: 24 years in one scroll */}
+      <Flyover />
 
       {/* ------------------------------------------------------------ 01 the question */}
       <section id="question" className="relative overflow-hidden py-32">
@@ -120,6 +137,23 @@ export default function Home() {
             <BigStat value="288" label="monthly maps per variable" />
             <BigStat value="5" label="environmental variables" />
             <BigStat value={summary ? String(summary.n_land_cells) : '…'} label="land cells of 1°×1°" />
+          </Reveal>
+          <Reveal delay={0.25} className="glass mt-10 rounded-3xl p-6 md:p-8">
+            <p className="eyebrow">The challenge · {CHALLENGE.event}</p>
+            <p className="mt-2 font-display text-2xl font-semibold md:text-3xl">{CHALLENGE.title}</p>
+            <p className="mt-2 max-w-3xl text-sm leading-relaxed text-muted">
+              Take variables measured by NASA missions or produced by NASA models, show how they change over time, and say
+              what is changing, where, how much, and whether the change is significant. Here is where EarthSleuth answers each part.
+            </p>
+            <div className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
+              {CHALLENGE_PARTS.map((c) => (
+                <Link key={c.q} to={c.to} className="group rounded-2xl border border-line/70 p-4 transition-colors hover:border-accent/50">
+                  <p className="font-display text-base font-medium text-ink">{c.q}</p>
+                  <p className="mt-1.5 text-xs leading-relaxed text-muted">{c.a}</p>
+                  <span className="mt-2 inline-block text-xs text-faint transition-colors group-hover:text-ink">{c.where} →</span>
+                </Link>
+              ))}
+            </div>
           </Reveal>
         </div>
       </section>

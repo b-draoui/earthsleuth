@@ -1,6 +1,7 @@
 import type {
   AgentEvent,
   CellSeries,
+  CellsMatrix,
   ClustersGeoJSON,
   Demo,
   Health,
@@ -40,6 +41,7 @@ export const api = {
   ranking: () => get<RankingRow[]>('/radar/ranking'),
   clusters: () => get<ClustersGeoJSON>('/radar/clusters'),
   summary: () => get<Summary>('/summary'),
+  cells: () => get<CellsMatrix>('/cells'),
   graph: () => get<KnowledgeGraph>('/graph'),
   demos: () => get<Demo[]>('/demos'),
 }

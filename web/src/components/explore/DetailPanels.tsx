@@ -1,5 +1,5 @@
 import { motion } from 'motion/react'
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router'
 import { api } from '../../lib/api.ts'
 import { latLon, pValue, pct, plain, signed } from '../../lib/format.ts'
@@ -13,6 +13,8 @@ import SeriesChart from '../SeriesChart.tsx'
 import SignalGauge from '../SignalGauge.tsx'
 import { SimulatedNote } from '../SimulatedBadge.tsx'
 import VarIcon from '../VarIcon.tsx'
+import PlaceSignals from './PlaceSignals.tsx'
+import { playSeries } from '../../lib/sound.ts'
 
 function Shell({ title, kicker, onClose, children }: { title: string; kicker: string; onClose: () => void; children: React.ReactNode }) {
   return (
@@ -131,16 +133,35 @@ function BeforeAfter({ variable, before, after, unit }: { variable: VariableId; 
   )
 }
 
-export function CellPanel({ variable, cellId, regions, onClose, compare = false }: { variable: VariableId; cellId: string; regions: Region[]; onClose: () => void; compare?: boolean }) {
+export function CellPanel({ variable, cellId, regions, onClose, onVariable, compare = false }: { variable: VariableId; cellId: string; regions: Region[]; onClose: () => void; onVariable?: (v: VariableId) => void; compare?: boolean }) {
   const [mode, setMode] = useState<'anomaly' | 'raw'>('anomaly')
+  const [playing, setPlaying] = useState<number | null>(null)
+  const stopSound = useRef<(() => void) | null>(null)
+  useEffect(() => () => stopSound.current?.(), [])
   const { data, error } = useFetch(`series:${variable}:${cellId}`, () => api.series(variable, cellId))
   const id = VARS[variable]
   const names = data?.regions.map((r) => regions.find((x) => x.id === r)?.label ?? r) ?? []
   const city = data ? nearestCity(data.lat, data.lon) : null
+  const title = data ? (city ? `${city.name} area` : latLon(data.lat, data.lon)) : 'Loading…'
+
+  const toggleSound = () => {
+    if (!data) return
+    if (stopSound.current) {
+      stopSound.current()
+      stopSound.current = null
+      setPlaying(null)
+      return
+    }
+    setMode('anomaly')
+    stopSound.current = playSeries(data.anomaly, data.trend, setPlaying, () => {
+      stopSound.current = null
+      setPlaying(null)
+    })
+  }
 
   return (
     <Shell
-      title={data ? (city ? `${city.name} area` : latLon(data.lat, data.lon)) : 'Loading…'}
+      title={title}
       kicker={`One 1° cell${data && city ? ` · ${latLon(data.lat, data.lon)}` : ''}${names.length ? ` · ${names.join(', ')}` : ''}`}
       onClose={onClose}
     >
@@ -148,6 +169,7 @@ export function CellPanel({ variable, cellId, regions, onClose, compare = false 
       {!data && !error && <div className="skeleton h-80 rounded-2xl" />}
       {data && (
         <>
+          <PlaceSignals cellId={cellId} title={title} current={variable} onVariable={onVariable} />
           <p className="mb-4 flex items-center gap-2 text-sm" style={{ color: id.color }}>
             <VarIcon id={variable} size={16} /> {id.long}
           </p>
@@ -189,8 +211,34 @@ export function CellPanel({ variable, cellId, regions, onClose, compare = false 
             </div>
           </div>
           <div className="mt-3">
-            <SeriesChart time={data.time} value={data.value} anomaly={data.anomaly} lines={data} unit={data.unit} color={id.color} mode={mode} windows={compare ? WINDOWS : undefined} />
+            <SeriesChart
+              time={data.time}
+              value={data.value}
+              anomaly={data.anomaly}
+              lines={data}
+              unit={data.unit}
+              color={id.color}
+              mode={mode}
+              windows={compare ? WINDOWS : undefined}
+              cursor={playing !== null ? data.time[playing] : null}
+            />
           </div>
+          <button
+            onClick={toggleSound}
+            aria-pressed={playing !== null}
+            className={`mt-3 flex w-full items-center justify-center gap-2 rounded-full border px-4 py-2 text-xs transition-colors ${
+              playing !== null ? 'border-accent/60 bg-accent/10 text-ink' : 'border-line text-muted hover:border-accent/50 hover:text-ink'
+            }`}
+          >
+            <span aria-hidden>{playing !== null ? '■' : '♪'}</span>
+            {playing !== null ? `Playing ${data.time[playing]} · stop` : 'Hear the signal (10 s, sound on)'}
+          </button>
+          {playing !== null && (
+            <p className="mt-2 text-xs leading-relaxed text-muted">
+              One note per month: higher = more above its usual value. The low hum follows the trend line. Noise jumps
+              around; a real trend drifts.
+            </p>
+          )}
           <p className="mt-2 text-xs leading-relaxed text-faint">
             {mode === 'anomaly'
               ? 'Each month minus its usual value. Light line: Theil–Sen trend. Shaded fan: its 95% range.'

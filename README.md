@@ -104,7 +104,52 @@ map lab: 5 layers, trend / yearly / opposite views, click any cell or region), *
 investigator), **04 Understand** (`/understand`, Signal Radar, clusters, knowledge graph), **05 Conclude**
 (`/conclude`, the report, downloadable).
 
+Also in the app:
+- a scroll-driven flight on the home page (globe → region, then the yearly temperature anomalies 2001 → 2024);
+- a city search (`web/src/lib/cities.ts`) and, for any cell, its five signals, a 10-second sound version of its record,
+  and a share card (PNG drawn on a canvas);
+- a map of the answer in Investigate (where all the significant directions hold together) and small maps in Conclude,
+  both from `/api/cells` (every cell × every variable, no yearly values);
+- a guided tour (`/?tour=1` or the button on the home page), about 80 s, for demos and the video;
+- a link preview (`web/public/og.png`, meta tags in `web/index.html`).
+
 The basemap is Natural Earth, drawn by MapLibre from `web/public/geo/`: no map key, works offline.
+
+## Challenge
+
+NASA Space Apps Challenge 2026, challenge **"Be An Earth System Trend Detective!"**: find variables measured by NASA
+missions or produced by NASA models, show how they change over time, and determine what is changing, where, how much,
+and whether the change is significant.
+
+## Credits
+
+The same list is in the app (05 Conclude → Credits) and in the downloaded report (`web/src/lib/credits.ts`).
+
+**Data (NASA)**
+- MERRA-2 tavgM_2d_slv_Nx (M2TMNXSLV) v5.12.4, 2 m air temperature. NASA GMAO / GES DISC. https://doi.org/10.5067/AP1B0BA5PD2K
+- GPM IMERG Final Precipitation L3 monthly (GPM_3IMERGM) V07. NASA GPM / GES DISC. https://doi.org/10.5067/GPM/IMERG/3B-MONTH/07
+- GLDAS Noah L4 monthly 0.25° (GLDAS_NOAH025_M) v2.1, soil moisture and evapotranspiration. Beaudoing & Rodell, NASA/GSFC/HSL / GES DISC. https://doi.org/10.5067/SXAVCZFAQLNO
+- Terra MODIS Vegetation Indices monthly 0.05° (MOD13C2) v061, NDVI. NASA / LP DAAC. https://doi.org/10.5067/MODIS/MOD13C2.061
+
+**Maps and imagery**: Natural Earth (public domain); Blue Marble Shaded Relief and Bathymetry via NASA GIBS (ESDIS);
+approximate city-centre coordinates for labels.
+
+**Methods**: Theil (1950); Sen (1968), J. Am. Stat. Assoc. 63; Mann (1945), Econometrica 13; Kendall (1975), Rank
+Correlation Methods; Hamed & Rao (1998), J. Hydrology 204; Benjamini & Hochberg (1995), J. R. Stat. Soc. B 57.
+
+**Fonts and colours**: Inter (Rasmus Andersson) and Space Grotesk (Florian Karsten), SIL OFL 1.1, via Fontsource;
+ColorBrewer RdBu / BrBG (Cynthia Brewer, Apache 2.0); Okabe–Ito palette (Okabe & Ito, 2008).
+
+**Open-source software**: React, React Router, Vite, TypeScript, Tailwind CSS, Motion, MapLibre GL JS, react-map-gl,
+Recharts, react-force-graph-2d, Fontsource, oxlint; FastAPI, Uvicorn, pandas, NumPy, SciPy, xarray, h5netcdf, h5py,
+PyArrow, pyMannKendall, statsmodels, scikit-learn, NetworkX, PyYAML, python-dotenv, pytest; earthaccess, netCDF4, pyhdf,
+Neo4j Python driver. Licences are listed in the app.
+
+## Use of AI
+
+AI tools used to build EarthSleuth: Claude (Anthropic) and ChatGPT (OpenAI); details on the project page. Inside the app,
+the investigator (an AI agent, or a rule-based narrator until the agent is connected) plans investigations and writes
+explanations; every number it shows comes from the statistics engine. No image or video in the app is AI-generated.
 
 ## Plugging in your layer
 

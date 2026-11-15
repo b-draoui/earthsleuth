@@ -2,6 +2,7 @@ import { AnimatePresence } from 'motion/react'
 import { Suspense, lazy, useEffect } from 'react'
 import { Navigate, Route, Routes, useLocation } from 'react-router'
 import NavBar from './components/NavBar.tsx'
+import { TourProvider } from './components/DemoTour.tsx'
 import Home from './pages/Home.tsx'
 
 // Heavier pages load on demand, so the opening appears fast.
@@ -18,7 +19,7 @@ export default function App() {
   }, [location.pathname, location.hash])
 
   return (
-    <>
+    <TourProvider>
       <a href="#main" className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-[100] focus:rounded focus:bg-panel focus:px-3 focus:py-2">
         Skip to content
       </a>
@@ -42,7 +43,7 @@ export default function App() {
           </AnimatePresence>
         </Suspense>
       </div>
-    </>
+    </TourProvider>
   )
 }
 
