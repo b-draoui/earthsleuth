@@ -2,10 +2,6 @@ import { useEffect, useMemo, useRef } from 'react'
 import Map, { type MapRef } from 'react-map-gl/maplibre'
 import { globeStyle } from '../lib/map.ts'
 
-/**
- * Night globe for the opening: it turns in from the Atlantic, slows down over the
- * Mediterranean, then keeps breathing very slowly. Not interactive (the page scrolls through it).
- */
 export default function Globe({ onArrived }: { onArrived?: () => void }) {
   const map = useRef<MapRef>(null)
   const style = useMemo(() => globeStyle(), [])

@@ -1,9 +1,5 @@
 import { motion } from 'motion/react'
 
-/**
- * Where a q-value (or p-value) sits against the significance threshold, on a log scale:
- * left = strong evidence of a real trend, right = consistent with chance.
- */
 export default function SignalGauge({ value, threshold = 0.1, label = 'q' }: { value: number; threshold?: number; label?: string }) {
   const lo = Math.log10(0.0001)
   const hi = 0

@@ -1,10 +1,6 @@
 import { Marker } from 'react-map-gl/maplibre'
 import { citiesAt } from '../lib/cities.ts'
 
-/**
- * City dots and names as HTML markers (the basemap has no font server).
- * They never catch the mouse, so cells under them stay clickable.
- */
 export default function CityLabels({ zoom, maxTier = 2 }: { zoom: number; maxTier?: 1 | 2 }) {
   return (
     <>

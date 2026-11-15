@@ -1,11 +1,9 @@
-"""Tests for engine/stats.py (Doc 2, 6.1) on series where we know the answer."""
-
 import numpy as np
 import pandas as pd
 
 from engine import stats
 
-MONTHS = np.tile(np.arange(1, 13), 24)  # 2001-2024
+MONTHS = np.tile(np.arange(1, 13), 24)
 T_YEARS = np.arange(288) / 12.0
 SEASONS = 8 * np.sin(2 * np.pi * (MONTHS - 4) / 12)
 
@@ -17,7 +15,7 @@ def test_anomalies_remove_the_seasons():
 
 def test_theil_sen_recovers_known_slope():
     rng = np.random.default_rng(1)
-    slope_dec = 0.45  # e.g. °C per decade
+    slope_dec = 0.45
     y = 15 + SEASONS + slope_dec / 10 * T_YEARS + rng.normal(0, 0.6, 288)
     r = stats.trend(y, MONTHS, T_YEARS)
     assert r is not None
@@ -27,12 +25,6 @@ def test_theil_sen_recovers_known_slope():
 
 
 def test_noise_false_positive_rate():
-    """Pure noise: few cells pass p < 0.05 and very few survive the FDR correction.
-
-    Measured: the Hamed–Rao test is a little liberal on white noise (about 9% below p = 0.05
-    instead of 5%, and about 2% of noise cells kept after FDR, against ~0% for the original
-    Mann–Kendall test). Real trends here are far stronger than that, but marginal cells can
-    include a few false positives. This test keeps it from getting worse."""
     rng = np.random.default_rng(7)
     rows = []
     for k in range(300):
@@ -41,7 +33,7 @@ def test_noise_false_positive_rate():
     df = stats.add_fdr(pd.DataFrame(rows))
     raw_rate = float((df["p"] < 0.05).mean())
     assert raw_rate < 0.12
-    assert int(df["significant"].sum()) <= 9  # 3% of 300
+    assert int(df["significant"].sum()) <= 9
 
 
 def test_too_many_missing_months_gives_no_trend():

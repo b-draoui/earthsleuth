@@ -1,7 +1,3 @@
-/**
- * Cities shown on the maps. Tier 1 is always visible; tier 2 appears when zoomed in.
- * side: where the name sits relative to its dot ('l' when a neighbour would overlap on the right).
- */
 export interface City {
   name: string
   lat: number
@@ -11,7 +7,6 @@ export interface City {
 }
 
 export const CITIES: City[] = [
-  // tier 1
   { name: 'Lisbon', lat: 38.72, lon: -9.14, tier: 1 },
   { name: 'Madrid', lat: 40.42, lon: -3.7, tier: 1 },
   { name: 'Barcelona', lat: 41.39, lon: 2.17, tier: 1 },
@@ -30,7 +25,6 @@ export const CITIES: City[] = [
   { name: 'Tunis', lat: 36.81, lon: 10.18, tier: 1 },
   { name: 'Algiers', lat: 36.75, lon: 3.06, tier: 1 },
   { name: 'Rabat', lat: 34.02, lon: -6.84, tier: 1 },
-  // tier 2
   { name: 'Porto', lat: 41.15, lon: -8.61, tier: 2 },
   { name: 'Seville', lat: 37.39, lon: -5.98, tier: 2 },
   { name: 'Valencia', lat: 39.47, lon: -0.38, tier: 2 },
@@ -62,18 +56,14 @@ export const CITIES: City[] = [
   { name: 'Agadir', lat: 30.43, lon: -9.6, tier: 2 },
 ]
 
-/** Zoom from which tier-2 cities appear. */
 export const TIER2_ZOOM = 4.4
-/** Below this zoom (phones, small maps) only the MAJOR cities are named. */
 export const TIER1_ZOOM = 3.0
 export const MAJOR = new Set(['Madrid', 'Rome', 'Athens', 'Istanbul', 'Cairo', 'Tunis', 'Algiers', 'Tripoli', 'Beirut', 'Rabat'])
 
-/** Cities to name at a zoom level. */
 export function citiesAt(zoom: number, maxTier: 1 | 2 = 2): City[] {
   return CITIES.filter((c) => (c.tier === 2 ? maxTier === 2 && zoom >= TIER2_ZOOM : zoom >= TIER1_ZOOM || MAJOR.has(c.name)))
 }
 
-/** Search by name, accents and case ignored: names starting with the text first. */
 export function searchCities(text: string, limit = 6): City[] {
   const norm = (s: string) => s.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase()
   const q = norm(text.trim())
@@ -83,7 +73,6 @@ export function searchCities(text: string, limit = 6): City[] {
   return [...starts, ...inside].slice(0, limit)
 }
 
-/** Closest city within ~1.5° of a point (distance corrected for latitude), or null. */
 export function nearestCity(lat: number, lon: number, maxDeg = 1.5): City | null {
   let best: City | null = null
   let bestD = maxDeg

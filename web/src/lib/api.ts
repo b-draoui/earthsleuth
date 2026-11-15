@@ -16,7 +16,6 @@ import type {
   VariableResult,
 } from './types.ts'
 
-/** GET /api/<path> and parse the JSON. Throws with the server's message on error. */
 async function get<T>(path: string): Promise<T> {
   const res = await fetch(`/api${path}`)
   if (!res.ok) {
@@ -26,7 +25,6 @@ async function get<T>(path: string): Promise<T> {
   return res.json() as Promise<T>
 }
 
-/** One function per FastAPI route (api/routes/). */
 export const api = {
   health: () => get<Health>('/health'),
   variables: () => get<Variable[]>('/variables'),
@@ -46,11 +44,6 @@ export const api = {
   demos: () => get<Demo[]>('/demos'),
 }
 
-/**
- * Listen to the agent step by step (Server-Sent Events).
- * path: `/investigate?q=${encodeURIComponent(question)}` or `/demos/${id}`.
- * Returns a function that stops listening (call it when the page unmounts).
- */
 export function streamAgent(path: string, onEvent: (event: AgentEvent) => void, onEnd?: () => void): () => void {
   const source = new EventSource(`/api${path}`)
   let ended = false

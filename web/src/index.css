@@ -1,21 +1,17 @@
 @import 'tailwindcss';
 
-/* Design tokens: every colour and font of the app lives here.
-   Tailwind classes: bg-space, bg-abyss, bg-panel, border-line, text-ink, text-muted, text-faint,
-   text-accent, text-sand, font-display ... Variable colours: text-v-t2m, bg-v-precip, ... */
 @theme {
-  --color-space: #03060d; /* deepest background, space */
-  --color-abyss: #060b16; /* page background */
-  --color-panel: #0c1424; /* cards, panels */
-  --color-line: #1b2740; /* thin borders */
-  --color-ink: #e9eef7; /* main text */
-  --color-muted: #94a1ba; /* secondary text */
-  --color-faint: #5d6a83; /* labels, ticks */
-  --color-accent: #a99bff; /* UI accent (never a data colour) */
-  --color-glow: #8fe6ff; /* atmosphere */
-  --color-sand: #e7c48f; /* warm desert light */
+  --color-space: #03060d;
+  --color-abyss: #060b16;
+  --color-panel: #0c1424;
+  --color-line: #1b2740;
+  --color-ink: #e9eef7;
+  --color-muted: #94a1ba;
+  --color-faint: #5d6a83;
+  --color-accent: #a99bff;
+  --color-glow: #8fe6ff;
+  --color-sand: #e7c48f;
 
-  /* The five variables: one identity each */
   --color-v-t2m: #ff8a65;
   --color-v-precip: #63b6ff;
   --color-v-soil_moisture: #d2a46a;
@@ -59,7 +55,6 @@ h4 {
   border-radius: 6px;
 }
 
-/* ---------------------------------------------------------------- building blocks */
 .num {
   font-variant-numeric: tabular-nums;
 }
@@ -90,7 +85,6 @@ h4 {
   height: 1px;
 }
 
-/* Film grain over everything: a faint texture that keeps flat colours alive */
 .grain::after {
   content: '';
   position: fixed;
@@ -106,7 +100,6 @@ h4 {
   scrollbar-color: #2a3a5c transparent;
 }
 
-/* Glowing call-to-action border */
 .cta {
   position: relative;
   isolation: isolate;
@@ -165,7 +158,6 @@ h4 {
   animation: shimmer 1.6s ease-in-out infinite;
 }
 
-/* MapLibre controls in the app's style */
 .maplibregl-ctrl-attrib {
   background: rgb(6 11 22 / 0.6) !important;
   color: var(--color-faint) !important;
@@ -189,7 +181,6 @@ h4 {
   }
 }
 
-/* Printing the report: everything visible, no chrome, light paper */
 @media print {
   header,
   footer,

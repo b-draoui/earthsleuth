@@ -1,9 +1,3 @@
-"""Checks that example files and result files follow contracts/README.md.
-
-If a teammate renames a column or a JSON key, this fails on the pull request
-instead of breaking the app on Sunday.
-"""
-
 import json
 from pathlib import Path
 

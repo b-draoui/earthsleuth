@@ -1,7 +1,5 @@
 import type { ReactNode } from 'react'
 
-/** Small, safe Markdown renderer for agent answers: headings, bullets, quotes, **bold**, *italic*,
- * `code`, and the evidence labels [observed] / [literature] / [hypothesis] as small tags. */
 const LABEL: Record<string, string> = {
   observed: 'border-accent/40 text-accent',
   literature: 'border-sand/40 text-sand',

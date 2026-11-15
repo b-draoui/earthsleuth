@@ -1,23 +1,3 @@
-"""Bridge between the AI investigator (agent/investigator.py) and the web app.
-
-The web app (api/routes/agent.py) only calls the three functions below. Each yields Contract 3
-events, one per step, so the browser can show the investigation live:
-
-    {"stage": "understand" | "plan" | "analyse" | "check" | "explain",
-     "status": "running" | "done" | "error", "message": str, "data": {...}}
-
-The investigator has 7 steps; the app shows 5 stages:
-    Understand -> understand, Plan -> plan, Analyse + Record -> analyse,
-    Why? + Check -> check, Explain -> explain.
-
-Where it runs:
-- with GEMINI_API_KEY (Chedi's computer): the full investigator, Gemini for steps 1 and 7;
-- without a key (the public site): the same investigator with rules and templates for steps 1 and 7.
-  Every number still comes from the statistics engine.
-Graph: Neo4j when NEO4J_PASSWORD is set and the database answers, else data/graph/graph.json in
-memory (written back only with EARTHSLEUTH_SAVE_GRAPH=1, so visitors never change the file).
-"""
-
 from __future__ import annotations
 
 import json
@@ -54,11 +34,10 @@ RUNNING = {
 }
 FULL_PERIOD = [C.PERIOD_START, C.PERIOD_END]
 
-_lock = threading.Lock()  # one investigation at a time (CPU and the in-memory graph)
+_lock = threading.Lock()
 _investigator = None
 
 
-# ---------------------------------------------------------------- small helpers
 def _num(x, digits: int = 3) -> str:
     if x is None or (isinstance(x, float) and math.isnan(x)):
         return "n/a"
@@ -80,7 +59,6 @@ def _bbox(region: str):
 
 
 def app_result(r: dict) -> dict:
-    """Engine Contract 2 (common/contracts.py) -> the shape the web app draws."""
     v = r["variable"]
     reg, cells = r.get("regional", {}), r.get("cells", {})
     return {
@@ -122,7 +100,6 @@ def _result_sentence(r: dict) -> str:
 
 
 class EventMapper:
-    """Investigator steps (name, status, payload) -> Contract 3 events for the app."""
 
     def __init__(self, offline: bool, replay: str | None = None):
         self.offline = offline
@@ -200,14 +177,13 @@ class EventMapper:
         return ev
 
 
-# ---------------------------------------------------------------- the investigator
 def _store():
     from graph.store import JsonStore, Neo4jStore
 
     if C.NEO4J_PASSWORD:
         try:
             return Neo4jStore()
-        except Exception as e:  # noqa: BLE001 - any connection problem: use the snapshot
+        except Exception as e:
             log.warning("Neo4j not reachable (%s): using graph.json", e.__class__.__name__)
     return JsonStore(C.GRAPH_JSON, autosave=os.getenv("EARTHSLEUTH_SAVE_GRAPH", "0") == "1")
 
@@ -222,9 +198,7 @@ def investigator():
 
 
 def run_investigation(question: str) -> Iterator[dict]:
-    """Run the 7 steps in a worker thread and stream their events as they happen."""
     if C.USE_FAKE:
-        # the investigator needs the real series.nc; with simulated data the app's narrator answers
         raise NotImplementedError("investigator runs on real data only")
     inv = investigator()
     mapper = EventMapper(offline=not inv.use_llm)
@@ -239,7 +213,7 @@ def run_investigation(question: str) -> Iterator[dict]:
         try:
             with _lock:
                 inv.run(question, on_step=on_step)
-        except Exception as e:  # noqa: BLE001 - guardrails and crashes become a readable error
+        except Exception as e:
             from engine.analysis import GuardrailError
 
             msg = str(e) if isinstance(e, GuardrailError) else f"The investigation stopped: {e!r}"
@@ -256,13 +230,11 @@ def run_investigation(question: str) -> Iterator[dict]:
 
 
 def check_numbers(answer: str, tool_outputs: list[dict]) -> bool:
-    """True if every number in the answer appears in the tool outputs (the investigator's own check)."""
     from agent.investigator import number_check
 
     return not number_check(answer, json.dumps(tool_outputs, ensure_ascii=False))
 
 
-# ---------------------------------------------------------------- recorded investigations (demos)
 def _reports() -> list[Path]:
     folder = C.INVESTIGATIONS
     committed = C.DATA / "investigations"
@@ -276,14 +248,12 @@ def _load(path: Path) -> dict | None:
         r = json.loads(path.read_text(encoding="utf-8"))
     except (OSError, ValueError):
         return None
-    # demos = finished runs of the AI investigator on real data (visitors' offline runs are not listed)
     if r.get("status") != "done" or r.get("synthetic") or not r.get("llm_used"):
         return None
     return r
 
 
 def list_demos() -> list[dict]:
-    """Recorded investigations (data/investigations/*.json), newest questions first."""
     out = []
     for p in _reports():
         r = _load(p)
@@ -294,7 +264,6 @@ def list_demos() -> list[dict]:
 
 
 def replay_demo(demo_id: str, pace: float = 0.45) -> Iterator[dict]:
-    """Replay a recorded investigation step by step: no internet, no key, same events as live."""
     path = next((p for p in _reports() if p.stem == demo_id), None)
     r = _load(path) if path else None
     if r is None:

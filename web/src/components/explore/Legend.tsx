@@ -3,9 +3,6 @@ import { plain } from '../../lib/format.ts'
 
 export type LegendHover = { lo: number; hi: number } | { direction: 'up' | 'down' | 'none' } | null
 
-/**
- * Interactive legend: hovering a colour step lights up only the cells in that range on the map.
- */
 export default function Legend({
   mode,
   scale,
@@ -47,7 +44,6 @@ export default function Legend({
     )
   }
 
-  // 7 colour steps centred on 0; edges at ±max/6, ±max/2, ±5max/6 (the expression interpolates between)
   const step = max / 3
   const bins = colors.map((c, i) => {
     const centre = (i - 3) * step

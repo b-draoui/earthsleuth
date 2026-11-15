@@ -1,20 +1,13 @@
-/**
- * Hear the signal: a monthly series played as notes (Web Audio, no files).
- * Each month is one short note: higher pitch = further above its usual value.
- * Under the notes, a low hum follows the trend line on the same pitch scale,
- * so a real trend sounds like a slow drift and noise sounds like noise.
- */
-const STEP = 0.034 // seconds per month: 288 months ≈ 10 s
-const PENTA = [0, 3, 5, 7, 10] // minor pentatonic, in semitones
+const STEP = 0.034
+const PENTA = [0, 3, 5, 7, 10]
 
 function robustMax(xs: (number | null)[]): number {
   const v = xs.filter((x): x is number => x !== null && Number.isFinite(x)).map(Math.abs).sort((a, b) => a - b)
   return v.length ? v[Math.floor(0.95 * (v.length - 1))] || 1 : 1
 }
 
-/** -1..1 -> a note of the pentatonic scale over two octaves around A3. */
 function noteFreq(norm: number): number {
-  const steps = Math.round(norm * 5) // -5..5 scale degrees
+  const steps = Math.round(norm * 5)
   const octave = Math.floor(steps / 5)
   const degree = ((steps % 5) + 5) % 5
   return 220 * 2 ** ((octave * 12 + PENTA[degree]) / 12)
@@ -51,7 +44,6 @@ export function playSeries(
     osc.stop(t + 0.18)
   })
 
-  // the trend hum, one octave lower, gliding continuously
   const hum = ctx.createOscillator()
   const hg = ctx.createGain()
   hum.type = 'sine'

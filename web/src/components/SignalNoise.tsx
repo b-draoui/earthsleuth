@@ -5,7 +5,7 @@ import { pValue, plain, signed } from '../lib/format.ts'
 import { useFetch } from '../lib/useFetch.ts'
 import { VARS } from '../lib/variables.ts'
 
-const CELL = '36.5_10.5' // near Tunis
+const CELL = '36.5_10.5'
 const W = 760
 const H = 300
 const PAD = { l: 44, r: 16, t: 20, b: 30 }
@@ -36,10 +36,6 @@ function pathOf(values: (number | null)[], y: (v: number) => number, x: (i: numb
   return d
 }
 
-/**
- * Doc 1, Reason 3, as an interactive figure: the same monthly series seen raw, without seasons,
- * then with its trend and test. Real numbers from the API (one cell near Tunis).
- */
 export default function SignalNoise() {
   const [step, setStep] = useState(0)
   const { data, error } = useFetch(`series:t2m:${CELL}`, () => api.series('t2m', CELL))

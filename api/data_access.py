@@ -1,13 +1,3 @@
-"""The only place where the API reads result files.
-
-Routes call these functions, never pandas/xarray directly. If a teammate changes a file
-format, only this file needs fixing. Formats: contracts/README.md.
-Files come from common.config.RESULTS_DIR (data/fake/ when EARTHSLEUTH_FAKE=1).
-
-Every number returned here is read from the engine's files or computed from series.nc with
-the same definitions (anomalies = value minus its calendar-month mean). Nothing is invented.
-"""
-
 import gzip
 import json
 import math
@@ -42,13 +32,11 @@ from common.config import (
     app_cell_id,
 )
 
-HALF = 0.5  # half a 1° cell
-CACHE_DIR = os.getenv("EARTHSLEUTH_CACHE_DIR")  # set in the Docker image only
+HALF = 0.5
+CACHE_DIR = os.getenv("EARTHSLEUTH_CACHE_DIR")
 
 
-# ---------------------------------------------------------------- helpers
 def _f(x, nd: int = 4):
-    """JSON-safe rounded float (None for NaN)."""
     if x is None:
         return None
     x = float(x)
@@ -56,7 +44,6 @@ def _f(x, nd: int = 4):
 
 
 def _anomalies(s: pd.Series) -> pd.Series:
-    """Monthly anomalies with the stats engine's own function (seasonal cycle removed)."""
     try:
         from engine.stats import anomalies
 
@@ -88,9 +75,6 @@ def datasets_label(variable: str) -> list[str]:
     return [f"SIMULATED ({name} format)"] if USE_FAKE else [name]
 
 
-# ---------------------------------------------------------------- loaders (read once)
-# The engine (engine/run_all.py) writes cell ids as "lat36.5_lon10.5" and units as "degC per decade";
-# the web app uses "36.5_10.5" and "°C". These loaders bring both formats to the app's one.
 def _app_ids(df: pd.DataFrame) -> pd.DataFrame:
     if "lat" in df and "lon" in df:
         df = df.copy()
@@ -106,7 +90,6 @@ def load_trends() -> pd.DataFrame:
 
 
 def _regional_from_json(path) -> pd.DataFrame:
-    """regional.json (engine/run_all.py: Contract 2 for the region and each sub-region) as a table."""
     data = json.loads(path.read_text(encoding="utf-8"))
     rows = []
     items = list(data.get("results", {}).items())
@@ -144,7 +127,6 @@ def load_clusters() -> pd.DataFrame:
     c = _app_ids(pd.read_parquet(RESULTS_DIR / CLUSTERS_FILE))
     if "cluster_name" not in c and "cluster_label" in c:
         c = c.rename(columns={"cluster_label": "cluster_name"})
-    # two groups can get the same name ("warming + drying"): tell them apart, biggest first
     names = c.groupby("cluster").agg(name=("cluster_name", "first"), n=("cluster_name", "size"))
     for name, grp in names.groupby("name"):
         if len(grp) > 1:
@@ -155,13 +137,11 @@ def load_clusters() -> pd.DataFrame:
 
 @lru_cache
 def load_series() -> xr.Dataset:
-    # load into memory and close the file, so the pipeline can rewrite it while the API runs
     with xr.open_dataset(RESULTS_DIR / SERIES_FILE, engine="h5netcdf") as ds:
         return ds.load()
 
 
 def _graph_path():
-    """The curator's graph (data/graph/graph.json) for real data, the simulated one otherwise."""
     from common.config import GRAPH_JSON
 
     if not USE_FAKE and GRAPH_JSON.exists():
@@ -187,8 +167,6 @@ def _node_label(n: dict) -> str:
 
 
 def _to_node_link(g: dict) -> dict:
-    """The curator's export ({nodes: [{id, label: <type>, ...}], relationships: [{src, type, dst}]})
-    -> the node-link format of the Understand page ({nodes: [{id, type, label}], edges: [...]})."""
     from graph.store import parse_json_prop
 
     nodes = []
@@ -210,7 +188,6 @@ def _to_node_link(g: dict) -> dict:
 
 @lru_cache
 def graph() -> dict:
-    """The knowledge + evidence graph in node-link format (nodes with type + label, edges)."""
     g = json.loads(_graph_path().read_text(encoding="utf-8"))
     return _to_node_link(g) if "relationships" in g else g
 
@@ -222,7 +199,6 @@ def findings() -> list[dict]:
 
 @lru_cache
 def _yearly_anomalies(variable: str) -> xr.DataArray:
-    """Mean anomaly of each year, per cell: what the year-by-year map animates."""
     da = load_series()[variable]
     clim = da.groupby("time.month").mean("time")
     anom = da.groupby("time.month") - clim
@@ -233,7 +209,6 @@ def run_id() -> str:
     return str(load_trends()["run_id"].iloc[0])
 
 
-# ---------------------------------------------------------------- meta
 def variables() -> list[dict]:
     return [
         {
@@ -253,10 +228,8 @@ def regions() -> list[dict]:
     return [{"id": rid, "label": REGION_LABELS.get(rid, rid), "bbox": list(b)} for rid, b in _regions().items()]
 
 
-# ---------------------------------------------------------------- trends map
 @lru_cache
 def trends_geojson(variable: str) -> dict:
-    """One 1° square per land cell with its trend and its mean anomaly for every year."""
     t = load_trends()
     t = t[t.variable == variable]
     yearly = _yearly_anomalies(variable)
@@ -297,16 +270,12 @@ def trends_geojson(variable: str) -> dict:
 
 
 def cache_name(variable: str, gzipped: bool) -> str:
-    """File name of a prebuilt map layer. The data source is in the name, so a layer built from
-    simulated data can never be served when the app reads the real results, or the reverse."""
     source = "fake" if USE_FAKE else "processed"
     return f"trends_{source}_{variable}.json{'.gz' if gzipped else ''}"
 
 
 @lru_cache
 def trends_payload(variable: str, gzipped: bool) -> bytes:
-    """The map layer as ready-to-send JSON bytes (and gzipped), computed once per variable.
-    In the Docker image they are prebuilt (scripts/prebuild_cache.py), so a small server starts warm."""
     if CACHE_DIR:
         f = Path(CACHE_DIR) / cache_name(variable, gzipped)
         if f.exists():
@@ -315,7 +284,6 @@ def trends_payload(variable: str, gzipped: bool) -> bytes:
     return gzip.compress(raw, compresslevel=6) if gzipped else raw
 
 
-# ---------------------------------------------------------------- regional
 def _regional_row(variable: str, region: str) -> pd.Series:
     r = load_regional()
     row = r[(r.variable == variable) & (r.region == region)]
@@ -325,7 +293,6 @@ def _regional_row(variable: str, region: str) -> pd.Series:
 
 
 def regional(variable: str, region: str) -> dict:
-    """Contract 2 for one variable and region."""
     row = _regional_row(variable, region)
     return {
         "variable": variable,
@@ -350,7 +317,6 @@ def regional(variable: str, region: str) -> dict:
 
 
 def regional_all(variable: str) -> list[dict]:
-    """Contract 2 for every region, with labels and boxes, main region first."""
     out = []
     for rid, b in _regions().items():
         try:
@@ -362,8 +328,6 @@ def regional_all(variable: str) -> list[dict]:
 
 
 def _trend_lines(t_years: np.ndarray, y: np.ndarray, slope_dec: float, ci_lo: float, ci_hi: float) -> dict:
-    """Theil–Sen line drawn with the engine's slope, plus the fan of its 95% interval around
-    the middle of the period. Intercept = median(y - slope * t), the Theil–Sen definition."""
     ok = ~np.isnan(y)
     b = slope_dec / 10
     a = float(np.median(y[ok] - b * t_years[ok]))
@@ -379,7 +343,6 @@ def _trend_lines(t_years: np.ndarray, y: np.ndarray, slope_dec: float, ci_lo: fl
 
 
 def regional_series(variable: str, region: str) -> dict:
-    """Cos-latitude weighted mean anomaly of the region, monthly and yearly, with its trend."""
     lo0, lo1, la0, la1 = _regions()[region]
     da = load_series()[variable].sel(lon=slice(lo0, lo1), lat=slice(la0, la1))
     w = np.cos(np.deg2rad(da.lat)) * da.isel(time=0).notnull()
@@ -405,9 +368,7 @@ def regional_series(variable: str, region: str) -> dict:
     }
 
 
-# ---------------------------------------------------------------- one cell
 def series(variable: str, cell_id: str) -> dict:
-    """Monthly series of one cell: raw values, anomalies, Theil–Sen line + 95% fan, its stats."""
     t = load_trends()
     row = t[(t.variable == variable) & (t.cell_id == cell_id)]
     if row.empty:
@@ -445,9 +406,7 @@ def series(variable: str, cell_id: str) -> dict:
     }
 
 
-# ---------------------------------------------------------------- Signal Radar
 def ranking() -> list[dict]:
-    """Share of the land area (cos-lat weighted) with a significant trend, up and down, per variable."""
     t = load_trends()
     out = []
     for v in VARIABLES:
@@ -494,8 +453,6 @@ def clusters_geojson() -> dict:
 
 @lru_cache
 def cells_matrix() -> dict:
-    """All land cells x all variables in one light table (no yearly values).
-    Used by the answer map, the small maps of the report and the place card."""
     t = load_trends()
     cells = (
         t[["cell_id", "lat", "lon"]].drop_duplicates("cell_id").sort_values(["lat", "lon"], ascending=[False, True])
@@ -523,7 +480,6 @@ def cells_matrix() -> dict:
 
 
 def co_occurrence(var_a: str, dir_a: str, var_b: str, dir_b: str) -> dict:
-    """Cells where both variables have a significant trend in the given directions."""
     t = load_trends()
     a = t[(t.variable == var_a) & (t.direction == dir_a)].cell_id
     b = t[(t.variable == var_b) & (t.direction == dir_b)].cell_id
@@ -532,15 +488,12 @@ def co_occurrence(var_a: str, dir_a: str, var_b: str, dir_b: str) -> dict:
     return {"n_cells": len(both), "pct_cells": _f(100 * len(both) / n_land, 1), "cells": both}
 
 
-# ---------------------------------------------------------------- summary
 def land_area_km2() -> float:
-    """Area of the land cells studied: a 1° cell is (pi R / 180)^2 cos(lat) km²."""
     lats = load_trends().drop_duplicates("cell_id").lat.to_numpy()
     return float(((np.pi * 6371.0 / 180) ** 2 * np.cos(np.deg2rad(lats))).sum())
 
 
 def summary() -> dict:
-    """Headline facts for the home and report pages, all read from the result files."""
     r = load_regional()
     out = []
     for v in VARIABLES:

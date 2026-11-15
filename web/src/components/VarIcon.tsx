@@ -1,6 +1,5 @@
 import type { VariableId } from '../lib/types.ts'
 
-/** Hand-drawn line icons, one per variable. They inherit the current text colour. */
 export default function VarIcon({ id, size = 20, className = '' }: { id: VariableId; size?: number; className?: string }) {
   const common = {
     width: size,

@@ -5,7 +5,6 @@ import NavBar from './components/NavBar.tsx'
 import { TourProvider } from './components/DemoTour.tsx'
 import Home from './pages/Home.tsx'
 
-// Heavier pages load on demand, so the opening appears fast.
 const Explore = lazy(() => import('./pages/Explore.tsx'))
 const Investigate = lazy(() => import('./pages/Investigate.tsx'))
 const Understand = lazy(() => import('./pages/Understand.tsx'))
@@ -26,7 +25,6 @@ export default function App() {
       <NavBar />
       <div id="main">
         <Suspense fallback={<PageLoading />}>
-          {/* mode="wait": the old page fades out before the new one fades in */}
           <AnimatePresence mode="wait">
             <Routes location={location} key={location.pathname}>
               <Route path="/" element={<Home />} />
@@ -34,7 +32,6 @@ export default function App() {
               <Route path="/investigate" element={<Investigate />} />
               <Route path="/understand" element={<Understand />} />
               <Route path="/conclude" element={<Conclude />} />
-              {/* older links */}
               <Route path="/radar" element={<Navigate to="/understand" replace />} />
               <Route path="/graph" element={<Navigate to="/understand#connections" replace />} />
               <Route path="/report" element={<Navigate to="/conclude" replace />} />

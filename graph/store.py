@@ -1,12 +1,3 @@
-"""Graph storage with the schema enforced on every write (Contract 0).
-
-Two backends with the same interface:
-- Neo4jStore: the live graph (Neo4j Desktop / Docker on our laptop).
-- JsonStore: graph.json snapshot, used as backup and when Neo4j is not running.
-
-Every node gets the extra label :Entity and a unique `id`, and is written with MERGE,
-so the same thing can never exist twice.
-"""
 from __future__ import annotations
 
 import json
@@ -25,7 +16,7 @@ SCHEMA_PATH = Path(__file__).with_name("schema.yaml")
 
 
 class SchemaError(ValueError):
-    """A write that does not respect Contract 0. The message explains what is wrong."""
+    pass
 
 
 @lru_cache(maxsize=1)
@@ -38,7 +29,6 @@ def now() -> str:
 
 
 def _clean(props: dict[str, Any]) -> dict[str, Any]:
-    """Neo4j properties must be primitives or lists of primitives: dicts become JSON strings."""
     out = {}
     for k, v in props.items():
         if v is None:
@@ -54,10 +44,8 @@ def _clean(props: dict[str, Any]) -> dict[str, Any]:
 
 
 class GraphStore:
-    """Schema checks shared by both backends. Subclasses implement the _raw methods."""
     backend = "abstract"
 
-    # ------------------------------------------------------------------ validation
     def _check_node(self, label: str, node_id: str, props: dict, status: str, created_by: str):
         sch = load_schema()
         if label not in sch["nodes"]:
@@ -92,7 +80,6 @@ class GraphStore:
         if missing:
             raise SchemaError(f"{rel} is missing required properties: {missing}.")
 
-    # ------------------------------------------------------------------ public API
     def merge_node(self, label: str, node_id: str, props: dict, *, source: str,
                    created_by: str, status: str = "verified", confidence: float = 1.0) -> dict:
         self._check_node(label, node_id, props, status, created_by)
@@ -120,7 +107,6 @@ class GraphStore:
         return self._merge_rel_raw(src_id, rel, dst_id, _clean({**props, **meta}))
 
     def search(self, label: str | None, text: str, limit: int = 10) -> list[dict]:
-        """Case-insensitive match on id / name / display_name / synonyms / code_id."""
         t = text.lower().strip()
         out = []
         for n in self.nodes(label):
@@ -160,7 +146,6 @@ class GraphStore:
             self._merge_rel_raw(r.pop("src"), r.pop("type"), r.pop("dst"), _clean(r))
         return len(data["nodes"])
 
-    # ------------------------------------------------------------------ to implement
     def _merge_node_raw(self, label, node_id, props) -> dict: raise NotImplementedError
     def _merge_rel_raw(self, src, rel, dst, props) -> dict: raise NotImplementedError
     def get(self, node_id: str) -> dict | None: raise NotImplementedError
@@ -173,7 +158,6 @@ class GraphStore:
     def close(self) -> None: pass
 
 
-# ============================================================================ Neo4j
 class Neo4jStore(GraphStore):
     backend = "neo4j"
 
@@ -203,7 +187,6 @@ class Neo4jStore(GraphStore):
         return n
 
     def _merge_node_raw(self, label, node_id, props):
-        # label was validated against the schema, so it is safe to put in the query text
         rows = self._run(f"MERGE (n:Entity {{id: $id}}) SET n:{label}, n += $props "
                          "RETURN properties(n) AS props, labels(n) AS labels",
                          id=node_id, props=props)
@@ -259,14 +242,12 @@ class Neo4jStore(GraphStore):
         self._run("MATCH (n:Entity) DETACH DELETE n")
 
     def cypher(self, query: str, **params) -> list[dict]:
-        """Read-only Cypher for the Graph page and documentation examples."""
         return self._run(query, **params)
 
     def close(self):
         self.driver.close()
 
 
-# ============================================================================ JSON
 class JsonStore(GraphStore):
     backend = "json"
 
@@ -330,20 +311,17 @@ class JsonStore(GraphStore):
         self._save()
 
 
-# ============================================================================ factory
 def get_store(prefer: str = "neo4j", json_path: Path = C.GRAPH_JSON) -> GraphStore:
-    """Neo4j if it is reachable, otherwise the graph.json snapshot (with a warning)."""
     if prefer == "neo4j":
         try:
             return Neo4jStore()
-        except Exception as e:  # noqa: BLE001 - any connection problem -> fallback
+        except Exception as e:
             log.warning("Neo4j not reachable (%s) - using %s instead", e.__class__.__name__,
                         json_path)
     return JsonStore(json_path)
 
 
 def parse_json_prop(v: Any) -> Any:
-    """Undo _clean() for properties stored as JSON strings."""
     if isinstance(v, str) and v[:1] in "[{":
         try:
             return json.loads(v)

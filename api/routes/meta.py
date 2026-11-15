@@ -1,5 +1,3 @@
-"""Health check, variables (with plain definitions) and named regions."""
-
 from fastapi import APIRouter
 
 from api import data_access as da

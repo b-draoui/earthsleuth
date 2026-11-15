@@ -1,12 +1,3 @@
-"""Phase 1b - turn NASA files into one clean cube: data/processed/series.nc.
-
-Per granule (one month of one dataset):  read -> cut region -> convert units -> average to 1 deg
--> save a tiny .npz in data/small/<dataset>/<YYYY-MM>.npz.
-Then build_series() stacks all months of all variables, applies the land mask and writes series.nc.
-
-Averaging rule (same for every dataset): a 1-degree cell is the mean of all fine cells whose
-centre falls inside it; it is kept only if at least BIN_MIN_FRACTION of those fine cells have data.
-"""
 from __future__ import annotations
 
 import calendar
@@ -28,10 +19,8 @@ log = logging.getLogger(__name__)
 NLAT, NLON = len(C.LATS), len(C.LONS)
 
 
-# ----------------------------------------------------------------------------- grid helpers
 def bin_to_grid(values: np.ndarray, lats: np.ndarray, lons: np.ndarray,
                 min_fraction: float = C.BIN_MIN_FRACTION) -> np.ndarray:
-    """Average a fine (lat, lon) field onto our 1-degree grid. Returns (NLAT, NLON) with NaN."""
     values = np.asarray(values, dtype="float64")
     if values.shape != (len(lats), len(lons)):
         raise ValueError(f"shape {values.shape} does not match lat/lon {len(lats)}x{len(lons)}")
@@ -54,7 +43,6 @@ def bin_to_grid(values: np.ndarray, lats: np.ndarray, lons: np.ndarray,
     return out
 
 
-# ----------------------------------------------------------------------------- month keys
 _MONTH_PATTERNS = {
     "merra2": re.compile(r"\.(\d{4})(\d{2})\.nc4"),
     "gldas": re.compile(r"\.A(\d{4})(\d{2})\."),
@@ -63,7 +51,6 @@ _MONTH_PATTERNS = {
 
 
 def month_key(dataset: str, filename: str) -> str:
-    """'YYYY-MM' from a NASA file name."""
     name = Path(filename).name
     if dataset == "modis_ndvi":
         m = re.search(r"\.A(\d{4})(\d{3})\.", name)
@@ -82,7 +69,6 @@ def days_in_month(key: str) -> int:
     return calendar.monthrange(y, m)[1]
 
 
-# ----------------------------------------------------------------------------- readers
 def read_merra2(path: Path) -> dict[str, np.ndarray]:
     with xr.open_dataset(path) as ds:
         t2m = ds["T2M"].isel(time=0).load()
@@ -102,13 +88,13 @@ def read_gldas(path: Path) -> dict[str, np.ndarray]:
 def read_imerg(path: Path, key: str) -> dict[str, np.ndarray]:
     import h5py
     with h5py.File(path, "r") as f:
-        pr = f["Grid/precipitation"][0]          # (lon, lat) in IMERG files
+        pr = f["Grid/precipitation"][0]
         lats = f["Grid/lat"][:]
         lons = f["Grid/lon"][:]
     pr = np.asarray(pr, dtype="float64")
     if pr.shape == (len(lons), len(lats)):
-        pr = pr.T                                # -> (lat, lon)
-    pr[pr < 0] = np.nan                          # fill value is -9999.9
+        pr = pr.T
+    pr[pr < 0] = np.nan
     hours = 24.0 * days_in_month(key)
     return {"precip": bin_to_grid(pr * hours, lats, lons)}
 
@@ -130,14 +116,13 @@ def read_modis_ndvi(path: Path) -> dict[str, np.ndarray]:
     vmin, vmax = attrs.get("valid_range", (-2000, 10000))
     raw[(raw == fill) | (raw < vmin) | (raw > vmax)] = np.nan
     scale = float(attrs.get("scale_factor", 10000.0))
-    ndvi = raw / scale if scale > 1 else raw * scale       # MODIS convention: value / 10000
+    ndvi = raw / scale if scale > 1 else raw * scale
     lats = 90 - (np.arange(r0, r1) + 0.5) * res
     lons = -180 + (np.arange(c0, c1) + 0.5) * res
     return {"ndvi": bin_to_grid(ndvi, lats, lons)}
 
 
 def process_granule(dataset: str, path: Path) -> Path:
-    """Read one NASA file and save the 1-degree result. Returns the small file path."""
     key = month_key(dataset, path.name)
     if dataset == "merra2":
         fields = read_merra2(path)
@@ -155,14 +140,12 @@ def process_granule(dataset: str, path: Path) -> Path:
     return out
 
 
-# ----------------------------------------------------------------------------- series.nc
 def month_range(start: str = C.PERIOD_START, end: str = C.PERIOD_END) -> pd.DatetimeIndex:
     return pd.date_range(start + "-01", end + "-01", freq="MS")
 
 
 def build_series(start: str = C.PERIOD_START, end: str = C.PERIOD_END,
                  out: Path = C.SERIES_NC) -> Path:
-    """Stack the small monthly files into series.nc (time, lat, lon) with a land mask."""
     times = month_range(start, end)
     data: dict[str, np.ndarray] = {}
     missing: dict[str, list[str]] = {}
@@ -204,8 +187,6 @@ def build_series(start: str = C.PERIOD_START, end: str = C.PERIOD_END,
 
 
 def land_mask_from(data: dict[str, np.ndarray]) -> np.ndarray:
-    """Land = cells where GLDAS soil moisture exists in >= 80% of months (GLDAS has no ocean).
-    Falls back to an offline coastline mask if GLDAS is not available."""
     if "soil_moisture" in data:
         frac = np.isfinite(data["soil_moisture"]).mean(axis=0)
         return frac >= 0.8

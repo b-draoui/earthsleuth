@@ -1,6 +1,3 @@
-"""Turn engine results into evidence (Layer B input): findings, opposite pairs, co-occurrences,
-clusters. This is plain code - the numbers never pass through the LLM.
-"""
 from __future__ import annotations
 
 from datetime import datetime, timezone
@@ -37,7 +34,6 @@ def _trend_finding(r: VariableResult) -> dict:
 
 def analyse_area(engine: TrendEngine, area: Area, variables: list[str], period: list[str],
                  subareas: list[Area] | None = None) -> dict:
-    """Run every variable on an area (+ optional sub-areas) and build the evidence package."""
     results: dict[str, VariableResult] = {}
     cells: dict[str, pd.DataFrame] = {}
     errors: dict[str, str] = {}
@@ -51,7 +47,6 @@ def analyse_area(engine: TrendEngine, area: Area, variables: list[str], period: 
     findings = [_trend_finding(r) for r in results.values() if r.regional.significant]
     patterns = [p for p in (radar.opposite_pattern(r) for r in results.values()) if p]
 
-    # sub-area trends -> sub-area findings + opposite pairs between sub-areas
     opposite_pairs: list[dict] = []
     sub_results: dict[str, dict[str, VariableResult]] = {}
     for sa in subareas or []:

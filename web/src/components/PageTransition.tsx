@@ -1,7 +1,6 @@
 import { motion } from 'motion/react'
 import type { ReactNode } from 'react'
 
-/** Every page fades and rises in, then fades out: used with AnimatePresence in App.tsx. */
 export default function PageTransition({ children, className = '' }: { children: ReactNode; className?: string }) {
   return (
     <motion.main

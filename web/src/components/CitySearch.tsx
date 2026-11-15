@@ -1,7 +1,6 @@
 import { useId, useState } from 'react'
 import { searchCities, type City } from '../lib/cities.ts'
 
-/** "Find your city": type a few letters, pick a city, the map takes you there. */
 export default function CitySearch({
   onPick,
   placeholder = 'Find a city…',

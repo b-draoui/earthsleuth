@@ -24,7 +24,6 @@ const STAGE_INFO: Record<Stage, { title: string; text: string }> = {
 
 type Status = 'idle' | 'running' | 'done' | 'error'
 
-/** 03 · Investigate: the AI investigator works through a question in five visible stages. */
 export default function Investigate() {
   const [params, setParams] = useSearchParams()
   const [question, setQuestion] = useState(params.get('q') ?? '')
@@ -57,11 +56,8 @@ export default function Investigate() {
     const q = params.get('q')
     if (q) ask(q)
     return () => stop.current?.()
-    // run once with the question from the URL
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  // ?case=<demo id> opens a case file directly (used by the guided tour)
   const caseId = params.get('case')
   useEffect(() => {
     if (!caseId || !demos) return
@@ -69,7 +65,6 @@ export default function Investigate() {
     if (!d) return
     setQuestion(d.question)
     run(`/demos/${d.id}`, d.question)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [caseId, demos])
 
   const derived = useMemo(() => {
@@ -97,7 +92,6 @@ export default function Investigate() {
       if (e.data?.replay) replay = e.data.replay
       if (e.status === 'error') error = e.message
     }
-    // a stage before the latest one is necessarily finished
     const lastIdx = Math.max(-1, ...events.map((e) => STAGES.indexOf(e.stage)))
     STAGES.forEach((st, i) => {
       if (i < lastIdx && stage[st].state === 'running') stage[st].state = 'done'

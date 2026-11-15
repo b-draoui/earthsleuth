@@ -1,5 +1,3 @@
-"""Plain-language text the app shows next to the data: definitions, not findings."""
-
 DEFINITIONS = {
     "t2m": "How warm the air is 2 metres above the ground, the height of a weather-station thermometer.",
     "precip": "How much rain (or snow, counted as water) falls in a month, in millimetres.",

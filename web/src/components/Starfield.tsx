@@ -1,9 +1,5 @@
 import { useEffect, useRef } from 'react'
 
-/**
- * Stars that twinkle and atmospheric dust that drifts, drawn on one canvas.
- * Moves slightly with the pointer (parallax). Static when the user prefers reduced motion.
- */
 export default function Starfield({ density = 1, className = '' }: { density?: number; className?: string }) {
   const ref = useRef<HTMLCanvasElement>(null)
 
@@ -19,7 +15,6 @@ export default function Starfield({ density = 1, className = '' }: { density?: n
     let raf = 0
     const pointer = { x: 0, y: 0, tx: 0, ty: 0 }
 
-    // deterministic pseudo-random, so the sky is the same at every visit
     let seed = 7
     const rand = () => ((seed = (seed * 16807) % 2147483647) / 2147483647)
 

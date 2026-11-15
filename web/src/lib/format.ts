@@ -1,5 +1,3 @@
-/** Number formatting used everywhere, so the same value always reads the same way. */
-
 export function digitsFor(x: number): number {
   const a = Math.abs(x)
   if (a === 0) return 2

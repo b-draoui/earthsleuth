@@ -1,7 +1,6 @@
 import { useFetch } from '../lib/useFetch.ts'
 import { api } from '../lib/api.ts'
 
-/** Honesty first: whenever the API serves simulated data, say so on every page. */
 export function useSimulated(): boolean {
   const { data } = useFetch('health', api.health)
   return data?.simulated ?? false

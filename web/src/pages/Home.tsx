@@ -30,7 +30,6 @@ const CHALLENGE_PARTS = [
 const LINE_1 = ['The', 'Earth', 'is', 'changing.']
 const LINE_2 = ['Can', 'you', 'see', 'the', 'signal?']
 
-/** 01 · Discover: the cinematic opening and the story of how a signal is found. */
 export default function Home() {
   const [arrived, setArrived] = useState(false)
   const { data: summary } = useFetch('summary', api.summary)
@@ -38,7 +37,6 @@ export default function Home() {
 
   return (
     <PageTransition className="grain">
-      {/* ------------------------------------------------------------ hero */}
       <section className="relative h-[100svh] min-h-[640px] overflow-hidden bg-space" aria-label="Introduction">
         <div aria-hidden className="absolute inset-0 bg-[radial-gradient(ellipse_at_75%_85%,rgba(231,196,143,0.16),transparent_55%),radial-gradient(ellipse_at_15%_10%,rgba(80,120,220,0.18),transparent_50%)]" />
         <Starfield />
@@ -116,10 +114,8 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ------------------------------------------------------------ the flight: 24 years in one scroll */}
       <Flyover />
 
-      {/* ------------------------------------------------------------ 01 the question */}
       <section id="question" className="relative overflow-hidden py-32">
         <TopoLines className="opacity-80" />
         <div className="relative mx-auto max-w-6xl px-6">
@@ -158,7 +154,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ------------------------------------------------------------ 02 five witnesses */}
       <section className="relative py-28">
         <div className="mx-auto max-w-6xl px-6">
           <Chapter n="02" kicker="The witnesses" title="Five measurements, five ways the land tells its story." />
@@ -173,7 +168,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ------------------------------------------------------------ 03 signal vs noise */}
       <section className="relative overflow-hidden py-28">
         <div aria-hidden className="absolute inset-0 bg-[radial-gradient(ellipse_at_20%_50%,rgba(255,138,101,0.07),transparent_60%)]" />
         <div className="relative mx-auto max-w-6xl px-6">
@@ -184,7 +178,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ------------------------------------------------------------ 04 first signals */}
       <section className="relative py-28">
         <div className="mx-auto max-w-6xl px-6">
           <Chapter n="04" kicker="First evidence" title="Three signals worth a closer look." />
@@ -192,7 +185,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ------------------------------------------------------------ 05 the path */}
       <section className="relative overflow-hidden py-32">
         <TopoLines seed={4} className="opacity-60" />
         <div className="relative mx-auto max-w-6xl px-6 text-center">

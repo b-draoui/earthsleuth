@@ -1,4 +1,3 @@
-"""Load the hand-written backup seed.yaml (offline, no CMR, no LLM). Same schema as the curator."""
 from __future__ import annotations
 
 from pathlib import Path

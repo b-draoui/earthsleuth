@@ -1,16 +1,4 @@
-# CONTRACT 0 - the fixed graph schema (Document 2, section 8.4).
-# The curator agent fills the graph but cannot add new node labels or relationship types:
-# graph/store.py refuses anything that is not listed here.
-#
-# Every node and relationship also gets, automatically:
-#   source      where the fact came from (CMR, file header, DOI, seed.yaml, engine run...)
-#   created_by  curator | code | investigator | human
-#   status      verified | from_paper | hypothesis
-#   confidence  0..1
-#   created_at  UTC timestamp
-
 nodes:
-  # ---------------- Layer A: knowledge
   Mission:
     id_prefix: "mission:"
     required: [name]
@@ -52,7 +40,6 @@ nodes:
     id_prefix: "pattern:"
     required: [name, description, cypher]
     description: A rule that turns evidence + literature into a candidate hypothesis.
-  # ---------------- Layer B: evidence (written by code, never typed by the LLM)
   Analysis:
     id_prefix: "analysis:"
     required: [run_id, region, period, methods]

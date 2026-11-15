@@ -1,9 +1,3 @@
-"""The tools of the investigator (Document 2, section 9.1).
-
-Each tool reads the graph or runs the engine and returns plain JSON-able data.
-The investigator controller calls them in the order the graph gives; the follow-up chat lets
-the LLM call the read-only ones itself.
-"""
 from __future__ import annotations
 
 import hashlib
@@ -17,7 +11,6 @@ from graph.store import GraphStore, parse_json_prop
 
 
 def fmt(x: float | None, sig: int = 3) -> str:
-    """The ONE way numbers are written for the LLM and the report (so the number check works)."""
     if x is None:
         return "n/a"
     if x == 0:
@@ -33,7 +26,6 @@ def fmt_p(p: float | None) -> str:
 
 
 def group_opposites(pairs: list[dict]) -> dict[str, dict]:
-    """Opposite pairs grouped per variable: which sub-regions go up, which go down."""
     out: dict[str, dict] = {}
     for p in pairs:
         g = out.setdefault(p["variable"], {"up": {}, "down": {}, "findings": []})
@@ -54,7 +46,6 @@ class InvestigatorTools:
         self.store = store
         self.engine = engine or TrendEngine()
 
-    # ------------------------------------------------------------------ graph reads
     def find_concepts(self, question_words: str) -> list[dict]:
         """Concepts in the graph matching the words or synonyms (empty = out of scope)."""
         return Q.find_concepts(self.store, question_words)
@@ -72,8 +63,6 @@ class InvestigatorTools:
 
     def plan_from_graph(self, question: str, concepts: list[str], region_code: str,
                         period: list[str]) -> InvestigationSpec:
-        """Contract 1, entirely read from the graph: variables + definitions, datasets, recipes,
-        ordered methods, chart styles."""
         variables = self.find_variables(concepts)
         methods = Q.method_chain(self.store)
         area = self.area(region_code)
@@ -90,7 +79,6 @@ class InvestigatorTools:
             variable_details=usable, warnings=sorted(set(warnings)))
         return spec
 
-    # ------------------------------------------------------------------ engine
     def get_trend(self, variable: str, region: str, period: list[str]) -> dict:
         """Contract-2 JSON for the regional trend + cell counts (cache or computed on demand)."""
         try:
@@ -100,7 +88,6 @@ class InvestigatorTools:
         return r.to_dict()
 
     def _with_suggestion(self, err: GuardrailError, region_code: str) -> str:
-        """Too few land cells -> name the nearest larger region of the graph (section 6.3)."""
         msg = str(err)
         if "land cells" in msg:
             big = Q.larger_region(self.store, region_code, C.MIN_CELLS)
@@ -123,7 +110,6 @@ class InvestigatorTools:
         return radar.subregion_opposites(per)
 
     def get_clusters(self, region: str, period: list[str]) -> list[dict]:
-        """Cluster signatures, sizes (from the graph's Finding nodes of kind 'cluster')."""
         return [dict(id=f["id"], label=f.get("cluster_label"), signature=f.get("signature"),
                      n_cells=f.get("n_cells"))
                 for f in Q.findings_in(self.store, region, period) if f.get("kind") == "cluster"]
@@ -135,7 +121,6 @@ class InvestigatorTools:
         return Q.mechanisms(self.store, vid) if vid else []
 
     def get_chart(self, variable: str, kind: str = "map") -> dict:
-        """Chart spec (type, colours, labels) from ChartStyle."""
         v = next((x for x in Q.all_variables(self.store) if x["code_id"] == variable), None)
         if v is None:
             return {}
@@ -144,10 +129,7 @@ class InvestigatorTools:
             unit=v["unit"], display_name=v["display_name"])
         return cs
 
-    # ------------------------------------------------------------------ hypotheses
     def propose_hypotheses(self, pkg: dict) -> list[dict]:
-        """Candidate hypotheses from the HypothesisPattern rules (co-trends + literature paths,
-        opposite sub-regions, compound clusters). Always 'unverified'."""
         patterns = {p["id"]: p for p in Q.hypothesis_patterns(self.store)}
         names = {v["code_id"]: v["display_name"] for v in Q.all_variables(self.store)}
         regions = {r["code_id"]: r["name"] for r in Q.regions(self.store)}
@@ -208,7 +190,6 @@ class InvestigatorTools:
     def record_hypothesis(self, text: str, based_on: list[str], pattern: str,
                           about: list[str] | None = None, investigation_id: str | None = None
                           ) -> dict:
-        """Saves a hypothesis node labelled 'unverified'."""
         hid = "hypothesis:" + hashlib.sha1((text + "|".join(based_on)).encode()).hexdigest()[:12]
         self.store.merge_node("Hypothesis", hid, {"text": text, "pattern": pattern,
                                                   "verification": "unverified"},
@@ -231,7 +212,6 @@ class InvestigatorTools:
                                  created_by="investigator", status="hypothesis")
         return {"id": hid, "text": text, "status": "unverified"}
 
-    # ------------------------------------------------------------------ helpers
     def _var_id(self, code: str) -> str | None:
         return next((v["id"] for v in self.store.nodes("Variable") if v.get("code_id") == code),
                     None)
@@ -241,7 +221,6 @@ class InvestigatorTools:
         return v.get("code_id") if v else None
 
 
-# JSON schemas of the read-only tools offered to the follow-up chat
 _S = {"type": "string"}
 _P = {"type": "array", "items": {"type": "string"}, "description": "[start YYYY-MM, end YYYY-MM]"}
 CHAT_TOOL_SCHEMAS: dict[str, dict[str, Any]] = {

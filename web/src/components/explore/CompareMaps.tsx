@@ -20,7 +20,6 @@ function meanExpr(years: number[]): ExpressionSpecification {
   return ['/', ['+', ...years.map((y) => ['coalesce', ['get', `y${y}`], 0])], years.length] as unknown as ExpressionSpecification
 }
 
-/** Colour range shared by both sides: 95th percentile of the absolute 5-year means. */
 export function compareMax(data: TrendsGeoJSON): number {
   const values: number[] = []
   for (const f of data.features) {
@@ -30,11 +29,6 @@ export function compareMax(data: TrendsGeoJSON): number {
   return values[Math.floor(values.length * 0.95)] || 1
 }
 
-/**
- * Before / after: the first five years on the left, the last five on the right, same place, same
- * colours. Drag the handle to wipe between them. Both maps move together.
- * This is a way of looking, not a test: significance lives in the Trend view.
- */
 export default function CompareMaps({
   data,
   scale,
@@ -118,7 +112,6 @@ export default function CompareMaps({
         {side('after', AFTER)}
       </div>
 
-      {/* period labels, on each side of the handle */}
       <div className="pointer-events-none absolute top-6 z-10 -translate-x-full pr-5 text-right" style={{ left: `${split}%` }}>
         <p className="num font-display text-2xl font-semibold text-ink" style={{ textShadow: '0 2px 12px #000' }}>2001–2005</p>
         <p className="eyebrow">before</p>
@@ -128,7 +121,6 @@ export default function CompareMaps({
         <p className="eyebrow">after</p>
       </div>
 
-      {/* the handle */}
       <div
         role="slider"
         tabIndex={0}

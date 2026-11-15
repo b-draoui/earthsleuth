@@ -1,9 +1,3 @@
-"""Trusted sources the curator tools read facts from (never the LLM's memory):
-- NASA CMR (collections and UMM-Var variable metadata) - public, no login;
-- the header of a real downloaded file (data/raw/<dataset>/sample/);
-- Crossref / OpenAlex for papers, or an abstract pasted by a team member in papers.yaml.
-Every HTTP answer is cached in data/cache/http so repeated builds are fast and offline-friendly.
-"""
 from __future__ import annotations
 
 import hashlib
@@ -46,7 +40,6 @@ def get_json(url: str, params: dict | None = None) -> dict:
     return data
 
 
-# ----------------------------------------------------------------------------- CMR
 def cmr_collection(short_name: str, version: str) -> dict:
     d = get_json(f"{C.CMR_URL}/collections.umm_json",
                  {"short_name": short_name, "version": version, "page_size": 5})
@@ -71,7 +64,6 @@ def cmr_collection(short_name: str, version: str) -> dict:
 
 
 def cmr_variable(collection: dict, name_in_file: str) -> dict | None:
-    """UMM-Var record of one variable of a collection (units, fill value, scale...)."""
     ids = collection.get("variable_ids") or []
     for i in range(0, len(ids), 100):
         chunk = ids[i:i + 100]
@@ -90,7 +82,6 @@ def cmr_variable(collection: dict, name_in_file: str) -> dict | None:
     return None
 
 
-# ----------------------------------------------------------------------------- file header
 def sample_file(dataset_key: str) -> Path | None:
     folder = C.RAW / dataset_key / "sample"
     files = sorted(p for p in folder.glob("*") if p.is_file()) if folder.exists() else []
@@ -98,7 +89,6 @@ def sample_file(dataset_key: str) -> Path | None:
 
 
 def file_header(dataset_key: str, name_in_file: str, group: str | None = None) -> dict | None:
-    """Attributes of a variable read from a real downloaded file, or None if we have no file."""
     path = sample_file(dataset_key)
     if path is None:
         return None
@@ -132,7 +122,6 @@ def file_header(dataset_key: str, name_in_file: str, group: str | None = None) -
                 long_name=first(attrs.get("long_name") or attrs.get("LongName")), file=path.name)
 
 
-# ----------------------------------------------------------------------------- papers
 def papers_catalog() -> dict[str, dict]:
     data = yaml.safe_load(PAPERS_YAML.read_text(encoding="utf-8")) or {}
     return {p["doi"].lower(): p for p in data.get("papers", [])}
@@ -143,8 +132,6 @@ def _strip_tags(text: str) -> str:
 
 
 def paper_metadata(doi: str) -> dict:
-    """Title, year and abstract. Abstract priority: papers.yaml (pasted by a human) ->
-    Crossref -> OpenAlex."""
     doi = doi.lower().strip()
     cat = papers_catalog().get(doi, {})
     m = get_json(f"https://api.crossref.org/works/{doi}")["message"]

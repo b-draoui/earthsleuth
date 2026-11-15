@@ -56,13 +56,11 @@ function toMarkdown(s: Summary, vars: Variable[]): string {
   return lines.filter((l, i, a) => !(l === '' && a[i - 1] === '')).join('\n')
 }
 
-/** 05 · Conclude: the report. What changed, how sure we are, what we cannot say, where it comes from. */
 export default function Conclude() {
   const { data: s } = useFetch('summary', api.summary)
   const { data: vars } = useFetch('variables', api.variables)
   const { hash } = useLocation()
 
-  // links to /conclude#credits (footer) land on the credits
   useEffect(() => {
     if (hash !== '#credits') return
     const t = window.setTimeout(() => document.getElementById('credits')?.scrollIntoView({ behavior: 'smooth' }), 700)

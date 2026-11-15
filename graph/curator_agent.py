@@ -1,8 +1,3 @@
-"""Phase 2 - the curator agent builds Layer A of the graph (Document 2, section 8.6).
-
-It is an LLM (Gemini) that can ONLY use the checking tools in curator_tools.py.
-Every tool call and answer is written to data/graph/curator_build_log.jsonl (the build log).
-"""
 from __future__ import annotations
 
 import json

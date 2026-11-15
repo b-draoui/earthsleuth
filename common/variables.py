@@ -1,11 +1,3 @@
-"""Reference description of the datasets and variables we use (Document 2, section 5.2).
-
-This table is written by humans. It is used for two things:
-1. the download / preprocessing pipeline (phase 1) needs it before any graph exists;
-2. validate_graph compares the recipes written by the curator agent against it
-   ("this table is what we use to check its work").
-The investigation itself reads recipes from the graph, not from here.
-"""
 from __future__ import annotations
 
 from dataclasses import dataclass, field
@@ -13,10 +5,10 @@ from dataclasses import dataclass, field
 
 @dataclass(frozen=True)
 class DatasetSpec:
-    key: str                 # short key used in folder names: merra2, imerg, gldas, modis_ndvi
-    short_name: str          # CMR short name
-    version: str             # CMR version
-    cmr_concept_id: str      # checked against CMR on 2026-11-14
+    key: str
+    short_name: str
+    version: str
+    cmr_concept_id: str
     provider: str
     native_res: str
     file_format: str
@@ -24,15 +16,15 @@ class DatasetSpec:
 
 @dataclass(frozen=True)
 class VariableSpec:
-    id: str                  # our short id, used everywhere in code: t2m, precip, ...
+    id: str
     display_name: str
-    dataset: str             # DatasetSpec.key
+    dataset: str
     name_in_file: str
     group: str | None
     unit_native: str
     unit_target: str
-    conversion: str          # human-readable conversion rule
-    kind: str                # state | flux | index
+    conversion: str
+    kind: str
     definition_for_students: str
     cf_standard_name: str | None = None
     concepts: tuple[str, ...] = field(default_factory=tuple)
@@ -82,8 +74,6 @@ VARIABLES: dict[str, VariableSpec] = {
 VARIABLE_ORDER = ["t2m", "precip", "soil_moisture", "et", "ndvi"]
 
 CONCEPTS: dict[str, tuple[str, ...]] = {
-    # concept -> synonyms (lower case). Used by the seed backup and to check the curator.
-    # A synonym belongs to ONE concept only (validate_graph rejects duplicates).
     "surface heating": ("hotter", "warmer", "warming", "heat", "temperature", "hot"),
     "water availability": ("water", "wetter", "drier", "dry", "water scarcity", "scarcer",
                            "rainfall"),
@@ -95,7 +85,6 @@ CONCEPTS: dict[str, tuple[str, ...]] = {
 }
 
 SUBREGIONS: dict[str, tuple[str, tuple[float, float, float, float]]] = {
-    # id -> (name, (west, south, east, north)). Boxes, not borders: good enough at 1 degree.
     "iberia": ("Iberian Peninsula", (-10.0, 36.0, 3.0, 44.0)),
     "maghreb": ("Maghreb", (-10.0, 28.0, 12.0, 37.0)),
     "tunisia": ("Tunisia", (7.0, 30.0, 12.0, 38.0)),

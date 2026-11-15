@@ -1,11 +1,3 @@
-"""The checking tools of the curator agent (Document 2, section 8.6).
-
-The agent decides WHAT to add; these tools decide whether the fact is TRUE.
-- Facts with numbers (units, fill values, dates, ids, DOIs) come from CMR, the real file or
-  Crossref - never from the LLM.
-- Every write goes through GraphStore, which enforces the schema (Contract 0) and uses MERGE.
-- A refused call returns {"ok": false, "error": "..."} explaining why, so the agent can retry.
-"""
 from __future__ import annotations
 
 import re
@@ -58,7 +50,6 @@ class CuratorTools:
     def __init__(self, store: GraphStore):
         self.store = store
 
-    # ================================================================== read-only
     def get_schema(self) -> dict:
         """Allowed node labels, relationship types and the build target."""
         from graph.store import load_schema
@@ -70,7 +61,6 @@ class CuratorTools:
 
     @staticmethod
     def target() -> dict:
-        """What the finished Layer A must contain (Document 2, section 8.1)."""
         st = strategy()
         return dict(
             datasets=[f"{d.short_name} v{d.version}" for d in DATASETS.values()],
@@ -132,7 +122,6 @@ class CuratorTools:
                                                   "code_id", "synonyms", "status")
                             if n.get(k) is not None} for n in hits])
 
-    # ================================================================== datasets
     def add_dataset(self, short_name: str, version: str) -> dict:
         """Look the dataset up in NASA CMR and copy the official metadata. Also creates the
         Mission / Instrument nodes listed by CMR and the PROVIDES / CARRIES links."""
@@ -174,7 +163,6 @@ class CuratorTools:
                 created.append(iid)
         return ok(node=node, created_or_updated=created)
 
-    # ================================================================== variables
     def add_variable(self, dataset_short_name: str, name_in_file: str,
                      definition_for_students: str, kind: str) -> dict:
         """Create a Variable with its recipe. Units, fill value and scale come from the real file
@@ -200,7 +188,7 @@ class CuratorTools:
         try:
             meta = sources.file_header(ds.key, name_in_file, spec.group)
             source = f"file header {meta['file']}" if meta else None
-        except Exception:  # noqa: BLE001 - unreadable sample file -> fall back to CMR
+        except Exception:
             meta, source = None, None
         if meta is None:
             try:
@@ -229,7 +217,6 @@ class CuratorTools:
             warn = f"Note: the team's reference table says kind='{spec.kind}'."
         return ok(node=node, recipe_source=source, warning=warn)
 
-    # ================================================================== concepts
     def add_concept(self, name: str, synonyms: list[str]) -> dict:
         """Create a concept a student might ask about, with everyday synonyms."""
         name = name.strip().lower()
@@ -267,7 +254,6 @@ class CuratorTools:
                              source="curator", created_by=CREATOR, confidence=0.9)
         return ok(linked=f"{variable_id} -INDICATOR_OF-> {cid}")
 
-    # ================================================================== regions
     def add_region(self, code_id: str, name: str, west: float, south: float, east: float,
                    north: float, parent_code_id: str = "") -> dict:
         """A box of 1-degree cells inside our data. The tool counts its land cells."""
@@ -293,7 +279,6 @@ class CuratorTools:
             self.store.merge_rel(rid, "PART_OF", pid, source="curator", created_by=CREATOR)
         return ok(node=node)
 
-    # ================================================================== papers
     def add_paper(self, doi: str) -> dict:
         """Add a paper from papers.yaml. Title/year/abstract come from Crossref (or the abstract
         pasted by the team). Refused if no team member has read it."""
@@ -345,7 +330,6 @@ class CuratorTools:
                              status="from_paper")
         return ok(linked=f"{from_variable_id} -INFLUENCES({sign})-> {to_variable_id}")
 
-    # ================================================================== strategy
     def add_method(self, method_id: str) -> dict:
         """Create a Method from strategy.yaml; NEXT links are added to its neighbours in order."""
         m = next((x for x in strategy()["methods"] if x["id"] == method_id), None)
@@ -395,14 +379,12 @@ class CuratorTools:
             source="graph/strategy.yaml (team)", created_by=CREATOR)
         return ok(node={"id": node["id"]})
 
-    # ================================================================== checks
     def validate_graph(self) -> dict:
         """Run all automatic checks (Document 2, section 8.7)."""
         from graph.validate_graph import validate
         problems = validate(self.store)
         return ok(problems=problems, passed=not problems)
 
-    # ================================================================== registry
     def registry(self) -> dict[str, Callable[..., dict]]:
         return {name: getattr(self, name) for name in TOOL_SCHEMAS}
 
@@ -420,7 +402,6 @@ class CuratorTools:
             return fail(f"Source error: {e}")
 
 
-# JSON-schema descriptions for the LLM (kept next to the code they describe)
 _S, _N, _A = {"type": "string"}, {"type": "number"}, {"type": "array", "items": {"type": "string"}}
 TOOL_SCHEMAS: dict[str, dict] = {
     "get_schema": {"description": CuratorTools.get_schema.__doc__, "properties": {}},

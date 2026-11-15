@@ -1,10 +1,3 @@
-"""On-demand trend analysis for any (variable, area, period) inside our data.
-
-The investigator never computes statistics itself: it calls TrendEngine.run(...), which applies
-the guardrails of Document 2 section 6.3, runs engine.stats on every land cell of the area,
-applies FDR across those cells, computes the regional trend, and returns Contract 2.
-Results are cached on disk, so the same question is instant next time.
-"""
 from __future__ import annotations
 
 import hashlib
@@ -34,7 +27,7 @@ METHOD_TEXT = ("monthly anomalies (seasonal cycle removed); Theil-Sen slope with
 
 
 class GuardrailError(ValueError):
-    """The request is outside what our data can answer reliably. The message is user-facing."""
+    pass
 
 
 @dataclass
@@ -74,13 +67,11 @@ class TrendEngine:
         t = pd.DatetimeIndex(self.ds["time"].values)
         self.first, self.last = t[0], t[-1]
 
-    # ------------------------------------------------------------------ info
     @property
     def variables(self) -> list[str]:
         return [v for v in VARIABLES if v in self.ds.data_vars]
 
     def land_cells(self, bbox: BBox) -> tuple[np.ndarray, np.ndarray]:
-        """Indices (i, j) of land cells whose centre is inside the box."""
         lat, lon = self.ds["lat"].values, self.ds["lon"].values
         li = np.where((lat >= bbox.south) & (lat <= bbox.north))[0]
         lj = np.where((lon >= bbox.west) & (lon <= bbox.east))[0]
@@ -92,7 +83,6 @@ class TrendEngine:
     def n_land_cells(self, bbox: BBox) -> int:
         return int(len(self.land_cells(bbox)[0]))
 
-    # ------------------------------------------------------------------ guardrails
     def check(self, variable: str, area: Area, period) -> list[str]:
         warnings_: list[str] = []
         if variable not in self.variables:
@@ -118,7 +108,6 @@ class TrendEngine:
             warnings_.append("SYNTHETIC test data - these are not real NASA results.")
         return warnings_
 
-    # ------------------------------------------------------------------ main entry
     def run(self, variable: str, area: Area, period=(C.PERIOD_START, C.PERIOD_END),
             use_cache: bool = True) -> tuple[pd.DataFrame, VariableResult]:
         period = [str(period[0]), str(period[1])]
@@ -134,7 +123,7 @@ class TrendEngine:
         months = pd.DatetimeIndex(sub["time"].values).month.values
         t_years = (np.arange(sub.sizes["time"]) / 12.0)
         I, J = self.land_cells(area.bbox)
-        cube = sub.values[:, I, J]                       # (time, cells)
+        cube = sub.values[:, I, J]
         lats, lons = self.ds["lat"].values[I], self.ds["lon"].values[J]
 
         rows = []
@@ -190,7 +179,6 @@ class TrendEngine:
         jpath.write_text(result.to_json())
         return df, result
 
-    # ------------------------------------------------------------------ series for charts
     def regional_timeseries(self, variable: str, area: Area, period=(C.PERIOD_START,
                                                                       C.PERIOD_END)) -> pd.DataFrame:
         a, b = parse_period(period)
@@ -217,7 +205,6 @@ class TrendEngine:
             from scipy.stats import theilslopes
             s, i, lo, hi = theilslopes(an[ok], ty[ok], alpha=0.95)[:4]
             df["trend"] = i + s * ty
-            # band from the slope CI, pivoting around the centre of the series
             tc = ty[ok].mean()
             yc = i + s * tc
             df["trend_lo"] = yc + lo * (ty - tc)

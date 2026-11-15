@@ -1,9 +1,3 @@
-"""The statistics engine (Document 2, section 6). Plain Python, no AI.
-
-anomalies -> Theil-Sen slope (+95% CI) -> Mann-Kendall with Hamed-Rao correction
--> Benjamini-Hochberg FDR across cells -> cos-latitude weighted regional series.
-Plus the Weatherhead et al. (1998) "years needed" estimate for non-significant trends.
-"""
 from __future__ import annotations
 
 import math
@@ -19,7 +13,6 @@ from common import config as C
 
 
 def anomalies(values: np.ndarray, months: np.ndarray) -> np.ndarray:
-    """Subtract the mean of each calendar month (removes summer/winter)."""
     values = np.asarray(values, dtype="float64")
     out = np.full_like(values, np.nan)
     for m in range(1, 13):
@@ -40,7 +33,6 @@ def lag1_autocorr(x: np.ndarray) -> float:
 
 
 def years_needed(slope_per_year: float, residual_sd: float, phi: float) -> float | None:
-    """Weatherhead et al. (1998): years of monthly data needed to detect this trend."""
     if not slope_per_year or not np.isfinite(slope_per_year) or residual_sd <= 0:
         return None
     phi = min(max(phi, -0.95), 0.95)
@@ -50,7 +42,6 @@ def years_needed(slope_per_year: float, residual_sd: float, phi: float) -> float
 
 def trend(values: np.ndarray, months: np.ndarray, t_years: np.ndarray,
           min_valid: float = C.MIN_VALID_FRACTION) -> dict | None:
-    """Trend of one monthly series. Returns None when too many months are missing."""
     a = anomalies(values, months)
     ok = np.isfinite(a)
     if ok.sum() < max(24, min_valid * len(a)):
@@ -66,7 +57,7 @@ def trend(values: np.ndarray, months: np.ndarray, t_years: np.ndarray,
         try:
             test = mk.hamed_rao_modification_test(y)
             p, tau = float(test.p), float(test.Tau)
-        except Exception:                      # rare numerical failure -> plain MK
+        except Exception:
             test = mk.original_test(y)
             p, tau = float(test.p), float(test.Tau)
     resid = y - (intercept + slope * t)
@@ -76,7 +67,6 @@ def trend(values: np.ndarray, months: np.ndarray, t_years: np.ndarray,
 
 
 def add_fdr(df: pd.DataFrame, q: float = C.FDR_Q) -> pd.DataFrame:
-    """Benjamini-Hochberg across all cells of ONE variable and ONE area."""
     df = df.copy()
     df["q"] = np.nan
     df["significant"] = False
@@ -92,8 +82,6 @@ def add_fdr(df: pd.DataFrame, q: float = C.FDR_Q) -> pd.DataFrame:
 
 def regional_series(cube: np.ndarray, lats: np.ndarray, min_cell_fraction: float = 0.5
                     ) -> np.ndarray:
-    """cos(latitude)-weighted mean over cells for each month. cube: (time, cells), lats: (cells,).
-    A month is kept only if at least half of the cells have data."""
     w = np.cos(np.deg2rad(lats))[None, :] * np.ones_like(cube)
     valid = np.isfinite(cube)
     w = np.where(valid, w, 0.0)

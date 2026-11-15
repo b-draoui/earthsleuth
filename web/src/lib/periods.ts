@@ -1,11 +1,9 @@
-/** The two 5-year windows of the before / after comparison. */
 export const BEFORE = [2001, 2002, 2003, 2004, 2005]
 export const AFTER = [2020, 2021, 2022, 2023, 2024]
 
 export const BEFORE_LABEL = '2001–2005'
 export const AFTER_LABEL = '2020–2024'
 
-/** Mean of monthly values whose year is in `years` (time = "YYYY-MM"). */
 export function windowMean(time: string[], values: (number | null)[], years: number[]): number | null {
   let sum = 0
   let n = 0

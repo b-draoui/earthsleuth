@@ -12,14 +12,12 @@ import VarIcon from '../VarIcon.tsx'
 const QUIET = '#1a2335'
 const cap = (s: string) => s.charAt(0).toUpperCase() + s.slice(1)
 
-/** One line that says what the map shows, built only from the counts. */
 export function headline(v: SummaryVariable): string {
   const id = VARS[v.variable]
   const { n, sig_up: up, sig_down: down } = v.cells
   if (up + down === 0) return 'No clear local change'
   const main = `${cap(up >= down ? id.up : id.down)} in ${Math.max(up, down)} of ${n} cells`
   if (!v.opposite) return main
-  // opposite directions: say "split" only when neither side clearly dominates
   if (Math.max(up, down) >= 3 * Math.max(Math.min(up, down), 1))
     return up >= down ? `${main}; ${id.down} in ${v.opposite.down[0]}` : `${main}; ${id.up} in ${v.opposite.up[0]}`
   return `Split: ${id.up} in ${v.opposite.up[0]}, ${id.down} in ${v.opposite.down[0]}`
@@ -73,7 +71,6 @@ function ChangeCard({ v, m, sentence, big }: { v: SummaryVariable; m: CellsMatri
   )
 }
 
-/** "What changed" as small multiples: one map per variable, coloured only where the trend is real. */
 export function ChangeMaps({ s, sentence }: { s: Summary; sentence: (v: SummaryVariable) => string }) {
   const { data: m } = useCells()
   if (!m) return <div className="skeleton h-96 rounded-3xl" />
@@ -91,7 +88,6 @@ export function ChangeMaps({ s, sentence }: { s: Summary; sentence: (v: SummaryV
   )
 }
 
-/** Where the air warmed and the soil dried, both significantly. */
 export function TogetherMap({ s }: { s: Summary }) {
   const { data: m } = useCells()
   const color = useCallback(

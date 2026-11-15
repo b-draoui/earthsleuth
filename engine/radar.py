@@ -1,8 +1,3 @@
-"""Radar-lite (Document 2, section 7): ranking, opposite trends, trend-signature clusters.
-
-Golden rule: clusters only say "these places changed in a similar way". Whether each trend is
-real is decided by the significance test, not by the clustering.
-"""
 from __future__ import annotations
 
 import numpy as np
@@ -14,8 +9,8 @@ from sklearn.preprocessing import StandardScaler
 from common.contracts import VariableResult
 from common.variables import VARIABLES
 
-OPPOSITE_MIN_AREA = 10.0     # % of area that must go up AND down to call it an opposite pattern
-MIN_CELLS_FOR_CLUSTERS = 60  # k-means on fewer cells mostly finds noise
+OPPOSITE_MIN_AREA = 10.0
+MIN_CELLS_FOR_CLUSTERS = 60
 
 
 def ranking(results: list[VariableResult]) -> pd.DataFrame:
@@ -29,7 +24,6 @@ def ranking(results: list[VariableResult]) -> pd.DataFrame:
 
 
 def opposite_pattern(result: VariableResult) -> dict | None:
-    """Both directions cover a large share of the area -> the regional mean hides the story."""
     up, down = result.cells.pct_sig_up_area, result.cells.pct_sig_down_area
     if up >= OPPOSITE_MIN_AREA and down >= OPPOSITE_MIN_AREA:
         return dict(variable=result.variable, pct_up=up, pct_down=down,
@@ -39,7 +33,6 @@ def opposite_pattern(result: VariableResult) -> dict | None:
 
 
 def subregion_opposites(sub_results: dict[str, VariableResult]) -> list[dict]:
-    """Pairs of sub-regions whose REGIONAL trends are significant in opposite directions."""
     sig = {rid: r for rid, r in sub_results.items()
            if r.regional.significant and r.regional.slope_per_decade}
     pairs = []
@@ -55,7 +48,6 @@ def subregion_opposites(sub_results: dict[str, VariableResult]) -> list[dict]:
 
 
 def co_occurrence(cells: dict[str, pd.DataFrame], min_overlap: float = 0.5) -> list[dict]:
-    """Two variables with significant trends in mostly the same cells (overlap of the smaller set)."""
     sets = {v: set(df.loc[df["significant"], "cell_id"]) for v, df in cells.items()}
     out = []
     vs = sorted(sets)
@@ -71,12 +63,10 @@ def co_occurrence(cells: dict[str, pd.DataFrame], min_overlap: float = 0.5) -> l
     return out
 
 
-SIG_SHARE = 0.4   # a variable describes a cluster if >= 40% of its cells are significant that way
+SIG_SHARE = 0.4
 
 
 def _directions(cluster_cells: list[str], cells: dict[str, pd.DataFrame]) -> dict[str, str]:
-    """For each variable: 'up' / 'down' if enough cells of the cluster have a SIGNIFICANT trend
-    in that direction (real slopes + FDR, not the standardised values used for clustering)."""
     out = {}
     for v, df in cells.items():
         d = df.set_index("cell_id").loc[cluster_cells, "direction"]
@@ -116,11 +106,10 @@ def _label(dirs: dict[str, str]) -> str:
 
 def clusters(cells: dict[str, pd.DataFrame], k_range=range(3, 7), seed: int = 0
              ) -> tuple[pd.DataFrame, list[dict]]:
-    """k-means on standardised slopes (one row per cell, one column per variable)."""
     wide = pd.concat({v: df.set_index("cell_id")["slope_dec"] for v, df in cells.items()},
                      axis=1).dropna()
     if len(wide) < MIN_CELLS_FOR_CLUSTERS or wide.shape[1] < 2:
-        return pd.DataFrame(), []      # too few cells or variables: clusters would be meaningless
+        return pd.DataFrame(), []
     coords = next(iter(cells.values())).set_index("cell_id")[["lat", "lon"]]
     X = StandardScaler().fit_transform(wide.values)
     scores = {}

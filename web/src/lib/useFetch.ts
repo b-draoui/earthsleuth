@@ -1,9 +1,5 @@
 import { useEffect, useState } from 'react'
 
-/**
- * Tiny data hook with a shared cache: the same key is fetched once per visit, so going back to a
- * page or switching variables twice is instant. prefetch() warms the cache in the background.
- */
 const cache = new Map<string, Promise<unknown>>()
 
 function load<T>(key: string, fn: () => Promise<T>): Promise<T> {
@@ -11,7 +7,7 @@ function load<T>(key: string, fn: () => Promise<T>): Promise<T> {
   if (!p) {
     p = fn()
     cache.set(key, p)
-    p.catch(() => cache.delete(key)) // allow a retry after an error
+    p.catch(() => cache.delete(key))
   }
   return p
 }
@@ -33,8 +29,6 @@ export function useFetch<T>(key: string | null, fn: () => Promise<T>) {
     return () => {
       alive = false
     }
-    // fn is recreated on each render; the key identifies the request
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [key])
 
   const current = state.key === key

@@ -1,10 +1,3 @@
-"""Fill the engine's on-demand cache (data/cache) for the full period, every variable and every
-region of the graph, so the investigator answers in under a second on a small server.
-
-Run once after `python run.py precompute` (the Docker image runs it at build time):
-    python -m scripts.prewarm_engine
-"""
-
 import logging
 import time
 
@@ -28,7 +21,7 @@ def main() -> None:
         try:
             analyse_area(engine, area, variables, period, subs)
             print(f"  {r['code_id']:28s} ok ({len(subs)} sub-regions)  {time.perf_counter() - t0:6.1f} s")
-        except Exception as e:  # noqa: BLE001 - a region the guardrails refuse is fine
+        except Exception as e:
             print(f"  {r['code_id']:28s} skipped: {e}")
     print(f"engine cache ready in {C.CACHE} ({time.perf_counter() - t0:.0f} s)")
 

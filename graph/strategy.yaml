@@ -1,9 +1,4 @@
-# The investigation strategy, written by the team (Document 2, section 8.5).
-# The curator agent may only create Method / ChartStyle / HypothesisPattern nodes from this file,
-# and connects them to the rest of the graph. The investigator follows them.
-
 methods:
-  # ---- statistics (stage: statistics), followed in `order` through NEXT edges
   - id: anomalies
     name: Remove the seasons (monthly anomalies)
     order: 1
@@ -46,7 +41,6 @@ methods:
     applies_to_kind: [state, flux, index]
     parameters: {}
     description: For non-significant trends, how many years of data would be needed to be sure.
-  # ---- discovery (stage: discovery)
   - id: radar_ranking
     name: Rank variables by significant area
     order: 7

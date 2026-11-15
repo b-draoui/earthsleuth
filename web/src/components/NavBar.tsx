@@ -12,7 +12,6 @@ export const STEPS = [
   { to: '/conclude', label: 'Conclude', n: '05' },
 ]
 
-/** The investigation path as navigation: five numbered steps, the current one glowing. */
 export default function NavBar() {
   const { pathname } = useLocation()
   const [apiOk, setApiOk] = useState<boolean | null>(null)

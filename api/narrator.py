@@ -1,11 +1,3 @@
-"""Rule-based narrator: the app's honest stand-in while the LangGraph agent is not connected.
-
-It follows the same five stages as the agent (Contract 3) and only says what the result files
-say. Every number is read from them; explanations are labelled observed / hypothesis, and it
-says plainly when the data cannot answer "why". When agent.agent.run_investigation() works,
-the API uses it instead (api/routes/agent.py).
-"""
-
 import re
 import time
 from collections.abc import Iterator
@@ -69,7 +61,6 @@ def event(stage: str, status: str, message: str, **data) -> dict:
 
 
 def describe(variable: str, region: str) -> tuple[str, dict]:
-    """One sentence with the regional trend, its uncertainty and the share of area that changes."""
     res = da.regional(variable, region)
     reg, cells = res["regional"], res["cells"]
     unit = f"{res['unit']} per decade"

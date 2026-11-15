@@ -1,7 +1,3 @@
-/**
- * Contour lines like a topographic map, drawn from a smooth deterministic field.
- * A quiet texture for editorial sections. Purely decorative.
- */
 export default function TopoLines({ className = '', lines = 14, seed = 1 }: { className?: string; lines?: number; seed?: number }) {
   const paths: string[] = []
   for (let i = 0; i < lines; i++) {

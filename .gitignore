@@ -1,4 +1,3 @@
-# Python
 __pycache__/
 *.py[cod]
 .venv/
@@ -7,26 +6,20 @@ venv/
 .ruff_cache/
 .ipynb_checkpoints/
 
-# Front end (web/dist/ IS committed: laptops without Node.js run the built site)
 node_modules/
 
-# Secrets
 .env
 web/.env
 .netrc
 
-# Raw NASA downloads: big, never committed
 data/raw/*
 !data/raw/.gitkeep
-# rebuilt by `python run.py download` / the engine's on-demand cache
 data/small/
 data/cache/
 
-# OS / editors
 .DS_Store
 Thumbs.db
 .vscode/
 .idea/
 
-# Neo4j local dumps
 *.dump

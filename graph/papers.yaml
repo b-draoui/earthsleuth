@@ -1,13 +1,3 @@
-# Papers the curator may add to the graph (Document 2, section 8.1: "do not add a paper nobody
-# has opened"). All DOIs below were checked against Crossref on 2026-11-14.
-#
-# BEFORE the curator can use a paper, a team member must:
-#   1. read it (at least the abstract),
-#   2. write their name in `read_by`,
-#   3. if `abstract` is empty and Crossref/OpenAlex do not provide it, paste the abstract here
-#      (the curator only accepts INFLUENCES quotes that really appear in the abstract).
-# Papers with an empty read_by are refused by the add_paper tool.
-
 papers:
   - doi: 10.1029/2006GL025734
     note: Giorgi (2006), Climate change hot-spots - the Mediterranean as a hot spot.

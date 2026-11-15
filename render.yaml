@@ -1,17 +1,15 @@
-# Render Blueprint: dashboard.render.com -> New -> Blueprint -> pick this repo -> Apply.
-# Every push to main redeploys once the GitHub checks pass.
 services:
   - type: web
     name: earthsleuth
     runtime: docker
-    plan: free # sleeps after 15 min without visits; "starter" ($7/month) never sleeps
+    plan: free
     region: frankfurt
     branch: main
     dockerfilePath: ./Dockerfile
     healthCheckPath: /api/health
-    autoDeployTrigger: checksPass # redeploy on each push to main, once the GitHub tests pass
+    autoDeployTrigger: checksPass
     envVars:
       - key: EARTHSLEUTH_FAKE
-        value: "0" # real NASA results from data/processed/ ("1" = simulated data)
+        value: "0"
       - key: GEMINI_API_KEY
-        sync: false # optional: without it the investigator runs offline (rules + templates)
+        sync: false

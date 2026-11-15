@@ -6,10 +6,6 @@ import { VARIABLE_IDS, type VariableId } from '../../lib/types.ts'
 import { VARS } from '../../lib/variables.ts'
 import VarIcon from '../VarIcon.tsx'
 
-/**
- * The five signals of one place at a glance, each one a button to that layer,
- * plus the share card (an image made from the same numbers).
- */
 export default function PlaceSignals({
   cellId,
   title,

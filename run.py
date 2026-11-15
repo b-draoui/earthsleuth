@@ -26,7 +26,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent
 sys.path.insert(0, str(ROOT))
 
-from common import config as C  # noqa: E402
+from common import config as C
 
 log = logging.getLogger("earthsleuth")
 
@@ -53,7 +53,7 @@ def cmd_status(_):
         s = Neo4jStore()
         print(f"Neo4j    : reachable at {C.NEO4J_URI}, {s.counts()}")
         s.close()
-    except Exception as e:  # noqa: BLE001
+    except Exception as e:
         print(f"Neo4j    : NOT reachable ({e.__class__.__name__}); graph.json "
               f"{'exists' if C.GRAPH_JSON.exists() else 'missing'}")
 
@@ -161,7 +161,6 @@ def cmd_ask(a):
 
 
 def cmd_app(a):
-    """The web app (FastAPI + the built React site): http://localhost:<port>."""
     import shutil
     web = ROOT / "web"
     if not (web / "dist" / "index.html").exists():

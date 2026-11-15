@@ -1,6 +1,3 @@
-"""The FastAPI server on the simulated data: every route answers, shapes follow the contracts,
-and the narrator only quotes numbers that are in the result files."""
-
 import re
 
 from fastapi.testclient import TestClient
@@ -73,7 +70,6 @@ def test_ranking_clusters_summary_graph():
 
 
 def test_agent_stream_always_ends():
-    """Even if the agent crashes, the browser gets an event and then "end"."""
     r = client.get("/api/demos/does-not-exist")
     assert r.status_code == 200
     assert r.headers["content-type"].startswith("text/event-stream")
@@ -100,8 +96,6 @@ def test_narrator_only_quotes_numbers_from_the_files():
 
 
 def test_prebuilt_map_layers_match_computed(tmp_path):
-    """The Docker image serves prebuilt layers: they must be byte-for-byte what the API computes,
-    and named after their data source so simulated layers never pass for real ones."""
     import gzip
 
     from api import data_access as da
@@ -116,7 +110,6 @@ def test_prebuilt_map_layers_match_computed(tmp_path):
 
 
 def test_cells_matrix_matches_the_trends():
-    """/api/cells (small maps, place card) must say exactly what the map layers say."""
     m = client.get("/api/cells").json()
     assert set(m["variables"]) == set(VARIABLES)
     n = len(m["cells"])

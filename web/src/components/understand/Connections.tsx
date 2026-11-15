@@ -24,10 +24,8 @@ const LABELLED = new Set(['Variable', 'Concept', 'Mission'])
 type N = GraphNode & { x?: number; y?: number; degree: number }
 type L = { source: string | N; target: string | N; type: string; [k: string]: unknown }
 
-/** The knowledge + evidence graph: data sources -> variables -> concepts, and the findings. */
 export default function Connections({ graph }: { graph: KnowledgeGraph }) {
   const box = useRef<HTMLDivElement>(null)
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const fg = useRef<ForceGraphMethods<any, any> | undefined>(undefined)
   const fitted = useRef(false)
   const [width, setWidth] = useState(800)
@@ -48,7 +46,6 @@ export default function Connections({ graph }: { graph: KnowledgeGraph }) {
       degree.set(e.source, (degree.get(e.source) ?? 0) + 1)
       degree.set(e.target, (degree.get(e.target) ?? 0) + 1)
     }
-    // items with no link yet (a paper not cited by any link, a chart style) would drift off-screen
     return {
       nodes: graph.nodes.filter((n) => degree.has(n.id)).map((n) => ({ ...n, degree: degree.get(n.id) ?? 0 })) as N[],
       links: graph.edges.map((e) => ({ ...e })) as L[],
@@ -90,7 +87,6 @@ export default function Connections({ graph }: { graph: KnowledgeGraph }) {
             const f = fg.current
             if (!f || fitted.current) return
             fitted.current = true
-            // bigger graphs need more room between nodes
             f.d3Force('charge')?.strength(-90 - 1.2 * data.nodes.length)
             f.d3Force('link')?.distance(42)
             window.setTimeout(() => fg.current?.zoomToFit(600, 40), 1800)

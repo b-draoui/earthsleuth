@@ -1,8 +1,6 @@
-"""Content shared by both documents: the problem, the challenge, glossary, common diagrams."""
-from common import *  # noqa: F401,F403
+from common import *
 
 
-# ------------------------------------------------------------------ diagrams
 def diagram_opposite():
     W, H = 470, 165
     boxes = {
@@ -38,7 +36,7 @@ def diagram_stats_pipeline(compact=False):
     bw, bh, gap = 104, 62, 26
     for i, (n, t) in enumerate(steps):
         row = 0 if i < 4 else 1
-        col = i if i < 4 else 7 - i   # snake layout
+        col = i if i < 4 else 7 - i
         x = 8 + col * (bw + gap)
         y = 112 if row == 0 else 18
         fill = SKY if i < 3 else (TEAL_L if i < 7 else LILAC)
@@ -57,7 +55,6 @@ def diagram_stats_pipeline(compact=False):
     return centered(Diagram(W, H, boxes, arrows, texts=texts))
 
 
-# ------------------------------------------------------------------ sections
 def problem_section(story):
     story.append(H1("1. The problem, explained simply"))
     story.append(P(

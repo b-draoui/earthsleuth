@@ -2,12 +2,7 @@ import { AnimatePresence, motion } from 'motion/react'
 import { createContext, useCallback, useContext, useEffect, useRef, useState, type ReactNode } from 'react'
 import { useLocation, useNavigate } from 'react-router'
 
-/**
- * The guided tour: the app plays itself in about 80 seconds (for demos and the video).
- * Captions describe what is on screen, never the data, so they stay true with the real data.
- * Any wheel, touch or key press hands control back.
- */
-type Scroll = 'flyover' | 'answer' | number // number = fraction of the page height
+type Scroll = 'flyover' | 'answer' | number
 interface Step {
   path: string
   caption: string
@@ -48,7 +43,7 @@ export function TourProvider({ children }: { children: ReactNode }) {
   const navigate = useNavigate()
   const location = useLocation()
   const [step, setStep] = useState<number | null>(null)
-  const run = useRef(0) // id of the current run, so stale timers do nothing
+  const run = useRef(0)
   const timers = useRef<number[]>([])
 
   const stop = useCallback(() => {
@@ -63,11 +58,8 @@ export function TourProvider({ children }: { children: ReactNode }) {
     setStep(0)
   }, [stop])
 
-  // ?tour=1 starts it (handy for recording)
   useEffect(() => {
     if (new URLSearchParams(location.search).get('tour') === '1') start()
-    // only on first load
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   useEffect(() => {
@@ -93,11 +85,8 @@ export function TourProvider({ children }: { children: ReactNode }) {
       later(() => smoothScroll(document.body.scrollHeight * frac, s.ms - 2500, alive), 1500)
     }
     later(() => (step + 1 < STEPS.length ? setStep(step + 1) : stop()), s.ms)
-    // navigation and timers belong to this step only
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [step])
 
-  // hand control back on any deliberate input
   useEffect(() => {
     if (step === null) return
     const onInput = (e: Event) => {
@@ -165,7 +154,6 @@ export function TourProvider({ children }: { children: ReactNode }) {
   )
 }
 
-/** The button that starts it. */
 export function TourButton({ className = '' }: { className?: string }) {
   const { start, running } = useTour()
   return (

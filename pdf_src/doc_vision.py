@@ -1,12 +1,10 @@
-"""PDF 1 - the complete EarthSleuth system (full vision)."""
 import sys
 
-from common import *  # noqa: F401,F403
+from common import *
 from shared import (challenge_section, diagram_stats_pipeline, glossary_section,
                     problem_section)
 
 
-# ------------------------------------------------------------------ diagrams
 def diagram_architecture():
     W, H = 495, 432
     g = [
@@ -168,7 +166,6 @@ def diagram_agents():
     return centered(Diagram(W, H, b, a))
 
 
-# ------------------------------------------------------------------ content
 def build(path):
     doc = Doc(path, "The complete system\nAn agentic knowledge graph for Earth science trends",
               "From satellite observations to tested, explained scientific findings.\n"
@@ -201,7 +198,6 @@ def build(path):
     challenge_section(st)
     st.append(PageBreak())
 
-    # ---------------------------------------------------------------- 3 idea
     st.append(H1("3. Our idea: from a chart tool to a science detective"))
     st.append(P("Most tools answer one narrow question: <i>“Is temperature increasing in this "
                 "region?”</i> You choose the variable, you choose the place, you get a chart."))
@@ -277,7 +273,6 @@ def build(path):
         title="Golden rules"))
     st.append(PageBreak())
 
-    # ---------------------------------------------------------------- 4 data
     st.append(H1("4. The NASA data we use"))
     st.append(P("NASA data is at the heart of the project (this is the <b>Relevance</b> criterion). "
                 "Here is what exists and what each source gives us."))
@@ -357,7 +352,6 @@ def build(path):
     ], [1.3, 3.2, 2.5]))
     st.append(PageBreak())
 
-    # ---------------------------------------------------------------- 5 architecture
     st.append(H1("5. The architecture: the big picture"))
     st.append(P("The system has six layers. Data flows <b>up</b> from NASA archives to the app; "
                 "questions flow <b>down</b> from the user to the engines."))
@@ -386,7 +380,6 @@ def build(path):
         "<b>front desk</b> where visitors ask questions."]))
     st.append(PageBreak())
 
-    # ---------------------------------------------------------------- 6 data platform
     st.append(H1("6. Layer 1 — the scientific data platform"))
     st.append(P("This layer turns messy archives into clean, aligned data that the engines can "
                 "trust. It runs in five steps."))
@@ -432,7 +425,6 @@ def build(path):
                             "defining the exact preprocessing rules."]))
     st.append(PageBreak())
 
-    # ---------------------------------------------------------------- 7 graph
     st.append(H1("7. Layer 2 — the Earth System Knowledge Graph"))
     st.append(H2("7.1 What is a graph database?"))
     st.append(P("A normal database is made of tables. A <b>graph database</b> stores <b>things</b> "
@@ -563,7 +555,6 @@ RETURN f
                             "and the evidence graph."]))
     st.append(PageBreak())
 
-    # ---------------------------------------------------------------- 8 stats
     st.append(H1("8. Layer 3 — the statistics engine"))
     st.append(P("This is the part that directly answers the challenge: <b>how much</b> is something "
                 "changing and <b>is it significant</b>. It is plain, tested Python code. No AI "
@@ -663,7 +654,6 @@ RETURN f
                             "checking our p-values against known results and against Giovanni)."]))
     st.append(PageBreak())
 
-    # ---------------------------------------------------------------- 9 radar
     st.append(H1("9. Layer 4 — Earth Signal Radar (machine learning)"))
     st.append(P("Most tools wait for the user to choose a variable. The Radar does the opposite: it "
                 "<b>sweeps</b> many variables over a region and tells you what is worth looking at."))
@@ -722,7 +712,6 @@ RETURN f
                             "anomaly detection and the GNN experiments."]))
     st.append(PageBreak())
 
-    # ---------------------------------------------------------------- 10 agents
     st.append(H1("10. Layer 5 — the AI agents (the Investigator)"))
     st.append(H2("10.1 What is an LLM agent?"))
     st.append(P("An <b>LLM</b> (Large Language Model) is an AI that understands and writes text. An "
@@ -810,7 +799,6 @@ RETURN f
                             "the UI."]))
     st.append(PageBreak())
 
-    # ---------------------------------------------------------------- 11 why
     st.append(H1("11. Explaining WHY: the hypothesis engine"))
     st.append(P("After a trend is found, the user can click <b>“Investigate possible causes”"
                 "</b>. The Explainer follows mechanism paths in the graph, for example:"))
@@ -851,7 +839,6 @@ RETURN f
     ]))
     st.append(PageBreak())
 
-    # ---------------------------------------------------------------- 12 app
     st.append(H1("12. Layer 6 — the app"))
     st.append(table([
         ["Screen", "What the user sees and does"],
@@ -877,7 +864,6 @@ RETURN f
                 "temperature; brown/green for water and vegetation)."))
     st.append(PageBreak())
 
-    # ---------------------------------------------------------------- 13 walkthrough
     st.append(H1("13. One complete investigation, step by step"))
     st.append(P("<i>The story below shows how the parts work together. Numbers are placeholders "
                 "to illustrate the format, not real results.</i>"))
@@ -908,7 +894,6 @@ RETURN f
     ], numbered=True))
     st.append(PageBreak())
 
-    # ---------------------------------------------------------------- 14 tech
     st.append(H1("14. Technology stack"))
     st.append(table([
         ["Layer", "Technology", "Why"],
@@ -931,7 +916,6 @@ RETURN f
          "and graphs."],
     ], [1.5, 2.6, 2.9]))
 
-    # ---------------------------------------------------------------- 15 team
     st.append(H1("15. Who does what"))
     st.append(table([
         ["Role", "Owns", "Main tasks"],
@@ -949,7 +933,6 @@ RETURN f
                 "specification (AI → ML) and the typed results (ML → AI). Agree on both JSON "
                 "formats first, and everyone can work in parallel."))
 
-    # ---------------------------------------------------------------- 16 judging
     st.append(H1("16. Why this scores well with the judges"))
     st.append(table([
         ["Criterion", "What in EarthSleuth earns points"],

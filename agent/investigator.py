@@ -1,15 +1,3 @@
-"""The AI investigator (Document 2, section 9): one question -> one complete, honest investigation.
-
-Steps (the UI shows them lighting up):
-  1 Understand  question -> concepts, region, period        (Gemini, constrained to graph items)
-  2 Plan        concepts -> variables/datasets/recipes/methods/charts   (graph walk = Contract 1)
-  3 Analyse     statistics + Radar-lite on series.nc          (plain code = Contract 2)
-  4 Record      Analysis / Finding / OPPOSITE_OF / CO_OCCURS_WITH       (plain code -> graph)
-  5 Why?        literature paths + HypothesisPattern rules -> Hypothesis (unverified)
-  6 Check       every number in the answer must come from the tools    (plain code)
-  7 Explain     answer for a curious high-school student, every claim labelled (Gemini)
-Without Gemini (no key / API down) steps 1 and 7 fall back to rules and templates.
-"""
 from __future__ import annotations
 
 import hashlib
@@ -33,8 +21,6 @@ from graph.store import GraphStore, get_store
 
 log = logging.getLogger(__name__)
 STEPS = ["Understand", "Plan", "Analyse", "Record", "Why?", "Check", "Explain"]
-# The explanation uses the fast model by default (answers in seconds); set EXPLAIN_MODEL=pro in
-# .env to use the reasoning model instead (better prose, much slower).
 EXPLAIN_FAST = os.getenv("EXPLAIN_MODEL", "fast").strip().lower() != "pro"
 
 EXPLAIN_SYSTEM = """You are EarthSleuth, an Earth-science investigator explaining results to a
@@ -70,14 +56,10 @@ def _now() -> str:
     return datetime.now(timezone.utc).isoformat(timespec="seconds")
 
 
-# ============================================================================ number check
-# A sign only counts when it is not glued to a word or a number before it, so "2001-01" and
-# "2001-2024" are dates / ranges (no negative numbers) while "-0.585" and "+0.4" are signed.
 _NUM = re.compile(r"(?<![\w.])([-+−]?)(\d+(?:[.,]\d+)*(?:e[-+]?\d+)?)")
 
 
 def numbers_in(text: str) -> set[str]:
-    """Signed numbers in a text: '-0.585', '+0.4' or '0.4' (no sign written)."""
     out = set()
     for sign, digits in _NUM.findall(text):
         sign = {"−": "-", "-": "-", "+": "+"}.get(sign, "")
@@ -86,15 +68,10 @@ def numbers_in(text: str) -> set[str]:
 
 
 def number_check(answer: str, evidence_text: str, extra_ok: set[str] | None = None) -> list[str]:
-    """Numbers in the answer that do not appear in the evidence (string match, as in the PDF).
-
-    Signs are checked: '-0.585' must appear as a negative number in the evidence and '+0.585' as
-    a positive one, so a decrease cannot be reported as an increase. A number written without a
-    sign ("decreased by 0.585") only needs its absolute value to appear in the evidence."""
     ev = numbers_in(evidence_text) | (extra_ok or set())
     negative = {n[1:] for n in ev if n.startswith("-")}
     positive = {n.lstrip("+") for n in ev if not n.startswith("-")}
-    positive |= {str(i) for i in range(0, 13)}          # counts, months, list numbering
+    positive |= {str(i) for i in range(0, 13)}
     bad = []
     for n in numbers_in(answer):
         value = n.lstrip("+-")
@@ -109,7 +86,6 @@ def number_check(answer: str, evidence_text: str, extra_ok: set[str] | None = No
     return sorted(bad)
 
 
-# ============================================================================ investigator
 class Investigator:
     def __init__(self, store: GraphStore | None = None, engine: TrendEngine | None = None,
                  use_llm: bool = True):
@@ -118,7 +94,6 @@ class Investigator:
         self.tools = InvestigatorTools(self.store, self.engine)
         self.use_llm = use_llm and bool(C.GEMINI_API_KEY)
 
-    # ------------------------------------------------------------------ public
     def run(self, question: str, region_code: str | None = None,
             period: list[str] | None = None,
             on_step: Callable[[str, str, dict], None] | None = None) -> dict:
@@ -136,7 +111,6 @@ class Investigator:
                 report["timings_s"][step] = round(time.perf_counter() - started[step], 2)
             user_emit(step, status, payload)
 
-        # 1 ---------------------------------------------------------- Understand
         emit("Understand", "running", {})
         u = self.understand(question, region_code, period)
         report["steps"]["Understand"] = u
@@ -147,7 +121,6 @@ class Investigator:
             emit("Explain", "done", {"answer": msg})
             return self._save(report)
 
-        # 2 ---------------------------------------------------------- Plan
         emit("Plan", "running", {})
         spec = self.tools.plan_from_graph(question, [c["id"] for c in u["concepts"]],
                                           u["region"], u["period"])
@@ -161,7 +134,6 @@ class Investigator:
             emit("Explain", "done", {"answer": msg})
             return self._save(report)
 
-        # 3 ---------------------------------------------------------- Analyse
         emit("Analyse", "running", {})
         area = self.tools.area(spec.region)
         subs = [Area(s["code_id"], s["name"], s["bbox"]) for s in Q.sub_regions(self.store, area.id)]
@@ -177,7 +149,6 @@ class Investigator:
         report["sub_results"] = pkg["sub_results"]
         emit("Analyse", "done", report["steps"]["Analyse"])
 
-        # 4 ---------------------------------------------------------- Record
         emit("Record", "running", {})
         rec = write_evidence(self.store, pkg)
         self._record_investigation(inv_id, question, spec, pkg)
@@ -185,7 +156,6 @@ class Investigator:
         report["findings"] = pkg["findings"]
         emit("Record", "done", report["steps"]["Record"])
 
-        # 5 ---------------------------------------------------------- Why?
         emit("Why?", "running", {})
         literature = []
         for v in spec.variables:
@@ -200,7 +170,6 @@ class Investigator:
         report["steps"]["Why?"] = {"literature": literature, "hypotheses": hyps}
         emit("Why?", "done", report["steps"]["Why?"])
 
-        # 6 + 7 ----------------------------------------------------- Check + Explain
         evidence = self.evidence_pack(question, spec, pkg, literature, hyps)
         report["evidence_pack"] = evidence
         emit("Check", "running", {})
@@ -212,7 +181,6 @@ class Investigator:
         emit("Explain", "done", {"answer": answer})
         return self._save(report)
 
-    # ------------------------------------------------------------------ 1 understand
     def understand(self, question: str, region_code: str | None, period: list[str] | None) -> dict:
         concepts = {c["id"]: c for c in Q.find_concepts(self.store, question)}
         rule_region = Q.find_region(self.store, question)
@@ -247,8 +215,6 @@ class Investigator:
                     if c:
                         concepts.setdefault(c["id"], {"id": c["id"], "name": c["name"],
                                                       "matched": ["(Gemini)"]})
-                # A region whose name is written in the question (found in the graph) always
-                # wins; Gemini's region is only used when the question names no known region.
                 if rule_region is None and ans.get("region_code") not in (None, "", "none"):
                     region = next((r for r in regs if r["code_id"] == ans["region_code"]), region)
                 if ans.get("start_year") or ans.get("end_year"):
@@ -264,8 +230,6 @@ class Investigator:
         region_code = region["code_id"] if region else C.REGION_ID
         if period:
             p = list(period)
-        # No silent clamping: a period outside our data is refused by the engine's guardrail
-        # ("Our data covers 2001-01 to 2024-12."), as Document 2 section 6.3 requires.
         return {"concepts": list(concepts.values()), "region": region_code,
                 "region_name": next((r["name"] for r in Q.regions(self.store)
                                      if r["code_id"] == region_code), region_code),
@@ -291,7 +255,6 @@ class Investigator:
                 f"{C.PERIOD_START[:4]}-{C.PERIOD_END[:4]}.\n\nTry for example: *Is it getting hotter "
                 "and drier around the Mediterranean?* or *Are plants in Tunisia getting greener?*")
 
-    # ------------------------------------------------------------------ 4 record
     def _record_investigation(self, inv_id: str, question: str, spec, pkg: dict):
         s = self.store
         s.merge_node("Investigation", inv_id, {"question": question, "region": spec.region,
@@ -314,7 +277,6 @@ class Investigator:
                 s.merge_rel(inv_id, "USED_METHOD", m, source="investigator",
                             created_by="investigator")
 
-    # ------------------------------------------------------------------ evidence for the LLM
     def evidence_pack(self, question, spec, pkg, literature, hyps) -> dict:
         regions = {r["code_id"]: r["name"] for r in Q.regions(self.store)}
         trends = []
@@ -360,7 +322,6 @@ class Investigator:
                                                  for w in r["warnings"]])),
             errors=pkg["errors"])
 
-    # ------------------------------------------------------------------ 6 + 7 explain + check
     def explain(self, evidence: dict) -> tuple[str, dict]:
         ev_text = json.dumps(evidence, ensure_ascii=False)
         extra = numbers_in(evidence["period"]) | numbers_in(evidence["question"])
@@ -389,7 +350,6 @@ class Investigator:
         check.update(passed=not bad, mode="template", unknown_numbers=bad)
         return text, check
 
-    # ------------------------------------------------------------------ save
     def _save(self, report: dict) -> dict:
         path = C.INVESTIGATIONS / (report["id"].split(":")[1] + ".json")
         path.write_text(json.dumps(report, indent=1, default=str, ensure_ascii=False),
@@ -399,7 +359,6 @@ class Investigator:
 
 
 def template_answer(ev: dict) -> str:
-    """Deterministic answer used when Gemini is unavailable (or keeps inventing numbers)."""
     L = []
     if ev["synthetic"]:
         L.append("**Warning: these results come from SYNTHETIC test data, not real NASA data.**\n")

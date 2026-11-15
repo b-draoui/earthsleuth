@@ -1,11 +1,3 @@
-"""Docker build step: write the map layers ready to send, so a small server starts warm.
-
-    EARTHSLEUTH_FAKE=1 python -m scripts.prebuild_cache /app/cache
-
-The image sets EARTHSLEUTH_CACHE_DIR to that folder; api/data_access.py then reads these files
-instead of computing them (about 45 s on Render's free CPU). Nothing else changes.
-"""
-
 import gzip
 import sys
 from pathlib import Path

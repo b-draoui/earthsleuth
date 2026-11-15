@@ -5,10 +5,6 @@ import type { TrendLines } from '../lib/types.ts'
 
 const TICKS = ['2001-01', '2006-01', '2011-01', '2016-01', '2021-01']
 
-/**
- * Monthly series with its Theil–Sen line and the fan of its 95% interval.
- * mode "anomaly": seasons removed (what the trend is computed on); mode "raw": what was measured.
- */
 export default function SeriesChart({
   time,
   value,
@@ -29,9 +25,7 @@ export default function SeriesChart({
   color: string
   mode: 'anomaly' | 'raw'
   height?: number
-  /** periods to highlight, e.g. [['2001-01', '2005-12', 'before']] */
   windows?: [string, string, string][]
-  /** a month to mark, e.g. the one playing */
   cursor?: string | null
 }) {
   const data = useMemo(

@@ -1,8 +1,3 @@
-"""Contracts 1 and 2 (Document 2, section 4.3). Contract 0 is graph/schema.yaml.
-
-Contract 1 - InvestigationSpec: what the investigator wants the engine to do (filled from the graph).
-Contract 2 - VariableResult: what the engine returns for one variable.
-"""
 from __future__ import annotations
 
 import json
@@ -16,11 +11,10 @@ class InvestigationSpec:
     concepts: list[str]
     variables: list[str]
     region: str
-    period: list[str]                       # ["YYYY-MM", "YYYY-MM"]
+    period: list[str]
     methods: list[str] = field(default_factory=list)
     outputs: list[str] = field(default_factory=lambda: [
         "trend_maps", "opposite_map", "clusters", "regional_series", "explanation"])
-    # extra detail read from the graph so the UI can show the plan
     variable_details: list[dict[str, Any]] = field(default_factory=list)
     warnings: list[str] = field(default_factory=list)
 
@@ -57,7 +51,7 @@ class CellCounts:
     n_tested: int
     sig_up: int
     sig_down: int
-    pct_sig_area: float          # cos-latitude weighted, % of tested land area
+    pct_sig_area: float
     pct_sig_up_area: float
     pct_sig_down_area: float
 
@@ -66,7 +60,7 @@ class CellCounts:
 class VariableResult:
     variable: str
     display_name: str
-    unit: str                    # unit of the slope, per decade
+    unit: str
     region: str
     period: list[str]
     regional: RegionalTrend

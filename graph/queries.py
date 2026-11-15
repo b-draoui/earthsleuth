@@ -1,9 +1,3 @@
-"""The graph paths the investigator follows (Document 2, section 9.4).
-
-Written once on top of the GraphStore interface, so they work on Neo4j and on graph.json.
-Only nodes with status verified / from_paper are used as facts; hypotheses are never used.
-The equivalent Cypher of each path is in docs/cypher_examples.md.
-"""
 from __future__ import annotations
 
 import re
@@ -22,13 +16,11 @@ def _words(text: str) -> set[str]:
     return set(re.findall(r"[a-z][a-z\-]+", text.lower()))
 
 
-# ----------------------------------------------------------------------------- concepts
 def concepts(store: GraphStore) -> list[dict]:
     return [c for c in store.nodes("Concept") if _is_fact(c)]
 
 
 def find_concepts(store: GraphStore, text: str) -> list[dict]:
-    """Concepts whose name or a synonym appears in the text (whole words / phrases)."""
     t = " " + " ".join(re.findall(r"[a-z0-9\-]+", text.lower())) + " "
     hits = []
     for c in concepts(store):
@@ -39,7 +31,6 @@ def find_concepts(store: GraphStore, text: str) -> list[dict]:
     return hits
 
 
-# ----------------------------------------------------------------------------- regions
 def regions(store: GraphStore) -> list[dict]:
     out = []
     for r in store.nodes("Region"):
@@ -56,7 +47,6 @@ _GENERIC = {"north", "south", "east", "west", "and", "the", "margin", "peninsula
 
 
 def find_region(store: GraphStore, text: str) -> dict | None:
-    """The most specific region whose name (or a distinctive word of it) appears in the text."""
     words = _words(text)
     t = text.lower()
     best = None
@@ -71,8 +61,6 @@ def find_region(store: GraphStore, text: str) -> dict | None:
 
 
 def larger_region(store: GraphStore, region_code: str, min_cells: int) -> dict | None:
-    """The nearest larger region in the graph (Document 2 section 6.3): the smallest region whose
-    box contains this one and that has enough land cells - normally its PART_OF parent."""
     regs = regions(store)
     me = next((r for r in regs if r["code_id"] == region_code), None)
     if me is None:
@@ -87,9 +75,7 @@ def sub_regions(store: GraphStore, region_code: str) -> list[dict]:
     return [r for r in regions(store) if r["parent"] == region_code and r["id"] != rid]
 
 
-# ----------------------------------------------------------------------------- variables
 def variables_for_concepts(store: GraphStore, concept_ids: list[str]) -> list[dict]:
-    """Concept <-INDICATOR_OF- Variable -IN_DATASET-> Dataset  (+ DRAWN_AS ChartStyle)."""
     seen: dict[str, dict] = {}
     for cid in concept_ids:
         for rel, v in store.inc(cid, "INDICATOR_OF"):
@@ -127,9 +113,7 @@ def all_variables(store: GraphStore) -> list[dict]:
     return [variable_detail(store, v) for v in store.nodes("Variable") if _is_fact(v)]
 
 
-# ----------------------------------------------------------------------------- strategy
 def method_chain(store: GraphStore, stage: str | None = None) -> list[dict]:
-    """Follow NEXT from the method with no predecessor."""
     methods = {m["id"]: m for m in store.nodes("Method") if _is_fact(m)}
     starts = [m for m in methods.values() if not store.inc(m["id"], "NEXT")]
     chain, cur, guard = [], (starts[0] if starts else None), 0
@@ -149,9 +133,7 @@ def hypothesis_patterns(store: GraphStore) -> list[dict]:
             for p in store.nodes("HypothesisPattern")]
 
 
-# ----------------------------------------------------------------------------- literature
 def mechanisms(store: GraphStore, variable_id: str) -> list[dict]:
-    """INFLUENCES edges into and out of a variable, with their paper and quote."""
     out = []
     for direction, pairs in (("out", store.out(variable_id, "INFLUENCES")),
                              ("in", store.inc(variable_id, "INFLUENCES"))):

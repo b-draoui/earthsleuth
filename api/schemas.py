@@ -1,15 +1,10 @@
-"""Pydantic models = the contracts (contracts/README.md), checked by FastAPI.
-
-web/src/lib/types.ts holds the same shapes on the front-end side. Change both together.
-"""
-
 from typing import Literal
 
 from pydantic import BaseModel
 
 
 class Variable(BaseModel):
-    id: str  # "t2m", "precip", ...
+    id: str
     label: str
     unit: str
     dataset: str
@@ -31,7 +26,6 @@ class CellCounts(BaseModel):
 
 
 class VariableResult(BaseModel):
-    """Contract 2: result for one variable over one region."""
 
     variable: str
     unit: str
@@ -44,7 +38,6 @@ class VariableResult(BaseModel):
 
 
 class AgentEvent(BaseModel):
-    """Contract 3: one progress step of the agent."""
 
     stage: Literal["understand", "plan", "analyse", "check", "explain"]
     status: Literal["running", "done", "error"]

@@ -1,18 +1,12 @@
 import type { VariableId } from './types.ts'
 
-/**
- * Identity of each variable in the interface: name, colour, words for its two directions.
- * The map itself uses the diverging scales in colors.ts; these colours mark the variable in UI.
- */
 export interface VariableIdentity {
   id: VariableId
   short: string
   long: string
   color: string
-  /** what an increase / a decrease means, in plain words */
   up: string
   down: string
-  /** unit of the trend */
   perDecade: (unit: string) => string
   dataset: string
 }

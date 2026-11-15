@@ -1,10 +1,3 @@
-"""Phase 1a - download NASA granules with earthaccess, one small batch at a time.
-
-For every batch: download -> process each file to 1 degree (preprocess.process_granule)
--> delete the big raw file. One raw file per dataset is kept as `sample` because the
-curator agent reads its header. Months already processed are skipped, so the command can
-be stopped and restarted at any time.
-"""
 from __future__ import annotations
 
 import logging
@@ -39,11 +32,10 @@ APP_HINT = {
 
 
 def fetch(dataset: str, granules: list, folder: Path, threads: int = 4) -> list:
-    """earthaccess.download with a clear message when NASA refuses the files (HTTP 401/403)."""
     import earthaccess
     try:
         return earthaccess.download(granules, str(folder), threads=threads)
-    except Exception as e:  # earthaccess re-raises a bare Exception after logging the HTTP error
+    except Exception as e:
         provider = DATASETS[dataset].cmr_concept_id.split("-")[-1]
         app = APP_HINT.get(provider, "the data archive")
         raise RuntimeError(
@@ -68,7 +60,6 @@ def sample_path(dataset: str) -> Path | None:
 
 def download_dataset(dataset: str, start: str = C.PERIOD_START, end: str = C.PERIOD_END,
                      batch: int = 8, threads: int = 4, keep_raw: bool = False) -> dict:
-    """Download + process all months of one dataset. Returns a small report."""
     import earthaccess
     spec = DATASETS[dataset]
     login()
@@ -104,7 +95,7 @@ def download_dataset(dataset: str, start: str = C.PERIOD_START, end: str = C.PER
                 if sample_path(dataset) is None:
                     (raw_dir / "sample").mkdir(exist_ok=True)
                     shutil.copy2(p, raw_dir / "sample" / p.name)
-            except Exception as e:  # keep going; report at the end
+            except Exception as e:
                 log.error("failed to process %s: %s", p.name, e)
                 failed.append(p.name)
             finally:
@@ -116,7 +107,6 @@ def download_dataset(dataset: str, start: str = C.PERIOD_START, end: str = C.PER
 
 
 def download_sample_only(dataset: str) -> Path:
-    """Download one granule (January 2001) so the curator can read a real file header."""
     import earthaccess
     spec = DATASETS[dataset]
     login()

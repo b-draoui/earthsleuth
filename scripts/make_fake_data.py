@@ -1,18 +1,3 @@
-"""Write SIMULATED result files, in the exact contract formats, into data/fake/.
-
-They let the API, the app and the agent be built before the real NASA data exists.
-Nothing here is a real result: every number comes from synthetic series built below.
-The app shows a "Simulated data" badge whenever it reads data/fake/.
-
-The series are built the way Doc 1 (Reason 3) describes real data: seasons + trend + noise,
-with year-to-year "weather" that is smooth in space. Statistics on them are the real methods
-(anomalies, Theil–Sen, Mann–Kendall Hamed–Rao, Benjamini–Hochberg FDR), so the files behave like
-real ones. When engine/run_all.py works, it writes the same files from real data.
-
-Run from the repo root:
-    python -m scripts.make_fake_data
-"""
-
 import json
 import time
 import warnings
@@ -52,7 +37,6 @@ from common.config import (
 
 SEED = 2026
 
-# 1° land mask from Natural Earth (a cell is land if >= 50% of it is land). North row first.
 LAND_ROWS = [
     "00000000111111111111111111111111111111111011110011",
     "00000000011111111111111111111111111111110001100111",
@@ -78,14 +62,14 @@ LAND_ROWS = [
     "11111111111111111111111111111111111111111111100111",
 ]
 
-LATS = np.arange(LAT_MIN + 0.5, LAT_MAX, 1.0)  # 25.5 .. 46.5, south to north
-LONS = np.arange(LON_MIN + 0.5, LON_MAX, 1.0)  # -9.5 .. 39.5
+LATS = np.arange(LAT_MIN + 0.5, LAT_MAX, 1.0)
+LONS = np.arange(LON_MIN + 0.5, LON_MAX, 1.0)
 TIME = pd.date_range(f"{PERIOD[0]}-01", f"{PERIOD[1]}-01", freq="MS")
 NT, NY, NX = len(TIME), len(LATS), len(LONS)
-LAND = np.array([[c == "1" for c in row] for row in LAND_ROWS[::-1]])  # south row first
+LAND = np.array([[c == "1" for c in row] for row in LAND_ROWS[::-1]])
 LAT2, LON2 = np.meshgrid(LATS, LONS, indexing="ij")
-YEARS = np.arange(NT) / 12.0  # years since Jan 2001
-MONTH = np.arange(NT) % 12  # 0 = January
+YEARS = np.arange(NT) / 12.0
+MONTH = np.arange(NT) % 12
 
 
 def box(lon0, lon1, lat0, lat1):
@@ -93,7 +77,6 @@ def box(lon0, lon1, lat0, lat1):
 
 
 def smooth_noise(rng, sd, phi, coarse=(4, 7)):
-    """Weather: random fields that are smooth in space and persist a little in time (AR(1))."""
     out = np.empty((NT, NY, NX))
     prev = np.zeros((NY, NX))
     for t in range(NT):
@@ -110,17 +93,14 @@ def build_series(rng):
     maghreb = box(-10, 12, 29, 37.5).astype(float)
     levant = box(33, 40, 29, 37).astype(float)
     nile = box(29.5, 32.5, 29.5, 31.6).astype(float)
-    season = np.cos(2 * np.pi * MONTH / 12)[:, None, None]  # +1 in January, -1 in July
+    season = np.cos(2 * np.pi * MONTH / 12)[:, None, None]
 
-    # Air temperature (°C): warmer south, bigger seasonal swing inland, warming 0.2-0.7 °C/decade
     base = 29 - 0.62 * (LAT2 - 25) + 2.0 * desert
     amp = 6 + 5 * inland + 2 * desert
     warm = 0.22 + 0.25 * inland + 0.12 * box(-10, 3.5, 36, 44) + 0.1 * desert + 0.05 * rng.normal(size=(NY, NX))
     t2m = base - amp * season + warm * YEARS[:, None, None] / 10
     t2m += smooth_noise(rng, 1.0, 0.5) + 0.35 * rng.normal(size=t2m.shape)
 
-    # Precipitation (mm/month): wet north, dry Sahara, winter rains in the south.
-    # Opposite trends: wetter north, drier Maghreb and Levant.
     p0 = 3 + 72 / (1 + np.exp(-(LAT2 - 34.5) / 2.2)) - 22 * levant * inland
     s = np.where(LAT2 < 42, 0.75, 0.25)
     rel_trend = 0.05 * np.tanh((LAT2 - 41) / 2) - 0.07 * maghreb - 0.05 * levant + 0.015 * rng.normal(size=(NY, NX))
@@ -129,7 +109,6 @@ def build_series(rng):
     precip *= np.exp(smooth_noise(rng, 0.38, 0.3) + 0.25 * rng.normal(size=precip.shape) - 0.1)
     precip = np.clip(precip, 0, None)
 
-    # Soil moisture (kg/m², 0-10 cm): follows rain with a 2-month memory, dries with heat
     ema = np.empty_like(precip)
     ema[0] = precip[0]
     for t in range(1, NT):
@@ -138,12 +117,10 @@ def build_series(rng):
     soil = 6 + 26 * ema / (ema + 35) - 0.18 * (t2m - t_clim) + 0.6 * smooth_noise(rng, 1.0, 0.4)
     soil = np.clip(soil, 2, 40)
 
-    # Evapotranspiration (mm/day): energy-limited in the wet north, water-limited in the south
     pet = 0.5 + 0.13 * np.clip(t2m, 0, None)
     et = pet * soil / (soil + 12) * (0.6 + 0.4 * (1 - desert)) + 0.08 * smooth_noise(rng, 1.0, 0.3)
     et = np.clip(et, 0.05, None)
 
-    # Vegetation (NDVI): green where soils stay moist, spring green-up, irrigated Nile Delta greening
     soil_lag = np.roll(soil, 1, axis=0)
     soil_lag[0] = soil[0]
     green_up = np.cos(2 * np.pi * (MONTH[:, None, None] - np.where(LAT2 < 40, 3, 5)[None]) / 12)
@@ -158,22 +135,18 @@ def build_series(rng):
 
 
 def anomalies(x):
-    """Value minus the 2001-2024 mean of its calendar month (removes the seasons)."""
     with warnings.catch_warnings():
-        warnings.simplefilter("ignore", RuntimeWarning)  # ocean cells are all NaN
+        warnings.simplefilter("ignore", RuntimeWarning)
         clim = np.stack([np.nanmean(x[MONTH == m], axis=0) for m in range(12)])
     return x - clim[MONTH]
 
 
 def trend_test(y):
-    """Theil–Sen slope per decade with its 95% interval + Mann–Kendall (Hamed–Rao) p-value."""
     ts = theilslopes(y, YEARS, alpha=0.95)
     with warnings.catch_warnings():
         warnings.simplefilter("ignore", RuntimeWarning)
         test = mk.hamed_rao_modification_test(y)
     if not np.isfinite(test.p):
-        # Hamed–Rao has no answer for series with almost no variance (near-rainless desert cells):
-        # fall back to the original Mann–Kendall test so that FDR still works on every cell.
         test = mk.original_test(y)
     return {
         "slope_dec": float(ts.slope * 10),
@@ -198,7 +171,6 @@ def main() -> None:
     )
     ds.to_netcdf(FAKE_DIR / SERIES_FILE, engine="h5netcdf")
 
-    # ---------------------------------------------------------------- per-cell trends
     land_idx = np.argwhere(LAND)
     rows = []
     for v in VARIABLES:
@@ -231,7 +203,6 @@ def main() -> None:
     ]
     trends.to_parquet(FAKE_DIR / TRENDS_FILE, index=False)
 
-    # ---------------------------------------------------------------- regional trends
     weights = np.cos(np.deg2rad(LAT2)) * LAND
     regions = {REGION_ID: (LON_MIN, LON_MAX, LAT_MIN, LAT_MAX), **SUBREGIONS}
     reg_rows = []
@@ -266,7 +237,6 @@ def main() -> None:
     regional = pd.DataFrame(reg_rows)
     regional.to_parquet(FAKE_DIR / REGIONAL_FILE, index=False)
 
-    # ---------------------------------------------------------------- clusters (Radar-lite)
     wide = trends.pivot(index="cell_id", columns="variable", values="slope_dec")[list(VARIABLES)]
     z = (wide - wide.mean()) / wide.std()
     best = None
@@ -285,8 +255,6 @@ def main() -> None:
     }
     names = {}
     for c, centre in enumerate(km.cluster_centers_):
-        # Name a group by its most distinctive variables (|z| >= 0.5), using the sign of the real
-        # mean slope, so a place that warms less than average is "weaker warming", never "cooling".
         mean_slope = wide[km.labels_ == c].mean()
         strong = []
         for v, zval in zip(VARIABLES, centre, strict=True):
@@ -305,7 +273,6 @@ def main() -> None:
     clusters = clusters.join(meta).reset_index()[["cell_id", "lat", "lon", "cluster", "cluster_name", *VARIABLES]]
     clusters.to_parquet(FAKE_DIR / CLUSTERS_FILE, index=False)
 
-    # ---------------------------------------------------------------- findings + graph
     findings = []
     for r in reg_rows:
         if r["region"] != REGION_ID and r["significant"]:
@@ -344,8 +311,6 @@ def main() -> None:
 
 
 def build_graph(findings: list[dict]) -> dict:
-    """A small knowledge graph in networkx node-link format. Physical links are general
-    knowledge marked as such, not findings. No papers: only papers the team has read go in."""
     nodes, edges = [], []
 
     def node(i, t, label, **kw):

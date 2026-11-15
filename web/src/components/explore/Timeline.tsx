@@ -2,10 +2,6 @@ import { motion } from 'motion/react'
 import { useEffect, useRef } from 'react'
 import { plain, signed } from '../../lib/format.ts'
 
-/**
- * 2001–2024 scrubber with play/pause and a sparkline of the regional yearly anomaly above it.
- * Arrow keys move one year; space plays/pauses.
- */
 export default function Timeline({
   years,
   year,
@@ -79,7 +75,6 @@ export default function Timeline({
           </p>
         </div>
         <div className="relative min-w-0 flex-1">
-          {/* sparkline of the regional yearly anomaly */}
           <div className="flex h-10 items-center gap-[3px]">
             {years.map((y, i) => {
               const v = regional?.[i] ?? 0

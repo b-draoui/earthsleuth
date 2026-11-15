@@ -1,9 +1,3 @@
-"""Snapshots of the graph (Document 2, section 8.3/8.7).
-
-- graph.json: committed to the repo; the app falls back to it when Neo4j is not running.
-- dated copies in data/graph/snapshots/: restore points after every good build.
-- neo4j-admin dump: optional, see `dump_instructions()` (needs the database to be stopped).
-"""
 from __future__ import annotations
 
 import shutil
@@ -26,7 +20,6 @@ def export_snapshot(store: GraphStore) -> dict:
 
 
 def restore_snapshot(store: GraphStore, snapshot: Path | None = None) -> int:
-    """Replace the live graph with a snapshot (latest one if not given)."""
     if snapshot is None:
         snaps = sorted(SNAPSHOTS.glob("graph_*.json"))
         if not snaps:

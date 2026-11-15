@@ -1,8 +1,3 @@
-"""Project-wide settings: region, grid, period, paths, thresholds, secrets.
-
-Everything that the team agreed on in the kick-off (Document 2, section 5.1) lives here,
-so there is exactly one place to change it.
-"""
 from __future__ import annotations
 
 import os
@@ -13,14 +8,13 @@ import numpy as np
 
 try:
     from dotenv import load_dotenv
-except ImportError:  # pragma: no cover - dotenv is in requirements
+except ImportError:
     load_dotenv = None
 
 ROOT = Path(__file__).resolve().parents[1]
 if load_dotenv is not None:
     load_dotenv(ROOT / ".env", override=False)
 
-# ----------------------------------------------------------------------------- region
 @dataclass(frozen=True)
 class BBox:
     west: float
@@ -43,35 +37,30 @@ REGION_ID = "mediterranean_north_africa"
 REGION_NAME = "Mediterranean + North Africa"
 REGION = BBox(west=-10.0, south=25.0, east=40.0, north=47.0)
 
-# ----------------------------------------------------------------------------- grid
 GRID_RES = 1.0
-LATS = np.arange(REGION.south + GRID_RES / 2, REGION.north, GRID_RES)   # 25.5 .. 46.5 (22)
-LONS = np.arange(REGION.west + GRID_RES / 2, REGION.east, GRID_RES)     # -9.5 .. 39.5 (50)
+LATS = np.arange(REGION.south + GRID_RES / 2, REGION.north, GRID_RES)
+LONS = np.arange(REGION.west + GRID_RES / 2, REGION.east, GRID_RES)
 
 
 def cell_id(lat: float, lon: float) -> str:
-    """Stable, human-readable id of a 1-degree cell, e.g. 'lat36.5_lon10.5'."""
     return f"lat{lat:.1f}_lon{lon:.1f}"
 
 
-# ----------------------------------------------------------------------------- period
 PERIOD_START = "2001-01"
 PERIOD_END = "2024-12"
 
-# ----------------------------------------------------------------------------- statistics
-FDR_Q = 0.10              # Benjamini-Hochberg, Wilks (2016)
-MIN_VALID_FRACTION = 0.8  # a cell needs >= 80% of its months to get a trend
-MIN_YEARS_WARN = 15       # shorter periods get a warning
-MIN_YEARS = 10            # shorter periods are refused
-MIN_CELLS = 10            # smaller sub-regions are refused
-BIN_MIN_FRACTION = 0.5    # when averaging to 1 deg, keep a cell if >= 50% of fine cells have data
+FDR_Q = 0.10
+MIN_VALID_FRACTION = 0.8
+MIN_YEARS_WARN = 15
+MIN_YEARS = 10
+MIN_CELLS = 10
+BIN_MIN_FRACTION = 0.5
 
-# ----------------------------------------------------------------------------- paths
 DATA = ROOT / "data"
-RAW = DATA / "raw"            # downloaded NASA files (deleted after processing, one kept)
-SMALL = DATA / "small"        # one small 1-degree file per dataset per month
+RAW = DATA / "raw"
+SMALL = DATA / "small"
 PROCESSED = DATA / "processed"
-CACHE = DATA / "cache"        # on-demand results
+CACHE = DATA / "cache"
 GRAPH_DIR = DATA / "graph"
 
 SERIES_NC = PROCESSED / "series.nc"
@@ -85,7 +74,6 @@ BUILD_LOG = GRAPH_DIR / "curator_build_log.jsonl"
 INVESTIGATIONS = DATA / "investigations"
 
 def _writable(path: Path) -> Path:
-    """Create the folder; if the disk is read-only there (server, CI), use a temp folder instead."""
     try:
         path.mkdir(parents=True, exist_ok=True)
         probe = path / ".write_test"
@@ -107,7 +95,6 @@ for _d in (RAW, SMALL, PROCESSED, GRAPH_DIR):
     except OSError:
         pass
 
-# ----------------------------------------------------------------------------- secrets / services
 NEO4J_URI = os.getenv("NEO4J_URI", "neo4j://127.0.0.1:7687")
 NEO4J_USER = os.getenv("NEO4J_USER", "neo4j")
 NEO4J_PASSWORD = os.getenv("NEO4J_PASSWORD", "")
@@ -123,22 +110,19 @@ CMR_URL = "https://cmr.earthdata.nasa.gov/search"
 HTTP_TIMEOUT = 30
 
 
-# ============================================================================ app layer (FastAPI + React)
-# Names used by api/ and web/. Values come from the settings above, so there is one source.
-from common.variables import SUBREGIONS as _SUBREGIONS  # noqa: E402
+from common.variables import SUBREGIONS as _SUBREGIONS
 
 DATA_DIR = DATA
 RAW_DIR = RAW
 PROCESSED_DIR = PROCESSED
-FAKE_DIR = DATA / "fake"  # simulated results with the same format (tests, demos without data)
+FAKE_DIR = DATA / "fake"
 
-# EARTHSLEUTH_FAKE=1 -> the app reads data/fake/ instead of data/processed/
 USE_FAKE = os.getenv("EARTHSLEUTH_FAKE", "0") == "1"
 RESULTS_DIR = FAKE_DIR if USE_FAKE else PROCESSED_DIR
 
 SERIES_FILE = "series.nc"
 TRENDS_FILE = "trends.parquet"
-REGIONAL_FILE = "regional.parquet"  # simulated data; real runs write regional.json
+REGIONAL_FILE = "regional.parquet"
 REGIONAL_JSON_FILE = "regional.json"
 CLUSTERS_FILE = "clusters.parquet"
 FINDINGS_FILE = "findings.json"
@@ -148,9 +132,8 @@ LON_MIN, LON_MAX = REGION.west, REGION.east
 LAT_MIN, LAT_MAX = REGION.south, REGION.north
 PERIOD = (PERIOD_START, PERIOD_END)
 GRID_DEG = GRID_RES
-ALPHA = 0.05  # one test
+ALPHA = 0.05
 
-# sub-regions as (lon_min, lon_max, lat_min, lat_max), same ids as the graph
 SUBREGIONS: dict[str, tuple[float, float, float, float]] = {
     k: (bb[0], bb[2], bb[1], bb[3]) for k, (_name, bb) in _SUBREGIONS.items()
 }
@@ -159,7 +142,6 @@ REGION_LABELS: dict[str, str] = {
     **{k: name for k, (name, _bb) in _SUBREGIONS.items()},
 }
 
-# display metadata for the app (units without "per decade")
 VARIABLES = {
     "t2m": {"label": "Air temperature (2 m)", "unit": "°C", "dataset": "M2TMNXSLV", "version": "5.12.4",
             "name_in_file": "T2M"},
@@ -175,6 +157,4 @@ VARIABLES = {
 
 
 def app_cell_id(lat: float, lon: float) -> str:
-    """Cell id used by the web app and its URLs, e.g. (36.5, 10.5) -> "36.5_10.5"
-    (the engine and the graph use cell_id() above: "lat36.5_lon10.5")."""
     return f"{float(lat):.1f}_{float(lon):.1f}"

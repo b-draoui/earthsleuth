@@ -1,5 +1,3 @@
-"""Layer B writer (Document 2, section 8.2). Plain code: numbers go from the engine straight
-into the graph, never through the LLM."""
 from __future__ import annotations
 
 from graph.store import GraphStore
@@ -19,7 +17,6 @@ def region_node_id(code_id: str) -> str:
 
 
 def write_evidence(store: GraphStore, pkg: dict) -> dict:
-    """Write Analysis, Finding, OPPOSITE_OF and CO_OCCURS_WITH from an analyse_area() package."""
     a = pkg["analysis"]
     src = f"EarthSleuth engine run {a['run_id']}" + (" (SYNTHETIC data)" if a.get("synthetic") else "")
     store.merge_node("Analysis", a["id"], dict(

@@ -2,11 +2,6 @@ import { useEffect, useMemo, useState, type ReactNode } from 'react'
 import { CITIES } from '../lib/cities.ts'
 import type { CellsMatrix } from '../lib/types.ts'
 
-/**
- * A light SVG map of the study area: land, one square per 1° cell, coastline, optional city names.
- * Used where a full WebGL map would be too heavy (the answer map, the report's small maps, the share card).
- * Projection: plain longitude / latitude, latitude stretched by 1.25 (close to Mercator at 36°N).
- */
 const LON0 = -10.5
 const LAT1 = 47.5
 const K = 1.25
@@ -49,13 +44,10 @@ function useCoast(): string {
 
 export interface MiniMapProps {
   m: CellsMatrix
-  /** colour of cell i, or null to leave it out */
   color: (i: number) => string | null
   opacity?: (i: number) => number
-  /** [lon_min, lon_max, lat_min, lat_max] to show; defaults to the whole study area */
   view?: [number, number, number, number]
   cities?: boolean
-  /** dashed outline, e.g. the region of the question */
   box?: [number, number, number, number] | null
   tooltip?: (i: number) => ReactNode
   onCell?: (i: number) => void
@@ -94,8 +86,6 @@ export default function MiniMap({ m, color, opacity, view = STUDY_VIEW, cities =
           />
         )
       }),
-    // colour functions are recreated by callers; the matrix + view identify the drawing
-    // eslint-disable-next-line react-hooks/exhaustive-deps
     [m, color, opacity],
   )
 
@@ -147,7 +137,6 @@ export default function MiniMap({ m, color, opacity, view = STUDY_VIEW, cities =
   )
 }
 
-/** Cells as one colour each from a 7-step diverging scale, by slope / max. */
 export function divergingColor(scale: readonly string[], value: number | null, max: number): string | null {
   if (value === null) return null
   const t = Math.max(-1, Math.min(1, value / (max || 1)))

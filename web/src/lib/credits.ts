@@ -1,7 +1,3 @@
-/**
- * Every source used by EarthSleuth, in one place: the Conclude page and the downloaded report
- * both read it (Space Apps rule: credit every code, text and image source, even open source).
- */
 export const CHALLENGE = {
   title: 'Be An Earth System Trend Detective!',
   event: 'NASA Space Apps Challenge 2026',
@@ -87,7 +83,6 @@ export const SOFTWARE: { group: string; items: [string, string][] }[] = [
 
 export const HOSTING = 'Hosted on Render (free plan). Code on GitHub.'
 
-/** The same credits as Markdown, for the downloaded report. */
 export function creditsMarkdown(): string[] {
   return [
     '## Credits',

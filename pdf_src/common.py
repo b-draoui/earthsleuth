@@ -1,4 +1,3 @@
-"""Shared styles, layout helpers and diagram primitives for the EarthSleuth PDFs."""
 import math
 import os
 
@@ -15,7 +14,6 @@ from reportlab.platypus import (BaseDocTemplate, Flowable, Frame, KeepTogether,
                                 Preformatted, Spacer, Table, TableStyle)
 from reportlab.platypus.tableofcontents import TableOfContents
 
-# ---------------------------------------------------------------- fonts
 FD = r"C:\Windows\Fonts"
 pdfmetrics.registerFont(TTFont("Body", os.path.join(FD, "arial.ttf")))
 pdfmetrics.registerFont(TTFont("Body-Bold", os.path.join(FD, "arialbd.ttf")))
@@ -27,7 +25,6 @@ addMapping("Body", 0, 1, "Body-Italic")
 addMapping("Body", 1, 0, "Body-Bold")
 addMapping("Body", 1, 1, "Body-BoldItalic")
 
-# ---------------------------------------------------------------- colours
 NAVY = colors.HexColor("#0B2545")
 BLUE = colors.HexColor("#1F5FA8")
 SKY = colors.HexColor("#EAF2FB")
@@ -48,7 +45,6 @@ PAGE_W, PAGE_H = A4
 MARGIN = 52
 CONTENT_W = PAGE_W - 2 * MARGIN
 
-# ---------------------------------------------------------------- styles
 S = {}
 S["body"] = ParagraphStyle("body", fontName="Body", fontSize=10, leading=14.2,
                            textColor=INK, spaceAfter=6)
@@ -201,15 +197,7 @@ def caption(text):
         "cap", parent=S["small"], alignment=TA_CENTER, spaceBefore=3, spaceAfter=10))
 
 
-# ---------------------------------------------------------------- diagrams
 class Diagram(Flowable):
-    """Boxes + arrows drawn in a fixed-size canvas area (points, origin bottom-left).
-
-    boxes:  {id: dict(x, y, w, h, text, fill, stroke, tc, fs, bold)}
-    arrows: [dict(pts=[(id, side) | (x, y), ...], label, color, dashed, both)]
-    groups: [dict(x, y, w, h, title, fill, stroke)]
-    texts:  [dict(x, y, text, fs, color, bold, anchor)]
-    """
 
     def __init__(self, width, height, boxes, arrows=(), groups=(), texts=()):
         super().__init__()
@@ -243,7 +231,6 @@ class Diagram(Flowable):
 
     def draw(self):
         c = self.canv
-        # center the drawing horizontally in the frame
         for g in self.groups:
             c.setFillColor(g.get("fill", LGREY))
             c.setStrokeColor(g.get("stroke", MGREY))
@@ -273,7 +260,6 @@ class Diagram(Flowable):
             if a.get("both"):
                 self._head(c, *pts[1], *pts[0], col)
             if a.get("label"):
-                # midpoint of the longest segment
                 best = max(range(len(pts) - 1), key=lambda i: math.dist(pts[i], pts[i + 1]))
                 mx = (pts[best][0] + pts[best + 1][0]) / 2 + a.get("dx", 0)
                 my = (pts[best][1] + pts[best + 1][1]) / 2 + a.get("dy", 0)
@@ -326,7 +312,6 @@ def bx(x, y, w, h, text, fill=colors.white, stroke=BLUE, **kw):
     return d
 
 
-# ---------------------------------------------------------------- document
 class Doc(BaseDocTemplate):
     def __init__(self, path, title, subtitle, tag, **kw):
         super().__init__(path, pagesize=A4, leftMargin=MARGIN, rightMargin=MARGIN,
@@ -370,7 +355,6 @@ class Doc(BaseDocTemplate):
         c.saveState()
         c.setFillColor(NAVY)
         c.rect(0, PAGE_H - 330, PAGE_W, 330, stroke=0, fill=1)
-        # decorative orbit rings
         c.setStrokeColor(colors.HexColor("#2D4E7E"))
         c.setLineWidth(1)
         for r in (60, 95, 130, 165):
@@ -408,7 +392,6 @@ class Doc(BaseDocTemplate):
         c.restoreState()
 
     def build_story(self, story):
-        # never leave a heading alone at the bottom of a page
         from reportlab.platypus import CondPageBreak
 
         def is_head(f):

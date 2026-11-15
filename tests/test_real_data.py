@@ -1,8 +1,3 @@
-"""The real NASA results (data/processed, data/graph, data/investigations) through the app's adapters.
-
-These run without changing EARTHSLEUTH_FAKE: they call the readers directly on the real files.
-"""
-
 import json
 
 import pandas as pd
@@ -16,7 +11,7 @@ pytestmark = pytest.mark.skipif(not C.SERIES_NC.exists(), reason="no real result
 def test_real_files_follow_the_engine_format():
     t = pd.read_parquet(C.TRENDS_PARQUET)
     assert set(t.variable.unique()) == set(C.VARIABLES)
-    assert t.cell_id.str.startswith("lat").all()  # engine ids; the app converts them
+    assert t.cell_id.str.startswith("lat").all()
     reg = json.loads(C.REGIONAL_JSON.read_text(encoding="utf-8"))
     assert set(reg["results"]) == set(C.VARIABLES)
     for v in C.VARIABLES:
@@ -59,7 +54,6 @@ def test_recorded_investigations_replay_as_contract_3():
 
 
 def test_investigator_runs_offline_on_real_data(tmp_path, monkeypatch):
-    """No Gemini key, no Neo4j: rules + templates, the same statistics, nothing written to the repo."""
     import agent.agent as A
     from agent.investigator import Investigator, number_check
     from graph.store import JsonStore

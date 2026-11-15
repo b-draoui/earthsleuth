@@ -1,5 +1,3 @@
-"""Trends, regional results, time series, Signal Radar and summary."""
-
 from fastapi import APIRouter, HTTPException, Request, Response
 
 from api import data_access as da
@@ -18,8 +16,6 @@ def _check(variable: str, region: str | None = None) -> None:
 
 @router.get("/trends/{variable}")
 def trends(variable: str, request: Request) -> Response:
-    """GeoJSON of all land cells: trend stats + mean anomaly of each year (y2001 … y2024).
-    Sent as pre-built (and pre-gzipped) bytes: this is the heaviest call of the app."""
     _check(variable)
     gz = "gzip" in request.headers.get("accept-encoding", "")
     headers = {"Cache-Control": "public, max-age=600", "Vary": "Accept-Encoding"}
@@ -48,7 +44,6 @@ def regional_series(variable: str, region: str = REGION_ID) -> dict:
 
 @router.get("/series/{variable}/{cell_id}")
 def series(variable: str, cell_id: str) -> dict:
-    """Raw + anomaly series of one cell, its Theil–Sen line and 95% fan, its test results."""
     _check(variable)
     try:
         return da.series(variable, cell_id)
@@ -68,8 +63,6 @@ def clusters() -> dict:
 
 @router.get("/cells")
 def cells(response: Response) -> dict:
-    """Every land cell with the trend of all five variables (slope, 95% range, q, significant).
-    Light enough for small maps and the place card; the map layers stay in /trends/{variable}."""
     response.headers["Cache-Control"] = "public, max-age=600"
     return da.cells_matrix()
 

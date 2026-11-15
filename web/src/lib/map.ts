@@ -1,17 +1,10 @@
-/**
- * The app's own night basemap: Natural Earth land, coasts, borders and a graticule, drawn with
- * MapLibre from small files in web/public/geo. No API key, works offline, same look everywhere.
- */
 import { setWorkerUrl } from 'maplibre-gl'
 import type { StyleSpecification } from 'maplibre-gl'
 import type { Feature, FeatureCollection } from 'geojson'
 import workerUrl from 'maplibre-gl/dist/maplibre-gl-worker.mjs?url'
 
-// MapLibre 6 runs its heavy work in a separate worker file that Vite does not find by itself.
-// `?url` makes Vite ship that file, and setWorkerUrl tells MapLibre where it is.
 setWorkerUrl(workerUrl)
 
-/** Study area (same box as common/config.py). */
 export const REGION_BOUNDS: [[number, number], [number, number]] = [
   [-10, 25],
   [40, 47],
@@ -43,7 +36,6 @@ const studyBox: Feature = {
   },
 }
 
-/** Night-globe style for the home page: ocean, land, glowing coasts, atmosphere, the study box. */
 export function globeStyle(): StyleSpecification {
   return {
     version: 8,
@@ -58,7 +50,6 @@ export function globeStyle(): StyleSpecification {
       land: { type: 'geojson', data: '/geo/land-110m.json' },
       grid: { type: 'geojson', data: graticule(15) },
       study: { type: 'geojson', data: studyBox },
-      // NASA Blue Marble through GIBS (free, no key). If the tiles cannot load, the drawn land below still shows.
       bluemarble: {
         type: 'raster',
         tiles: ['https://gibs.earthdata.nasa.gov/wmts/epsg3857/best/BlueMarble_ShadedRelief_Bathymetry/default/GoogleMapsCompatible_Level8/{z}/{y}/{x}.jpeg'],
@@ -71,7 +62,6 @@ export function globeStyle(): StyleSpecification {
       { id: 'ocean', type: 'background', paint: { 'background-color': '#050d1c' } },
       { id: 'grid', type: 'line', source: 'grid', paint: { 'line-color': '#5d7fb0', 'line-opacity': 0.12, 'line-width': 0.6 } },
       { id: 'land', type: 'fill', source: 'land', paint: { 'fill-color': '#132036', 'fill-opacity': 1 } },
-      // dimmed a little so the headline stays readable over it
       { id: 'bluemarble', type: 'raster', source: 'bluemarble', paint: { 'raster-opacity': 0.92, 'raster-brightness-max': 0.82, 'raster-saturation': -0.1, 'raster-contrast': 0.12, 'raster-fade-duration': 600 } },
       { id: 'coast-glow', type: 'line', source: 'land', paint: { 'line-color': '#8fe6ff', 'line-opacity': 0.12, 'line-width': 3, 'line-blur': 4 } },
       { id: 'coast', type: 'line', source: 'land', paint: { 'line-color': '#9fdcf0', 'line-opacity': 0.4, 'line-width': 0.6 } },
@@ -81,7 +71,6 @@ export function globeStyle(): StyleSpecification {
   }
 }
 
-/** Flat night map for the lab: data layers go under the sea mask (see beforeId = 'sea'). */
 export function regionStyle(): StyleSpecification {
   return {
     version: 8,
@@ -95,7 +84,6 @@ export function regionStyle(): StyleSpecification {
       { id: 'ocean', type: 'background', paint: { 'background-color': '#040a16' } },
       { id: 'grid', type: 'line', source: 'grid', paint: { 'line-color': '#6d8cc0', 'line-opacity': 0.09, 'line-width': 0.6 } },
       { id: 'land', type: 'fill', source: 'land', paint: { 'fill-color': '#0f192b' } },
-      // the sea is drawn over the data cells, so 1° cells follow the real coastline
       { id: 'sea', type: 'fill', source: 'sea', paint: { 'fill-color': '#040a16' } },
       { id: 'sea-grid', type: 'line', source: 'grid', paint: { 'line-color': '#6d8cc0', 'line-opacity': 0.08, 'line-width': 0.6 } },
       { id: 'borders', type: 'line', source: 'borders', paint: { 'line-color': '#9fb3d6', 'line-opacity': 0.22, 'line-width': 0.6, 'line-dasharray': [3, 2] } },
@@ -104,7 +92,6 @@ export function regionStyle(): StyleSpecification {
   }
 }
 
-/** Names placed on the lab map as HTML (no font server needed). */
 export const PLACE_LABELS = [
   { name: 'Mediterranean Sea', lon: 18, lat: 35.2, kind: 'sea' },
   { name: 'Black Sea', lon: 34.5, lat: 43.3, kind: 'sea' },
@@ -112,11 +99,6 @@ export const PLACE_LABELS = [
   { name: 'Alps', lon: 10, lat: 46.3, kind: 'land' },
 ] as const
 
-/**
- * Where each region button sits on the lab map. The box centre would land on a capital
- * (Madrid, Cairo, Ankara...), so these points sit in clear ground next to it.
- * Regions not listed fall back to the centre of their box.
- */
 export const REGION_CHIP_AT: Record<string, [number, number]> = {
   iberia: [-3.6, 41.9],
   italy_balkans: [15.5, 43.1],

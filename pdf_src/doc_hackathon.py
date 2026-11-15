@@ -1,10 +1,6 @@
-"""PDF 2 - the version of EarthSleuth we build during the hackathon, plus future work.
-
-Version 2: local only, AI-curated knowledge graph, graph-guided investigation.
-"""
 import sys
 
-from common import *  # noqa: F401,F403
+from common import *
 from shared import (challenge_section, diagram_stats_pipeline, glossary_section,
                     problem_section)
 
@@ -62,7 +58,6 @@ def diagram_hack_arch():
 
 
 def diagram_guided():
-    """Investigation steps (left) and the graph paths each step uses (right)."""
     W, H = 495, 352
     steps = [
         ("1 · Understand", "question → concepts",
@@ -172,7 +167,6 @@ def build(path):
     challenge_section(st)
     st.append(PageBreak())
 
-    # -------------------------------------------------------------- 3 what we build
     st.append(H1("3. What we build this weekend"))
     st.append(P("We keep the <b>three superpowers</b> of the full system, each in a small but real "
                 "form:"))
@@ -224,7 +218,6 @@ def build(path):
     ], [1.1, 3.0, 2.9]))
     st.append(PageBreak())
 
-    # -------------------------------------------------------------- 4 architecture
     st.append(H1("4. The whole flow (architecture)"))
     st.append(P("The system works in <b>four phases</b>. Phases 1 and 2 happen once, before the "
                 "demo, on our laptops. Phase 3 happens every time someone asks a question, and "
@@ -325,7 +318,6 @@ python run.py app           # phases 3-4: streamlit run app/Home.py
                 "six lines."))
     st.append(PageBreak())
 
-    # -------------------------------------------------------------- 5 data
     st.append(H1("5. The NASA data we use (exactly)"))
     st.append(H2("5.1 Region, period and grid"))
     st.append(P("These choices are made by <b>us, the developers</b>, before the hackathon build "
@@ -430,7 +422,6 @@ for granule in results:
                             "ML engineer checks units and the final <font name='Mono'>series.nc</font>."]))
     st.append(PageBreak())
 
-    # -------------------------------------------------------------- 6 stats
     st.append(H1("6. The statistics engine (hackathon version)"))
     st.append(P("Same eight steps as the full system (Document 1, section 8), applied to each of the "
                 "~600 land cells and to the regional average, for each variable. For the whole "
@@ -516,7 +507,6 @@ def add_fdr(df: pd.DataFrame, q=0.10):               # one row per cell, one var
                             "function the investigator calls."]))
     st.append(PageBreak())
 
-    # -------------------------------------------------------------- 7 radar
     st.append(H1("7. Radar-lite: automatic discovery"))
     st.append(P("Even in the small version, the app does not just wait for questions. It shows "
                 "<b>what is changing the most</b> in the region (or the sub-region being "
@@ -556,7 +546,6 @@ wide["cluster"] = KMeans(best, n_init=10, random_state=0).fit_predict(X)
     st.append(box("owner", ["The ML engineer owns radar.py."]))
     st.append(PageBreak())
 
-    # -------------------------------------------------------------- 8 graph
     st.append(H1("8. The knowledge + evidence graph (hackathon version)"))
     st.append(P("We keep the graph idea from Document 1 with the same two layers. <b>Layer A</b> "
                 "(knowledge) is now built and maintained by an <b>AI curator agent</b> "
@@ -753,7 +742,6 @@ RETURN v.id, v.display_name, v.definition_for_students, v.unit_target,
                             "validate_graph and export; a teammate writes seed.yaml in parallel."]))
     st.append(PageBreak())
 
-    # -------------------------------------------------------------- 9 agent
     st.append(H1("9. The AI investigator (hackathon version)"))
     st.append(P("Instead of six agents, we build <b>one investigator agent</b> (an LLM that can "
                 "call tools), and it is <b>guided by the graph</b>: it does not decide from memory "
@@ -833,7 +821,6 @@ RETURN v.id, v.display_name, v.definition_for_students, v.unit_target,
                             "ML engineer owns the on-demand engine call behind get_trend."]))
     st.append(PageBreak())
 
-    # -------------------------------------------------------------- 10 app
     st.append(H1("10. The app (Streamlit, local)"))
     st.append(P("Streamlit lets Python developers build a web app quickly. We run it on our own "
                 "laptop with <font name='Mono'>python run.py app</font> (it opens in the browser "
@@ -870,7 +857,6 @@ RETURN v.id, v.display_name, v.definition_for_students, v.unit_target,
     st.append(box("owner", ["Integration / product engineers own the app."]))
     st.append(PageBreak())
 
-    # -------------------------------------------------------------- 11 demo
     st.append(H1("11. Demo and submission"))
     st.append(P("Because we do not deploy, <b>the video (or slides) is the demo</b>. Judges will "
                 "not run our code; they will watch, read the summary and maybe open the repo. "
@@ -938,7 +924,6 @@ RETURN v.id, v.display_name, v.definition_for_students, v.unit_target,
     ], [0.35, 6.65]))
     st.append(PageBreak())
 
-    # -------------------------------------------------------------- 12 team + timeline
     st.append(H1("12. Who does what, and when"))
     st.append(H2("12.1 Roles"))
     st.append(table([
@@ -978,7 +963,6 @@ RETURN v.id, v.display_name, v.definition_for_students, v.unit_target,
     ], [1.5, 3.7, 1.8]))
     st.append(PageBreak())
 
-    # -------------------------------------------------------------- 13 risks
     st.append(H1("13. Risks and backup plans"))
     st.append(table([
         ["Risk", "Backup plan"],
@@ -1007,7 +991,6 @@ RETURN v.id, v.display_name, v.definition_for_students, v.unit_target,
          "everything."],
     ], [2.3, 4.7]))
 
-    # -------------------------------------------------------------- 14 future
     st.append(H1("14. Future work: the road to the full system"))
     st.append(P("Everything below is described in Document 1. We mention it in the presentation as "
                 "our roadmap, so judges see that the hackathon build is the first working piece of "

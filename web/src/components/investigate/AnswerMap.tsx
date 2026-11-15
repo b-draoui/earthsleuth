@@ -18,15 +18,9 @@ interface Condition {
   dir: 1 | -1
 }
 
-/**
- * "Where?" answered on a map. Built only from the trend results the investigator used:
- * - one variable: cells where it rose or fell significantly;
- * - several with a significant regional direction: cells where all of them did so, together.
- */
 export default function AnswerMap({ results, regions }: { results: VariableResult[]; regions: Region[] }) {
   const { data: m } = useCells()
 
-  // the map shows the full-period trends: skip it for questions about other years
   const p = results[0]?.period
   const fullPeriod = !p || (p[0] === '2001-01' && p[1] === '2024-12')
 

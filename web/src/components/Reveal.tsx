@@ -1,7 +1,6 @@
 import { motion } from 'motion/react'
 import type { ReactNode } from 'react'
 
-/** Fades and lifts its content in the first time it scrolls into view. */
 export default function Reveal({
   children,
   delay = 0,

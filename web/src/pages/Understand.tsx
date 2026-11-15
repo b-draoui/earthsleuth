@@ -20,7 +20,6 @@ import { VARS } from '../lib/variables.ts'
 
 const Connections = lazy(() => import('../components/understand/Connections.tsx'))
 
-/** 04 · Understand: which signals are strongest, which changes travel together, how it all connects. */
 export default function Understand() {
   const { data: ranking } = useFetch('ranking', api.ranking)
   const { data: clusters } = useFetch('clusters', api.clusters)
@@ -203,7 +202,6 @@ function Clusters({ data, features }: { data: ClusterSummary[]; features: Cluste
   )
 }
 
-/** Five small bars: how each variable's trend in this group compares with the regional average. */
 function Signature({ sig, max }: { sig: ClusterSummary['signature']; max: number }) {
   return (
     <div className="mt-3 grid grid-cols-5 gap-2">

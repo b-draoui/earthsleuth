@@ -38,7 +38,6 @@ const HOME_BOUNDS: [[number, number], [number, number]] = [
 const BIG = 1e9
 const TINY: Record<VariableId, string> = { t2m: 'Temp.', precip: 'Rain', soil_moisture: 'Soil', et: 'Evap.', ndvi: 'Green' }
 
-/** 02 · Explore: the lab. A map of every land cell, five layers, three ways of looking. */
 export default function Explore() {
   const [params, setParams] = useSearchParams()
   const variable = (VARIABLE_IDS.includes(params.get('v') as VariableId) ? params.get('v') : 't2m') as VariableId
@@ -51,7 +50,7 @@ export default function Explore() {
   const [hover, setHover] = useState<{ x: number; y: number; props: TrendCell } | null>(null)
   const [legendHover, setLegendHover] = useState<LegendHover>(null)
   const [zoom, setZoom] = useState(3.8)
-  const [more, setMore] = useState(false) // phones: legend and details folded by default
+  const [more, setMore] = useState(false)
   const map = useRef<MapRef>(null)
   const panel = useRef<HTMLElement>(null)
   const style = useMemo(() => regionStyle(), [])
@@ -76,7 +75,6 @@ export default function Explore() {
     api.regionalSeries(variable, 'mediterranean_north_africa'),
   )
 
-  // warm the other layers so switching is instant
   useEffect(() => {
     if (!trends) return
     const t = window.setTimeout(() => VARIABLE_IDS.forEach((v) => prefetch(`trends:${v}`, () => api.trends(v))), 600)
@@ -88,7 +86,6 @@ export default function Explore() {
   const meta = trends?.meta
   const years = meta?.years ?? []
 
-  // ------------------------------------------------------------ map styling
   const valueExpr: ExpressionSpecification =
     mode === 'year' ? ['coalesce', ['get', `y${year}`], 0] : ['get', 'slope_dec']
 
@@ -98,8 +95,6 @@ export default function Explore() {
       return ['match', ['get', 'direction'], 'up', SCALES[scale][5], 'down', SCALES[scale][1], QUIET] as ExpressionSpecification
     }
     return divergingExpression(valueExpr, mode === 'year' ? meta.anomaly_max : meta.slope_max, scale)
-    // valueExpr depends on mode + year
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [meta, mode, scale, year])
 
   const fillOpacity: ExpressionSpecification = useMemo(() => {
@@ -113,7 +108,6 @@ export default function Explore() {
     if (mode === 'trend') return ['case', ['get', 'significant'], 0.92, onlySig ? 0.05 : 0.3] as ExpressionSpecification
     if (mode === 'opposite') return ['match', ['get', 'direction'], 'none', 0.45, 0.9] as ExpressionSpecification
     return ['literal', 0.88] as unknown as ExpressionSpecification
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [legendHover, mode, onlySig, year])
 
   const dots: FeatureCollection<Point> | null = useMemo(() => {
@@ -142,8 +136,6 @@ export default function Explore() {
       }
     : null
 
-  // ------------------------------------------------------------ interactions
-  // phones: the layer panel sits on top of the map, so keep the map below it
   const phoneTop = () => Math.max(20, (panel.current?.getBoundingClientRect().bottom ?? 300) - 64 + 8)
   const flyToRegion = (r: Region | null, duration = 1200) => {
     const m = map.current
@@ -165,15 +157,12 @@ export default function Explore() {
       essential: true,
     })
   }
-  // a cell set from outside (a link, the tour): bring it into view if it is off screen
   useEffect(() => {
     const m = map.current
     if (!cell || !m) return
     const [la, lo] = cell.split('_').map(Number)
     if (!Number.isFinite(la) || !Number.isFinite(lo)) return
     if (!m.getBounds().contains([lo, la])) flyToPoint(la, lo)
-    // only when the selected cell changes
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [cell])
 
   const pickCity = (c: City) => {
@@ -320,7 +309,6 @@ export default function Explore() {
           <CompareMaps data={trends} scale={scale} max={cmpMax} unit={meta.unit} selected={cell} onCell={(id) => set({ cell: id })} />
         )}
 
-        {/* hover card */}
         {hover && mode !== 'compare' && (
           <div className="glass pointer-events-none absolute z-20 w-56 rounded-xl px-3 py-2.5 text-xs" style={{ left: hover.x + 16, top: hover.y + 16 }}>
             <p className="num text-faint">
@@ -346,7 +334,6 @@ export default function Explore() {
         )}
       </div>
 
-      {/* ------------------------------------------------------------ left: layers */}
       <motion.section
         initial={{ opacity: 0, x: -24 }}
         animate={{ opacity: 1, x: 0 }}
@@ -477,7 +464,6 @@ export default function Explore() {
         </div>
       </motion.section>
 
-      {/* ------------------------------------------------------------ right: details */}
       <div className="pointer-events-none absolute right-3 bottom-3 left-3 z-30 flex max-h-[58svh] md:top-20 md:right-5 md:bottom-auto md:left-auto md:max-h-[calc(100svh-6rem)]">
         <AnimatePresence mode="wait">
           {cell ? (
@@ -497,7 +483,6 @@ export default function Explore() {
         </AnimatePresence>
       </div>
 
-      {/* ------------------------------------------------------------ bottom: time */}
       <AnimatePresence>
         {mode === 'year' && meta && (
           <motion.div

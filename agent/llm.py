@@ -1,8 +1,3 @@
-"""Thin wrapper around Gemini (google-genai): JSON answers, text answers and a tool-calling loop.
-
-Models: GEMINI_MODEL in .env (reasoning) and GEMINI_FAST_MODEL (quick steps). If a model is not
-available, the next one in the fallback list is tried.
-"""
 from __future__ import annotations
 
 import json
@@ -33,19 +28,18 @@ def client():
         if not C.GEMINI_API_KEY:
             raise LLMUnavailable("GEMINI_API_KEY is missing in .env")
         from google import genai
-        os.environ.pop("GOOGLE_API_KEY", None)  # avoid the 'both keys set' ambiguity
+        os.environ.pop("GOOGLE_API_KEY", None)
         _client = genai.Client(api_key=C.GEMINI_API_KEY)
     return _client
 
 
 def _call(models: list[str], fn: Callable[[str], Any], retries: int = 3):
-    """Try each model; retry transient errors (429 / 5xx) with backoff."""
     last = None
     for model in models:
         for attempt in range(retries):
             try:
                 return model, fn(model)
-            except Exception as e:  # noqa: BLE001 - SDK raises several error classes
+            except Exception as e:
                 msg = str(e)
                 last = e
                 if "404" in msg or "not found" in msg.lower() or "not supported" in msg.lower():
@@ -86,7 +80,6 @@ def run_tools(system: str, user_message: str, tool_schemas: dict[str, dict],
               call_tool: Callable[[str, dict], dict], max_turns: int = 60,
               on_event: Callable[[dict], None] | None = None, fast: bool = False,
               stop_tool: str | None = None) -> str:
-    """Generic tool-calling loop. Returns the model's final text."""
     from google.genai import types
     decls = [types.FunctionDeclaration(
         name=name, description=(s.get("description") or "").strip(),
@@ -103,12 +96,12 @@ def run_tools(system: str, user_message: str, tool_schemas: dict[str, dict],
     for turn in range(max_turns):
         model, r = _call(models, lambda m: client().models.generate_content(
             model=m, contents=contents, config=cfg))
-        models = [model]                          # stick to the model that worked
+        models = [model]
         cand = r.candidates[0] if r.candidates else None
         if cand is None or cand.content is None:
             emit({"type": "empty", "turn": turn})
             break
-        contents.append(cand.content)             # keeps thought signatures for the next turn
+        contents.append(cand.content)
         calls = [p.function_call for p in cand.content.parts or [] if p.function_call]
         text = "".join(p.text or "" for p in cand.content.parts or [] if p.text and not
                        getattr(p, "thought", False))

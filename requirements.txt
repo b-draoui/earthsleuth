@@ -1,5 +1,3 @@
-# What the deployed server needs (FastAPI + statistics engine + investigator).
-# Exact versions = what the Docker image and CI test. On another Python, see requirements-local.txt.
 fastapi==0.162.7
 uvicorn[standard]==0.54.0
 pandas==3.1.1
@@ -15,5 +13,4 @@ scikit-learn==1.9.1
 networkx==3.7
 pyyaml==6.0.3
 python-dotenv==1.2.4
-# investigator: Gemini, used only when GEMINI_API_KEY is set (else rules + templates)
 google-genai==3.3.0

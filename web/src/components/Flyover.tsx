@@ -16,16 +16,10 @@ const clamp = (x: number, a = 0, b = 1) => Math.max(a, Math.min(b, x))
 const ease = (t: number) => (t < 0.5 ? 2 * t * t : 1 - (-2 * t + 2) ** 2 / 2)
 const lerp = (a: number, b: number, t: number) => a + (b - a) * t
 
-// scroll progress -> story
 const DIVE_END = 0.26
 const YEARS_START = 0.3
 const YEARS_END = 0.88
 
-/**
- * The opening flight: scrolling dives from the globe into the Mediterranean, then plays
- * 24 years of air temperature, one year per step of the scroll. Colours are each cell's
- * yearly anomaly (its year minus its own 2001–2024 average), straight from the trends file.
- */
 export default function Flyover() {
   const ref = useRef<HTMLElement>(null)
   const map = useRef<MapRef>(null)

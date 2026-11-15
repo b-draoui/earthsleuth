@@ -94,7 +94,6 @@ const WINDOWS: [string, string, string][] = [
   ['2020-01', '2024-12', 'after'],
 ]
 
-/** Compare mode: the two 5-year averages and their difference, clearly not a test. */
 function BeforeAfter({ variable, before, after, unit }: { variable: VariableId; before: number | null; after: number | null; unit: string }) {
   if (before === null || after === null) return null
   const scale = SCALES[SCALE_OF[variable]]

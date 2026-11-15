@@ -1,5 +1,3 @@
-"""Precompute the whole region (the cache the app opens with): trends.parquet, regional.json,
-clusters.parquet, clusters.json, findings.json."""
 from __future__ import annotations
 
 import json

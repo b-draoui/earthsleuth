@@ -1,7 +1,3 @@
-/**
- * The contracts on the front-end side (contracts/README.md).
- * api/schemas.py holds the same shapes in Python. Change both together.
- */
 import type { FeatureCollection, Polygon } from 'geojson'
 
 export type VariableId = 't2m' | 'precip' | 'soil_moisture' | 'et' | 'ndvi'
@@ -27,7 +23,7 @@ export interface Variable {
 export interface Region {
   id: string
   label: string
-  bbox: [number, number, number, number] // lon_min, lon_max, lat_min, lat_max
+  bbox: [number, number, number, number]
 }
 
 export interface RegionalStats {
@@ -44,7 +40,6 @@ export interface CellCounts {
   pct_sig_area: number
 }
 
-/** Contract 2: result for one variable over one region. */
 export interface VariableResult {
   variable: VariableId
   unit: string
@@ -61,7 +56,6 @@ export interface VariableResult {
 
 export type Direction = 'up' | 'down' | 'none'
 
-/** Properties of one cell on the map: its trend + its mean anomaly each year (y2001 ... y2024). */
 export interface TrendCell {
   cell_id: string
   lat: number
@@ -178,7 +172,6 @@ export interface Summary {
   run_id: string
 }
 
-/** /api/cells: every land cell with the trend of all five variables, aligned by index. */
 export interface CellsVariable {
   unit: string
   slope_max: number
@@ -225,14 +218,12 @@ export interface Evidence {
   source: string
 }
 
-/** Contract 3: one progress step of the agent. */
 export interface AgentEvent {
   stage: Stage
   status: 'running' | 'done' | 'error'
   message: string
   data: {
     narrator?: string
-    /** set when the events replay a recorded investigation */
     replay?: string
     variable?: VariableId
     result?: VariableResult
@@ -247,6 +238,5 @@ export interface AgentEvent {
 export interface Demo {
   id: string
   question: string
-  /** set for recorded runs of the AI investigator (ISO date) */
   recorded?: string
 }
