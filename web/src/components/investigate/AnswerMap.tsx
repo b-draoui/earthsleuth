@@ -26,6 +26,10 @@ interface Condition {
 export default function AnswerMap({ results, regions }: { results: VariableResult[]; regions: Region[] }) {
   const { data: m } = useCells()
 
+  // the map shows the full-period trends: skip it for questions about other years
+  const p = results[0]?.period
+  const fullPeriod = !p || (p[0] === '2001-01' && p[1] === '2024-12')
+
   const spec = useMemo(() => {
     const byVar = new Map<VariableId, VariableResult>()
     for (const r of results) if (!byVar.has(r.variable)) byVar.set(r.variable, r)
@@ -68,7 +72,7 @@ export default function AnswerMap({ results, regions }: { results: VariableResul
 
   const opacity = useCallback((i: number) => (m && spec?.bbox && !inBox(m.cells[i], spec.bbox) ? 0.35 : 0.95), [m, spec])
 
-  if (!spec) return null
+  if (!spec || !fullPeriod) return null
   if (!m) return <div className="skeleton mt-6 h-72 rounded-3xl" />
 
   const inside = m.cells.map((_, i) => i).filter((i) => inBox(m.cells[i], spec.bbox))

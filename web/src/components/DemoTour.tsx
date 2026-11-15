@@ -21,7 +21,7 @@ const STEPS: Step[] = [
   { path: '/explore?v=t2m', caption: 'The lab: the 24-year trend of every land cell. A dot means it passed the significance test.', ms: 7000 },
   { path: '/explore?v=t2m&cell=36.5_10.5', caption: 'Pick a place: its five signals, its monthly record, the trend line and a plain verdict.', ms: 8500 },
   { path: '/explore?v=precip&mode=opposite', caption: 'Opposites: the same variable rising in some places and falling in others.', ms: 6500 },
-  { path: '/investigate?case=heat-and-water', caption: 'Ask a question: the investigator plans, measures, checks every number, then shows where.', ms: 13000, scroll: 'answer' },
+  { path: '/investigate?case=f662d022d6ae', caption: 'Ask a question: the AI investigator follows the knowledge graph, runs the statistics, checks every number, then shows where.', ms: 14000, scroll: 'answer' },
   { path: '/understand', caption: 'Which signals are strongest, and which changes happen in the same places.', ms: 8000, scroll: 0.45 },
   { path: '/conclude', caption: 'The report: what changed, how sure we are, and what the data cannot say.', ms: 9000, scroll: 0.35 },
   { path: '/', caption: 'EarthSleuth. Can you see the signal?', ms: 4500 },

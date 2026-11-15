@@ -123,6 +123,8 @@ export const REGION_CHIP_AT: Record<string, [number, number]> = {
   nile_delta: [30.8, 32.1],
   levant: [37.9, 34.7],
   anatolia: [33.4, 38.3],
+  tunisia: [9.0, 31.9],
+  sahara_margin: [12.5, 27.3],
 }
 
 export function regionChipAt(id: string, bbox: [number, number, number, number] | number[]): [number, number] {

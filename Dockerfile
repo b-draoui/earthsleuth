@@ -21,7 +21,7 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
     PIP_NO_CACHE_DIR=1 \
     PIP_DISABLE_PIP_VERSION_CHECK=1 \
-    EARTHSLEUTH_FAKE=1
+    EARTHSLEUTH_FAKE=0
 WORKDIR /app
 
 COPY requirements.txt .
@@ -40,6 +40,9 @@ COPY --from=web /web/dist web/dist
 RUN EARTHSLEUTH_FAKE=1 python -m scripts.prebuild_cache /app/cache \
  && EARTHSLEUTH_FAKE=0 python -m scripts.prebuild_cache /app/cache
 ENV EARTHSLEUTH_CACHE_DIR=/app/cache
+# ...and the investigator's statistics for every region of the graph (about 1.5 min here,
+# instead of minutes per question on a 0.1-CPU server)
+RUN EARTHSLEUTH_FAKE=0 python -m scripts.prewarm_engine
 
 RUN useradd --create-home --uid 1000 app && chown -R app /app
 USER app

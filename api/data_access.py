@@ -32,12 +32,14 @@ from common.config import (
     REGION_ID,
     REGION_LABELS,
     REGIONAL_FILE,
+    REGIONAL_JSON_FILE,
     RESULTS_DIR,
     SERIES_FILE,
     SUBREGIONS,
     TRENDS_FILE,
     USE_FAKE,
     VARIABLES,
+    app_cell_id,
 )
 
 HALF = 0.5  # half a 1° cell
@@ -54,12 +56,12 @@ def _f(x, nd: int = 4):
 
 
 def _anomalies(s: pd.Series) -> pd.Series:
-    """Use the stats engine's definition when it exists, the same formula otherwise."""
+    """Monthly anomalies with the stats engine's own function (seasonal cycle removed)."""
     try:
         from engine.stats import anomalies
 
-        return anomalies(s)
-    except NotImplementedError:
+        return pd.Series(anomalies(s.to_numpy(dtype="float64"), s.index.month.to_numpy()), index=s.index)
+    except (ImportError, NotImplementedError):
         return s - s.groupby(s.index.month).transform("mean")
 
 
@@ -87,19 +89,68 @@ def datasets_label(variable: str) -> list[str]:
 
 
 # ---------------------------------------------------------------- loaders (read once)
+# The engine (engine/run_all.py) writes cell ids as "lat36.5_lon10.5" and units as "degC per decade";
+# the web app uses "36.5_10.5" and "°C". These loaders bring both formats to the app's one.
+def _app_ids(df: pd.DataFrame) -> pd.DataFrame:
+    if "lat" in df and "lon" in df:
+        df = df.copy()
+        df["cell_id"] = [app_cell_id(a, b) for a, b in zip(df.lat, df.lon)]
+    return df
+
+
 @lru_cache
 def load_trends() -> pd.DataFrame:
-    return pd.read_parquet(RESULTS_DIR / TRENDS_FILE)
+    t = _app_ids(pd.read_parquet(RESULTS_DIR / TRENDS_FILE))
+    t["unit"] = t.variable.map(lambda v: VARIABLES[v]["unit"])
+    return t
+
+
+def _regional_from_json(path) -> pd.DataFrame:
+    """regional.json (engine/run_all.py: Contract 2 for the region and each sub-region) as a table."""
+    data = json.loads(path.read_text(encoding="utf-8"))
+    rows = []
+    items = list(data.get("results", {}).items())
+    for v, by_region in data.get("sub_results", {}).items():
+        items += [(v, r) for r in by_region.values()]
+    for v, r in items:
+        reg, cells = r["regional"], r["cells"]
+        rows.append({
+            "variable": v,
+            "region": r["region"],
+            "slope_dec": reg.get("slope_per_decade"),
+            "ci_lo": (reg.get("ci95") or [None, None])[0],
+            "ci_hi": (reg.get("ci95") or [None, None])[1],
+            "p": reg.get("p"),
+            "significant": bool(reg.get("significant")),
+            "n_cells": cells.get("n"),
+            "sig_up": cells.get("sig_up"),
+            "sig_down": cells.get("sig_down"),
+            "pct_sig_area": cells.get("pct_sig_area"),
+            "unit": VARIABLES[v]["unit"],
+            "run_id": r.get("run_id"),
+        })
+    return pd.DataFrame(rows)
 
 
 @lru_cache
 def load_regional() -> pd.DataFrame:
-    return pd.read_parquet(RESULTS_DIR / REGIONAL_FILE)
+    if (RESULTS_DIR / REGIONAL_FILE).exists():
+        return pd.read_parquet(RESULTS_DIR / REGIONAL_FILE)
+    return _regional_from_json(RESULTS_DIR / REGIONAL_JSON_FILE)
 
 
 @lru_cache
 def load_clusters() -> pd.DataFrame:
-    return pd.read_parquet(RESULTS_DIR / CLUSTERS_FILE)
+    c = _app_ids(pd.read_parquet(RESULTS_DIR / CLUSTERS_FILE))
+    if "cluster_name" not in c and "cluster_label" in c:
+        c = c.rename(columns={"cluster_label": "cluster_name"})
+    # two groups can get the same name ("warming + drying"): tell them apart, biggest first
+    names = c.groupby("cluster").agg(name=("cluster_name", "first"), n=("cluster_name", "size"))
+    for name, grp in names.groupby("name"):
+        if len(grp) > 1:
+            for k, cl in enumerate(grp.sort_values("n", ascending=False).index):
+                c.loc[c.cluster == cl, "cluster_name"] = f"{name} ({'ABCDEFGH'[k]})"
+    return c
 
 
 @lru_cache
@@ -109,10 +160,59 @@ def load_series() -> xr.Dataset:
         return ds.load()
 
 
+def _graph_path():
+    """The curator's graph (data/graph/graph.json) for real data, the simulated one otherwise."""
+    from common.config import GRAPH_JSON
+
+    if not USE_FAKE and GRAPH_JSON.exists():
+        return GRAPH_JSON
+    return RESULTS_DIR / GRAPH_FILE
+
+
+_NAME_KEYS = ("name", "display_name", "title", "summary", "question", "text")
+
+
+def _node_label(n: dict) -> str:
+    kind = n.get("label") or n.get("type")
+    if kind == "Finding" and n.get("kind") == "trend" and n.get("variable") in VARIABLES:
+        region = REGION_LABELS.get(n.get("region"), n.get("region"))
+        return f"{VARIABLES[n['variable']]['label']} · {region}"
+    if kind == "Finding" and n.get("kind") == "cluster":
+        region = REGION_LABELS.get(n.get("region"), n.get("region"))
+        return f"Cluster '{n.get('cluster_label', '?')}' · {region}"
+    for k in _NAME_KEYS:
+        if isinstance(n.get(k), str) and n[k].strip():
+            return n[k].strip()
+    return str(n.get("id"))
+
+
+def _to_node_link(g: dict) -> dict:
+    """The curator's export ({nodes: [{id, label: <type>, ...}], relationships: [{src, type, dst}]})
+    -> the node-link format of the Understand page ({nodes: [{id, type, label}], edges: [...]})."""
+    from graph.store import parse_json_prop
+
+    nodes = []
+    for n in g.get("nodes", []):
+        props = {k: parse_json_prop(v) for k, v in n.items() if k not in ("created_at", "updated_at")}
+        out = {**props, "id": n["id"], "type": n.get("label") or n.get("type") or "Node", "label": _node_label(n)}
+        if isinstance(props.get("slope_per_decade"), (int, float)) and "slope_dec" not in out:
+            out["slope_dec"] = props["slope_per_decade"]
+        nodes.append(out)
+    ids = {n["id"] for n in nodes}
+    edges = [
+        {**{k: v for k, v in r.items() if k not in ("src", "dst", "created_at", "updated_at")},
+         "source": r["src"], "target": r["dst"], "type": r["type"]}
+        for r in g.get("relationships", [])
+        if r.get("src") in ids and r.get("dst") in ids
+    ]
+    return {"directed": True, "multigraph": True, "graph": {"exported_at": g.get("exported_at")}, "nodes": nodes, "edges": edges}
+
+
 @lru_cache
 def graph() -> dict:
-    """graph.json as is (networkx node-link format)."""
-    return json.loads((RESULTS_DIR / GRAPH_FILE).read_text(encoding="utf-8"))
+    """The knowledge + evidence graph in node-link format (nodes with type + label, edges)."""
+    g = json.loads(_graph_path().read_text(encoding="utf-8"))
+    return _to_node_link(g) if "relationships" in g else g
 
 
 @lru_cache

@@ -84,6 +84,7 @@ export default function Investigate() {
     let answer: string | undefined
     let evidence: Evidence[] = []
     let narrator: string | undefined
+    let replay: string | undefined
     let error: string | undefined
     for (const e of events) {
       const s = stage[e.stage] ?? stage.explain
@@ -93,6 +94,7 @@ export default function Investigate() {
       if (e.data?.answer_md) answer = e.data.answer_md
       if (e.data?.evidence) evidence = e.data.evidence
       if (e.data?.narrator) narrator = e.data.narrator
+      if (e.data?.replay) replay = e.data.replay
       if (e.status === 'error') error = e.message
     }
     // a stage before the latest one is necessarily finished
@@ -100,7 +102,7 @@ export default function Investigate() {
     STAGES.forEach((st, i) => {
       if (i < lastIdx && stage[st].state === 'running') stage[st].state = 'done'
     })
-    return { stage, results, answer, evidence, narrator, error }
+    return { stage, results, answer, evidence, narrator, replay, error }
   }, [events])
 
   const started = status !== 'idle'
@@ -175,7 +177,10 @@ export default function Investigate() {
                   }}
                   className="group glass rounded-2xl p-6 text-left transition-all duration-500 hover:-translate-y-1 hover:border-accent/40"
                 >
-                  <span className="num text-[11px] tracking-[0.25em] text-accent uppercase">Case {String(i + 1).padStart(2, '0')}</span>
+                  <span className="num text-[11px] tracking-[0.25em] text-accent uppercase">
+                    Case {String(i + 1).padStart(2, '0')}
+                    {d.recorded && <span className="ml-2 tracking-[0.15em] text-faint">· AI run</span>}
+                  </span>
                   <p className="mt-3 font-display text-lg leading-snug font-medium">{d.question}</p>
                   <span className="mt-4 inline-block text-sm text-faint transition-colors group-hover:text-ink">Open the case →</span>
                 </motion.button>
@@ -190,8 +195,13 @@ export default function Investigate() {
             <div className="min-w-0">
               {derived.narrator && (
                 <p className="mb-5 rounded-xl border border-sand/30 bg-sand/[0.06] px-4 py-2.5 text-xs leading-relaxed text-sand/90">
-                  Answered by the {derived.narrator}. It follows the same stages and quotes only numbers from the result
-                  files, but it does not reason like the AI agent will.
+                  Answered by the {derived.narrator}. Every number still comes from the statistics engine; the AI only
+                  changes how the question is read and how the answer is written.
+                </p>
+              )}
+              {derived.replay && (
+                <p className="mb-5 rounded-xl border border-accent/30 bg-accent/[0.06] px-4 py-2.5 text-xs leading-relaxed text-ink/80">
+                  Replay of an investigation {derived.replay}. Ask your own question above to run it live.
                 </p>
               )}
               <EvidenceBoard results={derived.results} />

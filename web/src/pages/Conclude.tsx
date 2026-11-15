@@ -10,7 +10,7 @@ import { api } from '../lib/api.ts'
 import { bigNumber, pValue, pct, signed } from '../lib/format.ts'
 import type { Summary, Variable } from '../lib/types.ts'
 import { useFetch } from '../lib/useFetch.ts'
-import { AI_USE, CHALLENGE, DATA, DESIGN, MAPS, METHODS, SOFTWARE, creditsMarkdown } from '../lib/credits.ts'
+import { AI_USE, CHALLENGE, DATA, DESIGN, LITERATURE, MAPS, METHODS, SERVICES, SOFTWARE, creditsMarkdown } from '../lib/credits.ts'
 import { VARS, directionWord } from '../lib/variables.ts'
 
 function sentence(v: Summary['variables'][number]): string {
@@ -232,6 +232,10 @@ function Credits() {
         <ul className="space-y-1.5">{MAPS.map((m) => <li key={m}>{m}</li>)}</ul>
         <p className={h}>Methods</p>
         <ul className="space-y-1.5">{METHODS.map((m) => <li key={m}>{m}</li>)}</ul>
+        <p className={h}>Literature in the knowledge graph</p>
+        <ul className="space-y-1.5">{LITERATURE.map((m) => <li key={m}>{m}</li>)}</ul>
+        <p className={h}>Services</p>
+        <ul className="space-y-1.5">{SERVICES.map((m) => <li key={m}>{m}</li>)}</ul>
         <p className={h}>Fonts and colours</p>
         <ul className="space-y-1.5">{DESIGN.map((m) => <li key={m}>{m}</li>)}</ul>
         <p className={h}>Open-source software</p>

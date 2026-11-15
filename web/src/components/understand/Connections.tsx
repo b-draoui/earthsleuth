@@ -13,6 +13,11 @@ const TYPE_COLOR: Record<string, string> = {
   Finding: '#a99bff',
   Hypothesis: CATEGORICAL[6],
   Paper: CATEGORICAL[2],
+  Investigation: '#f4f1de',
+  Analysis: '#8fa3c7',
+  Method: '#6f7f9c',
+  ChartStyle: '#4f5d78',
+  HypothesisPattern: '#c48aa8',
 }
 const LABELLED = new Set(['Variable', 'Concept', 'Mission'])
 
@@ -43,9 +48,11 @@ export default function Connections({ graph }: { graph: KnowledgeGraph }) {
       degree.set(e.source, (degree.get(e.source) ?? 0) + 1)
       degree.set(e.target, (degree.get(e.target) ?? 0) + 1)
     }
+    // items with no link yet (a paper not cited by any link, a chart style) would drift off-screen
     return {
-      nodes: graph.nodes.map((n) => ({ ...n, degree: degree.get(n.id) ?? 0 })) as N[],
+      nodes: graph.nodes.filter((n) => degree.has(n.id)).map((n) => ({ ...n, degree: degree.get(n.id) ?? 0 })) as N[],
       links: graph.edges.map((e) => ({ ...e })) as L[],
+      unlinked: graph.nodes.filter((n) => !degree.has(n.id)).length,
     }
   }, [graph])
 
@@ -71,7 +78,7 @@ export default function Connections({ graph }: { graph: KnowledgeGraph }) {
     return s
   }, [focus, graph])
 
-  const types = [...new Set(graph.nodes.map((n) => n.type))]
+  const types = [...new Set(data.nodes.map((n) => n.type))]
 
   return (
     <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_320px]">
@@ -83,10 +90,13 @@ export default function Connections({ graph }: { graph: KnowledgeGraph }) {
             const f = fg.current
             if (!f || fitted.current) return
             fitted.current = true
-            f.d3Force('charge')?.strength(-140)
-            f.d3Force('link')?.distance(46)
+            // bigger graphs need more room between nodes
+            f.d3Force('charge')?.strength(-90 - 1.2 * data.nodes.length)
+            f.d3Force('link')?.distance(42)
+            window.setTimeout(() => fg.current?.zoomToFit(600, 40), 1800)
           }}
-          onEngineStop={() => fg.current?.zoomToFit(600, 50)}
+          onEngineStop={() => fg.current?.zoomToFit(600, 40)}
+          warmupTicks={40}
           width={width}
           height={560}
           backgroundColor="rgba(0,0,0,0)"
@@ -152,8 +162,9 @@ export default function Connections({ graph }: { graph: KnowledgeGraph }) {
             </li>
           ))}
           <li className="flex items-center gap-1.5">
-            <span className="h-px w-4 border-t border-dashed border-sand" /> physical link (not tested)
+            <span className="h-px w-4 border-t border-dashed border-sand" /> link from a paper (not tested)
           </li>
+          {data.unlinked > 0 && <li className="text-faint">· {data.unlinked} items without links not drawn</li>}
         </ul>
       </div>
 
@@ -164,9 +175,8 @@ export default function Connections({ graph }: { graph: KnowledgeGraph }) {
             <p>Each dot is a piece of knowledge: a satellite or model, a dataset, a variable, an idea, a place, or a finding computed by EarthSleuth.</p>
             <p className="mt-3">Click any dot to see what it is connected to. Drag to rearrange, scroll to zoom.</p>
             <p className="mt-3 text-xs text-faint">
-              Dashed gold arrows are general physical relationships (rain wets soils, heat dries them). They are context, not
-              results: EarthSleuth does not test causes. The graph holds no scientific papers yet; only papers the team has
-              read will be added.
+              Dashed gold arrows are relationships taken from papers the team read, each with the quote it comes from. They
+              are context, not results: EarthSleuth does not test causes. Pink dots are hypotheses, never proven.
             </p>
           </div>
         ) : (

@@ -1,18 +1,50 @@
-"""Tests for engine/stats.py on fake series (Doc 2, 6.1). TODO(ML engineer).
+"""Tests for engine/stats.py (Doc 2, 6.1) on series where we know the answer."""
 
-Ideas from the doc:
-- a series with a known slope + seasons + noise must give back that slope
-- pure noise should be significant in about 5% of cases before FDR, rarely after FDR
-"""
+import numpy as np
+import pandas as pd
 
-import pytest
+from engine import stats
+
+MONTHS = np.tile(np.arange(1, 13), 24)  # 2001-2024
+T_YEARS = np.arange(288) / 12.0
+SEASONS = 8 * np.sin(2 * np.pi * (MONTHS - 4) / 12)
 
 
-@pytest.mark.skip(reason="TODO(ML engineer)")
+def test_anomalies_remove_the_seasons():
+    a = stats.anomalies(SEASONS + 3.0, MONTHS)
+    assert np.allclose(a, 0.0)
+
+
 def test_theil_sen_recovers_known_slope():
-    ...
+    rng = np.random.default_rng(1)
+    slope_dec = 0.45  # e.g. °C per decade
+    y = 15 + SEASONS + slope_dec / 10 * T_YEARS + rng.normal(0, 0.6, 288)
+    r = stats.trend(y, MONTHS, T_YEARS)
+    assert r is not None
+    assert abs(r["slope_dec"] - slope_dec) < 0.08
+    assert r["ci_lo"] < slope_dec < r["ci_hi"]
+    assert r["p"] < 0.001
 
 
-@pytest.mark.skip(reason="TODO(ML engineer)")
 def test_noise_false_positive_rate():
-    ...
+    """Pure noise: few cells pass p < 0.05 and very few survive the FDR correction.
+
+    Measured: the Hamed–Rao test is a little liberal on white noise (about 9% below p = 0.05
+    instead of 5%, and about 2% of noise cells kept after FDR, against ~0% for the original
+    Mann–Kendall test). Real trends here are far stronger than that, but marginal cells can
+    include a few false positives. This test keeps it from getting worse."""
+    rng = np.random.default_rng(7)
+    rows = []
+    for k in range(300):
+        r = stats.trend(10 + SEASONS + rng.normal(0, 1, 288), MONTHS, T_YEARS)
+        rows.append({"cell_id": f"c{k}", "lat": 35.0, "lon": float(k), **r})
+    df = stats.add_fdr(pd.DataFrame(rows))
+    raw_rate = float((df["p"] < 0.05).mean())
+    assert raw_rate < 0.12
+    assert int(df["significant"].sum()) <= 9  # 3% of 300
+
+
+def test_too_many_missing_months_gives_no_trend():
+    y = 15 + SEASONS.copy()
+    y[:100] = np.nan
+    assert stats.trend(y, MONTHS, T_YEARS) is None

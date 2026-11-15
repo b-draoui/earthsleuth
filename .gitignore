@@ -7,9 +7,8 @@ venv/
 .ruff_cache/
 .ipynb_checkpoints/
 
-# Front end
+# Front end (web/dist/ IS committed: laptops without Node.js run the built site)
 node_modules/
-web/dist/
 
 # Secrets
 .env
@@ -19,6 +18,9 @@ web/.env
 # Raw NASA downloads: big, never committed
 data/raw/*
 !data/raw/.gitkeep
+# rebuilt by `python run.py download` / the engine's on-demand cache
+data/small/
+data/cache/
 
 # OS / editors
 .DS_Store

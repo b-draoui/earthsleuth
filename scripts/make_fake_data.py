@@ -47,7 +47,7 @@ from common.config import (
     SUBREGIONS,
     TRENDS_FILE,
     VARIABLES,
-    cell_id,
+    app_cell_id as cell_id,
 )
 
 SEED = 2026

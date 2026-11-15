@@ -12,3 +12,5 @@ web/dist
 data/raw
 docs
 *.zip
+data/cache
+data/small

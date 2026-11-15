@@ -22,7 +22,7 @@ from fastapi.staticfiles import StaticFiles
 
 from api import data_access as da
 from api.routes import agent, data, graph, meta
-from common.config import VARIABLES
+from common.config import USE_FAKE, VARIABLES
 
 WEB_DIST = (Path(__file__).resolve().parents[1] / "web" / "dist").resolve()
 
@@ -37,6 +37,10 @@ def _warm_up() -> None:
         da.graph()
         for v in VARIABLES:
             da.trends_payload(v, gzipped=True)
+        if not USE_FAKE:
+            from agent.agent import investigator
+
+            investigator()  # load the engine and the graph before the first question
         print("EarthSleuth: caches ready")
     except Exception as exc:  # noqa: BLE001  (missing files: the routes report it properly)
         print(f"EarthSleuth: warm-up skipped ({exc!r})")

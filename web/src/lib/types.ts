@@ -56,6 +56,7 @@ export interface VariableResult {
   run_id: string
   label?: string
   bbox?: [number, number, number, number]
+  period?: [string, string]
 }
 
 export type Direction = 'up' | 'down' | 'none'
@@ -231,6 +232,8 @@ export interface AgentEvent {
   message: string
   data: {
     narrator?: string
+    /** set when the events replay a recorded investigation */
+    replay?: string
     variable?: VariableId
     result?: VariableResult
     answer_md?: string
@@ -244,4 +247,6 @@ export interface AgentEvent {
 export interface Demo {
   id: string
   question: string
+  /** set for recorded runs of the AI investigator (ISO date) */
+  recorded?: string
 }

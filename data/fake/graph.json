@@ -121,14 +121,14 @@
       "label": "Maghreb"
     },
     {
-      "id": "region_sahara",
+      "id": "region_tunisia",
       "type": "Region",
-      "label": "Northern Sahara"
+      "label": "Tunisia"
     },
     {
       "id": "region_nile_delta",
       "type": "Region",
-      "label": "Nile Delta"
+      "label": "Nile Delta and Lower Egypt"
     },
     {
       "id": "region_levant",
@@ -136,205 +136,242 @@
       "label": "Levant"
     },
     {
+      "id": "region_sahara_margin",
+      "type": "Region",
+      "label": "Sahara margin"
+    },
+    {
+      "id": "region_italy_balkans",
+      "type": "Region",
+      "label": "Italy and the Balkans"
+    },
+    {
       "id": "region_anatolia",
       "type": "Region",
       "label": "Anatolia"
     },
     {
-      "id": "region_italy_balkans",
-      "type": "Region",
-      "label": "Italy & Balkans"
-    },
-    {
       "id": "finding_t2m_iberia",
       "type": "Finding",
       "label": "Air temperature (2 m) rising in Iberian Peninsula",
-      "slope_dec": 0.483806064772936,
-      "p": 1.9361005798579356e-07,
+      "slope_dec": 0.4865381533916503,
+      "p": 2.5887545107572407e-07,
       "simulated": true
     },
     {
       "id": "finding_t2m_maghreb",
       "type": "Finding",
       "label": "Air temperature (2 m) rising in Maghreb",
-      "slope_dec": 0.4849469353314884,
-      "p": 6.215519876562325e-09,
+      "slope_dec": 0.4812591398338849,
+      "p": 7.957827063975742e-09,
       "simulated": true
     },
     {
-      "id": "finding_t2m_sahara",
+      "id": "finding_t2m_tunisia",
       "type": "Finding",
-      "label": "Air temperature (2 m) rising in Northern Sahara",
-      "slope_dec": 0.63134684176676,
-      "p": 3.774758283725532e-15,
+      "label": "Air temperature (2 m) rising in Tunisia",
+      "slope_dec": 0.4902268475674453,
+      "p": 1.8659593934877705e-05,
       "simulated": true
     },
     {
       "id": "finding_t2m_levant",
       "type": "Finding",
       "label": "Air temperature (2 m) rising in Levant",
-      "slope_dec": 0.44146861313250785,
-      "p": 2.9033006665457606e-08,
+      "slope_dec": 0.47256192303966726,
+      "p": 8.145308871831958e-10,
+      "simulated": true
+    },
+    {
+      "id": "finding_t2m_sahara_margin",
+      "type": "Finding",
+      "label": "Air temperature (2 m) rising in Sahara margin",
+      "slope_dec": 0.6328010248972145,
+      "p": 0.0,
+      "simulated": true
+    },
+    {
+      "id": "finding_t2m_italy_balkans",
+      "type": "Finding",
+      "label": "Air temperature (2 m) rising in Italy and the Balkans",
+      "slope_dec": 0.22768673023160818,
+      "p": 0.0009655487969129073,
       "simulated": true
     },
     {
       "id": "finding_t2m_anatolia",
       "type": "Finding",
       "label": "Air temperature (2 m) rising in Anatolia",
-      "slope_dec": 0.38092685662080394,
-      "p": 8.062567647648677e-05,
-      "simulated": true
-    },
-    {
-      "id": "finding_t2m_italy_balkans",
-      "type": "Finding",
-      "label": "Air temperature (2 m) rising in Italy & Balkans",
-      "slope_dec": 0.2267491061845743,
-      "p": 0.00014531507349135886,
+      "slope_dec": 0.3845856694897004,
+      "p": 4.2892046750342416e-05,
       "simulated": true
     },
     {
       "id": "finding_precip_maghreb",
       "type": "Finding",
       "label": "Precipitation falling in Maghreb",
-      "slope_dec": -2.605115479496191,
+      "slope_dec": -2.3752742078001443,
       "p": 0.0,
       "simulated": true
     },
     {
-      "id": "finding_precip_sahara",
+      "id": "finding_precip_tunisia",
       "type": "Finding",
-      "label": "Precipitation falling in Northern Sahara",
-      "slope_dec": -0.14851731523523015,
-      "p": 0.013847785620753505,
+      "label": "Precipitation falling in Tunisia",
+      "slope_dec": -3.7621922617235093,
+      "p": 1.2634448007808885e-06,
       "simulated": true
     },
     {
       "id": "finding_precip_levant",
       "type": "Finding",
       "label": "Precipitation falling in Levant",
-      "slope_dec": -1.5978106339019411,
-      "p": 0.007146228085185724,
+      "slope_dec": -1.2637763722147248,
+      "p": 0.011293413235651029,
       "simulated": true
     },
     {
-      "id": "finding_precip_italy_balkans",
+      "id": "finding_precip_sahara_margin",
       "type": "Finding",
-      "label": "Precipitation rising in Italy & Balkans",
-      "slope_dec": 2.7008300686072806,
-      "p": 0.029761294773644087,
+      "label": "Precipitation falling in Sahara margin",
+      "slope_dec": -0.2466525466762627,
+      "p": 0.0007534551608487927,
       "simulated": true
     },
     {
       "id": "finding_soil_moisture_iberia",
       "type": "Finding",
       "label": "Soil moisture (0\u201310 cm) falling in Iberian Peninsula",
-      "slope_dec": -0.254476000292519,
-      "p": 0.015610856908607085,
+      "slope_dec": -0.26366895110887417,
+      "p": 0.0024526936963267243,
       "simulated": true
     },
     {
       "id": "finding_soil_moisture_maghreb",
       "type": "Finding",
       "label": "Soil moisture (0\u201310 cm) falling in Maghreb",
-      "slope_dec": -0.8034747192656839,
-      "p": 9.103436671153986e-09,
+      "slope_dec": -0.7964487065660658,
+      "p": 5.680891312920267e-10,
       "simulated": true
     },
     {
-      "id": "finding_soil_moisture_sahara",
+      "id": "finding_soil_moisture_tunisia",
       "type": "Finding",
-      "label": "Soil moisture (0\u201310 cm) falling in Northern Sahara",
-      "slope_dec": -0.20636144318828334,
-      "p": 3.34571912707915e-05,
+      "label": "Soil moisture (0\u201310 cm) falling in Tunisia",
+      "slope_dec": -1.12664433853893,
+      "p": 4.82502926502093e-13,
       "simulated": true
     },
     {
       "id": "finding_soil_moisture_levant",
       "type": "Finding",
       "label": "Soil moisture (0\u201310 cm) falling in Levant",
-      "slope_dec": -0.48259451856082225,
-      "p": 1.5548770896378628e-05,
+      "slope_dec": -0.4849237096041743,
+      "p": 0.00040441019261772126,
+      "simulated": true
+    },
+    {
+      "id": "finding_soil_moisture_sahara_margin",
+      "type": "Finding",
+      "label": "Soil moisture (0\u201310 cm) falling in Sahara margin",
+      "slope_dec": -0.2552872985572525,
+      "p": 1.2244507836545182e-06,
       "simulated": true
     },
     {
       "id": "finding_soil_moisture_anatolia",
       "type": "Finding",
       "label": "Soil moisture (0\u201310 cm) falling in Anatolia",
-      "slope_dec": -0.32439531092181784,
-      "p": 0.04758746724540086,
+      "slope_dec": -0.3341414540197899,
+      "p": 0.043168521421709904,
       "simulated": true
     },
     {
       "id": "finding_et_iberia",
       "type": "Finding",
       "label": "Evapotranspiration rising in Iberian Peninsula",
-      "slope_dec": 0.027603244220113593,
-      "p": 0.001540248876763295,
+      "slope_dec": 0.02802840803634265,
+      "p": 0.0021398726774122245,
       "simulated": true
     },
     {
       "id": "finding_et_maghreb",
       "type": "Finding",
       "label": "Evapotranspiration falling in Maghreb",
-      "slope_dec": -0.0207535938853506,
-      "p": 0.018014562101110076,
+      "slope_dec": -0.021111503837365275,
+      "p": 0.0033614451163430648,
+      "simulated": true
+    },
+    {
+      "id": "finding_et_nile_delta",
+      "type": "Finding",
+      "label": "Evapotranspiration rising in Nile Delta and Lower Egypt",
+      "slope_dec": 0.020372969384743367,
+      "p": 0.036799189041291536,
+      "simulated": true
+    },
+    {
+      "id": "finding_et_italy_balkans",
+      "type": "Finding",
+      "label": "Evapotranspiration rising in Italy and the Balkans",
+      "slope_dec": 0.023915116277559982,
+      "p": 4.508393658397836e-12,
       "simulated": true
     },
     {
       "id": "finding_et_anatolia",
       "type": "Finding",
       "label": "Evapotranspiration rising in Anatolia",
-      "slope_dec": 0.026054018398606774,
-      "p": 0.00949615130550363,
-      "simulated": true
-    },
-    {
-      "id": "finding_et_italy_balkans",
-      "type": "Finding",
-      "label": "Evapotranspiration rising in Italy & Balkans",
-      "slope_dec": 0.02326044690458459,
-      "p": 1.7549937059158083e-08,
+      "slope_dec": 0.02623433949034614,
+      "p": 0.009644311926999327,
       "simulated": true
     },
     {
       "id": "finding_ndvi_iberia",
       "type": "Finding",
       "label": "Vegetation (NDVI) falling in Iberian Peninsula",
-      "slope_dec": -0.0027695979404045125,
-      "p": 0.00034598628653936814,
+      "slope_dec": -0.0028408233137544943,
+      "p": 0.0004193781808683461,
       "simulated": true
     },
     {
       "id": "finding_ndvi_maghreb",
       "type": "Finding",
       "label": "Vegetation (NDVI) falling in Maghreb",
-      "slope_dec": -0.008821084099577436,
+      "slope_dec": -0.008787222595098843,
       "p": 0.0,
       "simulated": true
     },
     {
-      "id": "finding_ndvi_sahara",
+      "id": "finding_ndvi_tunisia",
       "type": "Finding",
-      "label": "Vegetation (NDVI) falling in Northern Sahara",
-      "slope_dec": -0.0025939951802839457,
-      "p": 0.018629604900785246,
+      "label": "Vegetation (NDVI) falling in Tunisia",
+      "slope_dec": -0.010895912445155437,
+      "p": 7.956228347261174e-07,
       "simulated": true
     },
     {
       "id": "finding_ndvi_nile_delta",
       "type": "Finding",
-      "label": "Vegetation (NDVI) rising in Nile Delta",
-      "slope_dec": 0.04494164902783853,
-      "p": 0.0,
+      "label": "Vegetation (NDVI) rising in Nile Delta and Lower Egypt",
+      "slope_dec": 0.016154263548290377,
+      "p": 3.774758283725532e-15,
       "simulated": true
     },
     {
       "id": "finding_ndvi_levant",
       "type": "Finding",
       "label": "Vegetation (NDVI) falling in Levant",
-      "slope_dec": -0.004965517102269404,
-      "p": 0.006872023309379083,
+      "slope_dec": -0.005305135050046742,
+      "p": 0.022443807772556834,
+      "simulated": true
+    },
+    {
+      "id": "finding_ndvi_sahara_margin",
+      "type": "Finding",
+      "label": "Vegetation (NDVI) falling in Sahara margin",
+      "slope_dec": -0.0031531767349982174,
+      "p": 0.0013279978573594864,
       "simulated": true
     },
     {
@@ -516,7 +553,7 @@
       "key": 0
     },
     {
-      "source": "region_sahara",
+      "source": "region_tunisia",
       "target": "region_mediterranean_north_africa",
       "type": "PART_OF",
       "key": 0
@@ -534,7 +571,7 @@
       "key": 0
     },
     {
-      "source": "region_anatolia",
+      "source": "region_sahara_margin",
       "target": "region_mediterranean_north_africa",
       "type": "PART_OF",
       "key": 0
@@ -546,6 +583,12 @@
       "key": 0
     },
     {
+      "source": "region_anatolia",
+      "target": "region_mediterranean_north_africa",
+      "type": "PART_OF",
+      "key": 0
+    },
+    {
       "source": "finding_t2m_iberia",
       "target": "var_t2m",
       "type": "ABOUT",
@@ -570,14 +613,14 @@
       "key": 0
     },
     {
-      "source": "finding_t2m_sahara",
+      "source": "finding_t2m_tunisia",
       "target": "var_t2m",
       "type": "ABOUT",
       "key": 0
     },
     {
-      "source": "finding_t2m_sahara",
-      "target": "region_sahara",
+      "source": "finding_t2m_tunisia",
+      "target": "region_tunisia",
       "type": "IN_REGION",
       "key": 0
     },
@@ -590,6 +633,30 @@
     {
       "source": "finding_t2m_levant",
       "target": "region_levant",
+      "type": "IN_REGION",
+      "key": 0
+    },
+    {
+      "source": "finding_t2m_sahara_margin",
+      "target": "var_t2m",
+      "type": "ABOUT",
+      "key": 0
+    },
+    {
+      "source": "finding_t2m_sahara_margin",
+      "target": "region_sahara_margin",
+      "type": "IN_REGION",
+      "key": 0
+    },
+    {
+      "source": "finding_t2m_italy_balkans",
+      "target": "var_t2m",
+      "type": "ABOUT",
+      "key": 0
+    },
+    {
+      "source": "finding_t2m_italy_balkans",
+      "target": "region_italy_balkans",
       "type": "IN_REGION",
       "key": 0
     },
@@ -606,18 +673,6 @@
       "key": 0
     },
     {
-      "source": "finding_t2m_italy_balkans",
-      "target": "var_t2m",
-      "type": "ABOUT",
-      "key": 0
-    },
-    {
-      "source": "finding_t2m_italy_balkans",
-      "target": "region_italy_balkans",
-      "type": "IN_REGION",
-      "key": 0
-    },
-    {
       "source": "finding_precip_maghreb",
       "target": "var_precip",
       "type": "ABOUT",
@@ -630,14 +685,14 @@
       "key": 0
     },
     {
-      "source": "finding_precip_sahara",
+      "source": "finding_precip_tunisia",
       "target": "var_precip",
       "type": "ABOUT",
       "key": 0
     },
     {
-      "source": "finding_precip_sahara",
-      "target": "region_sahara",
+      "source": "finding_precip_tunisia",
+      "target": "region_tunisia",
       "type": "IN_REGION",
       "key": 0
     },
@@ -654,14 +709,14 @@
       "key": 0
     },
     {
-      "source": "finding_precip_italy_balkans",
+      "source": "finding_precip_sahara_margin",
       "target": "var_precip",
       "type": "ABOUT",
       "key": 0
     },
     {
-      "source": "finding_precip_italy_balkans",
-      "target": "region_italy_balkans",
+      "source": "finding_precip_sahara_margin",
+      "target": "region_sahara_margin",
       "type": "IN_REGION",
       "key": 0
     },
@@ -690,14 +745,14 @@
       "key": 0
     },
     {
-      "source": "finding_soil_moisture_sahara",
+      "source": "finding_soil_moisture_tunisia",
       "target": "var_soil_moisture",
       "type": "ABOUT",
       "key": 0
     },
     {
-      "source": "finding_soil_moisture_sahara",
-      "target": "region_sahara",
+      "source": "finding_soil_moisture_tunisia",
+      "target": "region_tunisia",
       "type": "IN_REGION",
       "key": 0
     },
@@ -710,6 +765,18 @@
     {
       "source": "finding_soil_moisture_levant",
       "target": "region_levant",
+      "type": "IN_REGION",
+      "key": 0
+    },
+    {
+      "source": "finding_soil_moisture_sahara_margin",
+      "target": "var_soil_moisture",
+      "type": "ABOUT",
+      "key": 0
+    },
+    {
+      "source": "finding_soil_moisture_sahara_margin",
+      "target": "region_sahara_margin",
       "type": "IN_REGION",
       "key": 0
     },
@@ -750,14 +817,14 @@
       "key": 0
     },
     {
-      "source": "finding_et_anatolia",
+      "source": "finding_et_nile_delta",
       "target": "var_et",
       "type": "ABOUT",
       "key": 0
     },
     {
-      "source": "finding_et_anatolia",
-      "target": "region_anatolia",
+      "source": "finding_et_nile_delta",
+      "target": "region_nile_delta",
       "type": "IN_REGION",
       "key": 0
     },
@@ -770,6 +837,18 @@
     {
       "source": "finding_et_italy_balkans",
       "target": "region_italy_balkans",
+      "type": "IN_REGION",
+      "key": 0
+    },
+    {
+      "source": "finding_et_anatolia",
+      "target": "var_et",
+      "type": "ABOUT",
+      "key": 0
+    },
+    {
+      "source": "finding_et_anatolia",
+      "target": "region_anatolia",
       "type": "IN_REGION",
       "key": 0
     },
@@ -798,14 +877,14 @@
       "key": 0
     },
     {
-      "source": "finding_ndvi_sahara",
+      "source": "finding_ndvi_tunisia",
       "target": "var_ndvi",
       "type": "ABOUT",
       "key": 0
     },
     {
-      "source": "finding_ndvi_sahara",
-      "target": "region_sahara",
+      "source": "finding_ndvi_tunisia",
+      "target": "region_tunisia",
       "type": "IN_REGION",
       "key": 0
     },
@@ -830,6 +909,18 @@
     {
       "source": "finding_ndvi_levant",
       "target": "region_levant",
+      "type": "IN_REGION",
+      "key": 0
+    },
+    {
+      "source": "finding_ndvi_sahara_margin",
+      "target": "var_ndvi",
+      "type": "ABOUT",
+      "key": 0
+    },
+    {
+      "source": "finding_ndvi_sahara_margin",
+      "target": "region_sahara_margin",
       "type": "IN_REGION",
       "key": 0
     },

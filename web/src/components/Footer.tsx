@@ -29,8 +29,8 @@ export default function Footer() {
           <p className="eyebrow mb-3">How it was made</p>
           <p className="leading-relaxed">
             Trends: monthly anomalies, Theil–Sen slope, Mann–Kendall test with Hamed–Rao correction, false discovery rate
-            controlled at 10%. AI is used to plan investigations and write explanations; every number it quotes comes from
-            the statistics engine. The app was built with the help of AI tools (Claude and ChatGPT).
+            controlled at 10%. Gemini maps questions to the knowledge graph and writes explanations; every number it
+            quotes must come from the statistics engine. The app was built with the help of AI tools (Claude and ChatGPT).
           </p>
           <p className="mt-3 text-xs text-faint">
             Not affiliated with or endorsed by NASA. <Link to="/conclude" className="underline-offset-4 hover:underline">Method and provenance</Link> ·{' '}
