@@ -10,9 +10,16 @@ from common import config as C
 
 log = logging.getLogger(__name__)
 
-PRO_MODELS = [m for m in (C.GEMINI_MODEL, "gemini-pro-latest", "gemini-2.5-pro") if m]
-FAST_MODELS = [m for m in (os.getenv("GEMINI_FAST_MODEL", "").strip(), "gemini-flash-latest",
-                           "gemini-2.5-flash") if m]
+PRO_MODELS = [m for m in (C.GEMINI_MODEL, "gemini-pro-latest", "gemini-3.8-flash", "gemini-2.5-pro") if m]
+FAST_MODELS = [m for m in (os.getenv("GEMINI_FAST_MODEL", "").strip(), "gemini-3.8-flash",
+                           "gemini-flash-latest", "gemini-2.5-flash") if m]
+
+
+def _config(model: str, **kw):
+    from google.genai import types
+    if not model.startswith(("gemini-1", "gemini-2")):
+        kw.pop("temperature", None)
+    return types.GenerateContentConfig(**kw)
 
 
 class LLMUnavailable(RuntimeError):
@@ -49,27 +56,28 @@ def _call(models: list[str], fn: Callable[[str], Any], retries: int = 3):
                                                 "RESOURCE_EXHAUSTED", "overloaded")):
                     time.sleep(2 * (attempt + 1))
                     continue
-                raise
+                log.warning("model %s failed (%s), trying the next one", model, msg[:200])
+                break
     raise LLMUnavailable(f"Gemini call failed: {last}")
 
 
 def generate_text(prompt: str, system: str = "", fast: bool = False,
                   temperature: float = 0.3) -> str:
-    from google.genai import types
-    cfg = types.GenerateContentConfig(system_instruction=system or None, temperature=temperature)
     _, r = _call(FAST_MODELS if fast else PRO_MODELS,
-                 lambda m: client().models.generate_content(model=m, contents=prompt, config=cfg))
+                 lambda m: client().models.generate_content(
+                     model=m, contents=prompt,
+                     config=_config(m, system_instruction=system or None, temperature=temperature)))
     return (r.text or "").strip()
 
 
 def generate_json(prompt: str, schema: dict, system: str = "", fast: bool = True,
                   temperature: float = 0.1) -> dict:
-    from google.genai import types
-    cfg = types.GenerateContentConfig(system_instruction=system or None, temperature=temperature,
-                                      response_mime_type="application/json",
-                                      response_json_schema=schema)
     _, r = _call(FAST_MODELS if fast else PRO_MODELS,
-                 lambda m: client().models.generate_content(model=m, contents=prompt, config=cfg))
+                 lambda m: client().models.generate_content(
+                     model=m, contents=prompt,
+                     config=_config(m, system_instruction=system or None, temperature=temperature,
+                                    response_mime_type="application/json",
+                                    response_json_schema=schema)))
     try:
         return json.loads(r.text)
     except (TypeError, ValueError) as e:
